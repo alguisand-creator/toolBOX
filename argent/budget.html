@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calculateur de budget mensuel – ToolBOX</title>
+<meta name="description" content="Note tes revenus et tes dépenses du mois, et vois en un coup d'œil ce qu'il te reste et ton taux d'épargne. Gratuit, tout reste dans ton navigateur.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/outil.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="../index.html">Tool<span>BOX</span></a>
+  </header>
+
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="../index.html">Accueil</a> › <a href="../index.html#outils">Argent</a> › Budget
+  </nav>
+
+  <main>
+    <h1>Budget mensuel</h1>
+    <p class="lead">Liste tes revenus et tes dépenses du mois pour savoir ce qu'il te reste.</p>
+
+    <section class="tool" aria-label="Calculateur de budget">
+      <h2 class="sect">Revenus</h2>
+      <div class="rows" id="rev"></div>
+      <button type="button" class="btn ghost" data-add="rev">+ Ajouter un revenu</button>
+
+      <h2 class="sect">Dépenses</h2>
+      <div class="rows" id="dep"></div>
+      <button type="button" class="btn ghost" data-add="dep">+ Ajouter une dépense</button>
+
+      <div class="result" id="result" aria-live="polite"></div>
+    </section>
+
+    <section class="explain">
+      <h2>Comment faire un budget ?</h2>
+      <p>Le solde du mois est simple : <code>revenus − dépenses</code>. S'il est positif, tu peux épargner ; s'il est négatif, tu dépenses plus que tu ne gagnes.</p>
+      <p>Une règle courante est le 50/30/20 : environ 50 % du revenu pour les besoins (loyer, courses, transport), 30 % pour les envies et 20 % pour l'épargne. C'est un repère, pas une obligation.</p>
+    </section>
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX – Tes données restent dans ton navigateur.</footer>
+</div>
+
+<script>
+const num = s => parseFloat(String(s).replace(",", "."));
+const eur = n => new Intl.NumberFormat("fr-FR", { style:"currency", currency:"EUR" }).format(n);
+const pct = n => new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 1 }).format(n);
+
+const state = {
+  rev: [["Salaire", "1800"]],
+  dep: [["Loyer", "650"], ["Courses", "300"], ["Transport", "80"]]
+};
+const boxes = { rev: document.getElementById("rev"), dep: document.getElementById("dep") };
+const result = document.getElementById("result");
+
+function render(kind){
+  const box = boxes[kind];
+  box.innerHTML = "";
+  state[kind].forEach((r, i) => {
+    const row = document.createElement("div");
+    row.className = "row";
+    row.innerHTML =
+      `<input class="grow" type="text" aria-label="Nom" placeholder="Nom" autocomplete="off">
+       <input class="small" type="text" inputmode="decimal" aria-label="Montant en euros" placeholder="0 €" autocomplete="off">
+       <button type="button" class="x" aria-label="Supprimer la ligne">×</button>`;
+    const [n, m, x] = row.children;
+    n.value = r[0]; m.value = r[1];
+    n.addEventListener("input", () => { state[kind][i][0] = n.value; });
+    m.addEventListener("input", () => { state[kind][i][1] = m.value; compute(); });
+    x.addEventListener("click", () => { state[kind].splice(i, 1); render(kind); compute(); });
+    box.appendChild(row);
+  });
+}
+
+const total = list => list.reduce((s, r) => { const v = num(r[1]); return s + (isNaN(v) || v < 0 ? 0 : v); }, 0);
+
+function compute(){
+  const r = total(state.rev), d = total(state.dep), solde = r - d;
+  const taux = r > 0 ? solde / r * 100 : null;
+  result.classList.remove("err");
+  result.innerHTML =
+    `<div class="big">${eur(solde)}</div>
+     <div class="txt">${solde >= 0 ? "Il te reste ce montant à la fin du mois." : "Tu dépenses plus que tu ne gagnes."}</div>
+     <div class="detail"><span>Revenus : <b>${eur(r)}</b></span><span>Dépenses : <b>${eur(d)}</b></span>${
+       taux === null ? "" : `<span>Épargne : <b>${pct(taux)} %</b></span>`}</div>`;
+}
+
+document.querySelectorAll("[data-add]").forEach(b => b.addEventListener("click", () => {
+  const k = b.dataset.add;
+  state[k].push(["", ""]);
+  render(k);
+  boxes[k].lastElementChild.querySelector("input").focus();
+}));
+
+render("rev"); render("dep"); compute();
+document.getElementById("y").textContent = new Date().getFullYear();
+</script>
+</body>
+</html>

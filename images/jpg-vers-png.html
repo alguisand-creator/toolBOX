@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Convertir JPG en PNG en ligne – ToolBOX</title>
+<meta name="description" content="Convertis une image JPG en PNG gratuitement. La conversion se fait dans ton navigateur : ton image n'est envoyée nulle part.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/outil.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="../index.html">Tool<span>BOX</span></a>
+  </header>
+
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="../index.html">Accueil</a> › <a href="../index.html#outils">Images</a> › JPG → PNG
+  </nav>
+
+  <main>
+    <h1>JPG vers PNG</h1>
+    <p class="lead">Choisis une image, elle est convertie en PNG sur ton appareil.</p>
+
+    <section class="tool" aria-label="Convertisseur JPG vers PNG">
+      <div class="fields">
+        <div class="field"><label for="file">Image à convertir (JPG, WebP, GIF, PNG…)</label>
+          <input id="file" type="file" accept="image/*"></div>
+      </div>
+      <div class="result" id="result" aria-live="polite"><div class="big">Choisis une image pour commencer.</div></div>
+      <div class="preview" id="preview" hidden><img id="img" alt="Aperçu de l'image convertie"></div>
+      <div class="actions"><a class="btn" id="dl" aria-disabled="true" download="image.png">Télécharger le PNG</a></div>
+    </section>
+
+    <section class="explain">
+      <h2>JPG ou PNG, quelle différence ?</h2>
+      <p>Le JPG compresse en perdant un peu de qualité : léger, idéal pour les photos. Le PNG ne perd rien et gère la transparence : il convient mieux aux logos, captures d'écran et schémas, mais pèse plus lourd.</p>
+      <p>Convertir un JPG en PNG ne rend pas l'image plus nette : la qualité déjà perdue ne revient pas. Cela sert surtout quand un site ou un logiciel exige du PNG.</p>
+    </section>
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX – Ton image reste dans ton navigateur.</footer>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const size = b => b < 1024 * 1024 ? (b / 1024).toFixed(0) + " Ko" : (b / 1024 / 1024).toFixed(2).replace(".", ",") + " Mo";
+let outUrl = null;
+
+function error(msg){
+  $("result").classList.add("err");
+  $("result").innerHTML = `<div class="big">${msg}</div>`;
+  $("preview").hidden = true;
+  $("dl").setAttribute("aria-disabled", "true");
+  $("dl").removeAttribute("href");
+}
+
+$("file").addEventListener("change", () => {
+  const f = $("file").files[0];
+  if (!f) return;
+  if (!f.type.startsWith("image/")) { error("Ce fichier n'est pas une image."); return; }
+  const src = URL.createObjectURL(f);
+  const im = new Image();
+  im.onload = () => {
+    const c = document.createElement("canvas");
+    c.width = im.naturalWidth; c.height = im.naturalHeight;
+    c.getContext("2d").drawImage(im, 0, 0);
+    URL.revokeObjectURL(src);
+    c.toBlob(blob => {
+      if (!blob) { error("La conversion a échoué."); return; }
+      if (outUrl) URL.revokeObjectURL(outUrl);
+      outUrl = URL.createObjectURL(blob);
+      $("img").src = outUrl; $("preview").hidden = false;
+      const name = f.name.replace(/\.[^.]+$/, "") + ".png";
+      $("dl").href = outUrl; $("dl").download = name; $("dl").removeAttribute("aria-disabled");
+      $("result").classList.remove("err");
+      $("result").innerHTML = `<div class="big">${name}</div><div class="txt">${im.naturalWidth} × ${im.naturalHeight} px</div>
+        <div class="detail"><span>Avant : <b>${size(f.size)}</b></span><span>Après : <b>${size(blob.size)}</b></span></div>`;
+    }, "image/png");
+  };
+  im.onerror = () => { URL.revokeObjectURL(src); error("Impossible de lire cette image."); };
+  im.src = src;
+});
+
+$("y").textContent = new Date().getFullYear();
+</script>
+</body>
+</html>

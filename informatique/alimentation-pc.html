@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calculateur de puissance d'alimentation PC – ToolBOX</title>
+<meta name="description" content="Estime la puissance d'alimentation (en watts) à prévoir pour ton PC selon ton processeur et ta carte graphique, avec une marge de sécurité.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/outil.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="../index.html">Tool<span>BOX</span></a>
+  </header>
+
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="../index.html">Accueil</a> › <a href="../index.html#outils">Informatique</a> › Alimentation PC
+  </nav>
+
+  <main>
+    <h1>Alimentation PC</h1>
+    <p class="lead">Estime la puissance d'alimentation conseillée pour ta configuration.</p>
+
+    <section class="tool" aria-label="Calculateur d'alimentation">
+      <div class="fields">
+        <div class="field"><label for="cpuP">Type de processeur</label>
+          <select id="cpuP"></select></div>
+        <div class="field"><label for="cpu">Consommation processeur (W)</label>
+          <input id="cpu" type="text" inputmode="decimal" autocomplete="off"></div>
+      </div>
+      <div class="fields" style="margin-top:1rem">
+        <div class="field"><label for="gpuP">Type de carte graphique</label>
+          <select id="gpuP"></select></div>
+        <div class="field"><label for="gpu">Consommation carte graphique (W)</label>
+          <input id="gpu" type="text" inputmode="decimal" autocomplete="off"></div>
+      </div>
+      <div class="fields" style="margin-top:1rem">
+        <div class="field"><label for="other">Reste : carte mère, RAM, disques, ventilateurs (W)</label>
+          <input id="other" type="text" inputmode="decimal" autocomplete="off" value="100"></div>
+        <div class="field"><label for="margin">Marge de sécurité (%)</label>
+          <input id="margin" type="text" inputmode="decimal" autocomplete="off" value="30"></div>
+      </div>
+      <div class="result" id="result" aria-live="polite"></div>
+    </section>
+
+    <section class="explain">
+      <h2>Quelle alimentation choisir ?</h2>
+      <p>On additionne la consommation maximale du processeur, de la carte graphique et du reste, puis on ajoute une marge (souvent 20 à 30 %) pour ne pas pousser l'alimentation à fond, garder de la place pour une future mise à niveau et la faire travailler dans sa zone la plus efficace.</p>
+      <p>Les valeurs des listes sont des ordres de grandeur. Pour un calcul précis, utilise le TDP (ou la consommation maximale) indiqué par le fabricant sur la fiche de tes composants. Choisis aussi une alimentation de qualité certifiée 80 Plus.</p>
+    </section>
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX – Tes données restent dans ton navigateur.</footer>
+</div>
+
+<script>
+const num = s => parseFloat(String(s).replace(",", "."));
+const fmt = n => new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 }).format(n);
+
+const CPU = [["Entrée de gamme", 65], ["Milieu de gamme", 105], ["Haut de gamme", 170], ["Très haut de gamme", 250]];
+const GPU = [["Aucune (graphique intégré)", 0], ["Entrée de gamme", 120], ["Milieu de gamme", 200], ["Haut de gamme", 320], ["Très haut de gamme", 450]];
+
+const $ = id => document.getElementById(id);
+const fill = (sel, list, input, i) => {
+  sel.innerHTML = list.map((x, k) => `<option value="${k}">${x[0]} (≈ ${x[1]} W)</option>`).join("") + `<option value="-1">Autre</option>`;
+  sel.value = i; input.value = list[i][1];
+  sel.addEventListener("change", () => { if (sel.value !== "-1") input.value = list[sel.value][1]; compute(); });
+  input.addEventListener("input", () => { sel.value = "-1"; compute(); });
+};
+fill($("cpuP"), CPU, $("cpu"), 1);
+fill($("gpuP"), GPU, $("gpu"), 2);
+$("other").addEventListener("input", compute);
+$("margin").addEventListener("input", compute);
+
+function compute(){
+  const c = num($("cpu").value), g = num($("gpu").value), o = num($("other").value), m = num($("margin").value);
+  const bad = [c, g, o, m].some(v => isNaN(v) || v < 0);
+  const result = $("result");
+  result.classList.toggle("err", bad);
+  if (bad) { result.innerHTML = `<div class="big">Entre des nombres positifs dans tous les champs.</div>`; return; }
+  const total = c + g + o;
+  const needed = total * (1 + m / 100);
+  const advised = Math.ceil(needed / 50) * 50;
+  result.innerHTML =
+    `<div class="big">${fmt(advised)} W</div>
+     <div class="txt">Puissance d'alimentation conseillée (arrondie au palier de 50 W).</div>
+     <div class="detail"><span>Consommation estimée : <b>${fmt(total)} W</b></span><span>Avec marge : <b>${fmt(needed)} W</b></span></div>`;
+}
+
+compute();
+$("y").textContent = new Date().getFullYear();
+</script>
+</body>
+</html>

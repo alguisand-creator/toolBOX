@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Redimensionner une image en ligne – ToolBOX</title>
+<meta name="description" content="Change la taille de ton image en pixels ou en pourcentage, en gardant les proportions. Gratuit, fait dans ton navigateur.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/outil.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="../index.html">Tool<span>BOX</span></a>
+  </header>
+
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="../index.html">Accueil</a> › <a href="../index.html#outils">Images</a> › Redimensionnement
+  </nav>
+
+  <main>
+    <h1>Redimensionnement d'image</h1>
+    <p class="lead">Donne une nouvelle taille à ton image, en pixels ou en pourcentage.</p>
+
+    <section class="tool" aria-label="Redimensionnement d'image">
+      <div class="fields">
+        <div class="field"><label for="file">Image à redimensionner</label>
+          <input id="file" type="file" accept="image/*"></div>
+      </div>
+      <div class="fields" style="margin-top:1rem">
+        <div class="field"><label for="w">Largeur (px)</label>
+          <input id="w" type="text" inputmode="numeric" autocomplete="off" disabled></div>
+        <div class="field"><label for="h">Hauteur (px)</label>
+          <input id="h" type="text" inputmode="numeric" autocomplete="off" disabled></div>
+        <div class="field"><label for="fmt">Format</label>
+          <select id="fmt"><option value="image/png">PNG</option><option value="image/jpeg">JPG</option><option value="image/webp">WebP</option></select></div>
+      </div>
+      <div class="actions" id="presets" style="margin-top:.8rem">
+        <button type="button" class="btn ghost" data-p="75">75 %</button>
+        <button type="button" class="btn ghost" data-p="50">50 %</button>
+        <button type="button" class="btn ghost" data-p="25">25 %</button>
+        <button type="button" class="btn ghost" data-p="100">Taille d'origine</button>
+      </div>
+      <div class="result" id="result" aria-live="polite"><div class="big">Choisis une image pour commencer.</div></div>
+      <div class="preview" id="preview" hidden><img id="img" alt="Aperçu de l'image redimensionnée"></div>
+      <div class="actions"><a class="btn" id="dl" aria-disabled="true" download="image.png">Télécharger l'image</a></div>
+    </section>
+
+    <section class="explain">
+      <h2>Comment garder les bonnes proportions ?</h2>
+      <p>Quand tu changes la largeur, la hauteur s'adapte automatiquement (et inversement) pour que l'image ne soit pas déformée. Les boutons de pourcentage réduisent les deux côtés dans la même proportion.</p>
+      <p>Réduire une image donne un bon résultat ; l'agrandir la rend floue, car les pixels manquants sont devinés. Pour le web, une largeur de 1200 à 1600 px suffit presque toujours.</p>
+    </section>
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX – Ton image reste dans ton navigateur.</footer>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const size = b => b < 1024 * 1024 ? (b / 1024).toFixed(0) + " Ko" : (b / 1024 / 1024).toFixed(2).replace(".", ",") + " Mo";
+const EXT = { "image/png": "png", "image/jpeg": "jpg", "image/webp": "webp" };
+const MAX = 8000;
+let outUrl = null, source = null, name = "image";
+
+function error(msg){
+  $("result").classList.add("err");
+  $("result").innerHTML = `<div class="big">${msg}</div>`;
+  $("preview").hidden = true;
+  $("dl").setAttribute("aria-disabled", "true");
+  $("dl").removeAttribute("href");
+}
+
+function run(){
+  if (!source) return;
+  const w = Math.round(+$("w").value), h = Math.round(+$("h").value);
+  if (!(w >= 1 && h >= 1)) { error("Entre une largeur et une hauteur d'au moins 1 px."); return; }
+  if (w > MAX || h > MAX) { error(`Taille maximale : ${MAX} px par côté.`); return; }
+  const type = $("fmt").value;
+  const c = document.createElement("canvas");
+  c.width = w; c.height = h;
+  const ctx = c.getContext("2d");
+  ctx.imageSmoothingQuality = "high";
+  if (type === "image/jpeg") { ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, w, h); }
+  ctx.drawImage(source.im, 0, 0, w, h);
+  c.toBlob(blob => {
+    if (!blob) { error("Le redimensionnement a échoué."); return; }
+    if (outUrl) URL.revokeObjectURL(outUrl);
+    outUrl = URL.createObjectURL(blob);
+    $("img").src = outUrl; $("preview").hidden = false;
+    const ext = blob.type === type ? EXT[type] : "png";
+    $("dl").href = outUrl; $("dl").download = `${name}-${w}x${h}.${ext}`; $("dl").removeAttribute("aria-disabled");
+    $("result").classList.remove("err");
+    $("result").innerHTML =
+      `<div class="big">${w} × ${h} px</div>
+       <div class="txt">Image d'origine : ${source.im.naturalWidth} × ${source.im.naturalHeight} px</div>
+       <div class="detail"><span>Avant : <b>${size(source.file.size)}</b></span><span>Après : <b>${size(blob.size)}</b></span></div>`;
+  }, type, 0.92);
+}
+
+$("file").addEventListener("change", () => {
+  const f = $("file").files[0];
+  if (!f) return;
+  if (!f.type.startsWith("image/")) { error("Ce fichier n'est pas une image."); return; }
+  const src = URL.createObjectURL(f);
+  const im = new Image();
+  im.onload = () => {
+    URL.revokeObjectURL(src);
+    source = { im, file: f };
+    name = f.name.replace(/\.[^.]+$/, "");
+    $("w").disabled = $("h").disabled = false;
+    $("w").value = im.naturalWidth; $("h").value = im.naturalHeight;
+    run();
+  };
+  im.onerror = () => { URL.revokeObjectURL(src); error("Impossible de lire cette image."); };
+  im.src = src;
+});
+
+// Les proportions sont toujours conservées : on recalcule l'autre côté
+$("w").addEventListener("input", () => {
+  if (!source) return;
+  const w = +$("w").value;
+  if (w > 0) $("h").value = Math.round(w * source.im.naturalHeight / source.im.naturalWidth);
+  run();
+});
+$("h").addEventListener("input", () => {
+  if (!source) return;
+  const h = +$("h").value;
+  if (h > 0) $("w").value = Math.round(h * source.im.naturalWidth / source.im.naturalHeight);
+  run();
+});
+$("fmt").addEventListener("change", run);
+$("presets").addEventListener("click", e => {
+  const b = e.target.closest("button");
+  if (!b || !source) return;
+  const p = +b.dataset.p / 100;
+  $("w").value = Math.max(1, Math.round(source.im.naturalWidth * p));
+  $("h").value = Math.max(1, Math.round(source.im.naturalHeight * p));
+  run();
+});
+
+$("y").textContent = new Date().getFullYear();
+</script>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calculateur de salaire horaire – ToolBOX</title>
+<meta name="description" content="Convertis un taux horaire en salaire mensuel ou annuel, et un salaire en taux horaire, selon ton nombre d'heures par semaine. Gratuit et instantané.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/outil.css">
+<style>
+  .aide{margin:0 0 1.1rem;color:var(--muted)}
+  .field input::placeholder{color:var(--muted);opacity:.7}
+  .detail{display:flex;flex-wrap:wrap;gap:.4rem 1.5rem;margin-top:.8rem;color:var(--muted)}
+  .detail b{color:var(--ink);font-weight:600}
+  .note{margin:.9rem 0 0;color:var(--muted);font-size:.9rem}
+  .explain h3{font:800 .85rem var(--display);color:var(--muted);margin:.9rem 0 .2rem}
+  .explain h3 ~ p{font-size:.9rem}
+  .calc,.explain code{white-space:nowrap}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="../index.html">Tool<span>BOX</span></a>
+  </header>
+
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="../index.html">Accueil</a> › <a href="../index.html#outils">Argent</a> › Salaire horaire
+  </nav>
+
+  <main>
+    <h1>Calculateur de salaire horaire</h1>
+    <p class="lead">Passe d'un taux horaire à un salaire mensuel ou annuel, et inversement, selon tes heures de travail.</p>
+
+    <section class="tool" aria-label="Calculateur">
+      <div class="tabs" role="tablist" id="tabs"></div>
+      <p class="aide" id="aide"></p>
+
+      <div class="fields">
+        <div class="field">
+          <label for="f-m" id="l-m">Taux horaire (€/h)</label>
+          <input id="f-m" type="text" inputmode="decimal" autocomplete="off">
+        </div>
+        <div class="field" id="box-p" hidden>
+          <label for="f-p">Ce salaire est</label>
+          <select id="f-p"><option value="mois">Par mois</option><option value="an">Par an</option></select>
+        </div>
+        <div class="field">
+          <label for="f-h">Heures par semaine</label>
+          <input id="f-h" type="text" inputmode="decimal" autocomplete="off" value="35">
+        </div>
+      </div>
+
+      <div class="result" id="result" aria-live="polite"></div>
+      <p class="note">Le calcul garde la nature du montant : un brut donne un résultat brut, un net donne un résultat net. Pour passer du brut au net, utilise l'outil <a href="salaire.html">Salaire</a>.</p>
+    </section>
+
+    <section class="explain">
+      <h2>Comment utiliser cet onglet ?</h2>
+
+      <div data-mode="hs">
+        <p>Cet onglet transforme ton <strong>taux horaire</strong> en salaire par semaine, par mois et par an.</p>
+        <h3>Le calcul</h3>
+        <p>On multiplie le taux par les heures de la semaine. Une année compte 52 semaines, et on divise par 12 pour obtenir le mois :<br><code>mois = taux × heures × 52 ÷ 12</code></p>
+        <h3>Exemple</h3>
+        <p>12 € de l'heure, 35 h par semaine :<br><span class="calc">12 × 35 × 52 ÷ 12 = <strong>1 820 € par mois</strong></span></p>
+      </div>
+
+      <div data-mode="sh" hidden>
+        <p>Cet onglet fait le chemin inverse : à partir d'un <strong>salaire mensuel ou annuel</strong>, il trouve ton taux horaire.</p>
+        <h3>Le calcul</h3>
+        <p>On ramène le salaire à l'année (× 12 si c'est un salaire mensuel), puis on le divise par le nombre d'heures travaillées sur l'année :<br><code>taux = annuel ÷ (heures × 52)</code></p>
+        <h3>Exemple</h3>
+        <p>1 820 € par mois, 35 h par semaine :<br><span class="calc">1 820 × 12 ÷ (35 × 52) = <strong>12 € de l'heure</strong></span></p>
+      </div>
+
+      <div data-mode="mois" hidden>
+        <p>Cet onglet répond à la question : <strong>« je gagne tant par mois, je suis payé combien de l'heure ? »</strong> Tu écris ton salaire mensuel, et la page te répond par une phrase.</p>
+        <h3>Le calcul</h3>
+        <p>On ramène le salaire mensuel à l'année, puis on le divise par les heures travaillées sur l'année :<br><code>taux = mensuel × 12 ÷ (heures × 52)</code></p>
+        <h3>Exemple</h3>
+        <p>1 820 € par mois, 35 h par semaine :<br><span class="calc">1 820 × 12 ÷ (35 × 52) = <strong>12 € de l'heure</strong></span></p>
+        <p>Sous le résultat, la page montre ce que donnerait le même salaire avec d'autres durées de travail. Moins tu travailles d'heures pour le même salaire, plus ton taux horaire est élevé.</p>
+      </div>
+
+      <h3>Bon à savoir</h3>
+      <p>35 heures par semaine représentent environ 151,67 heures par mois (35 × 52 ÷ 12). Le calcul suppose le même nombre d'heures chaque semaine, sans heures supplémentaires ni primes.</p>
+    </section>
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX – Tes données restent dans ton navigateur.</footer>
+</div>
+
+<script>
+const num = s => parseFloat(String(s).replace(",", "."));
+const eur = n => new Intl.NumberFormat("fr-FR", { style:"currency", currency:"EUR" }).format(n);
+const nb = n => new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 2 }).format(n);
+
+const MODES = [
+  { id:"hs", nom:"Horaire → Salaire", label:"Taux horaire (€/h)", ph:"12", periode:false,
+    aide:"Entre ton taux horaire et ton nombre d'heures par semaine pour connaître ton salaire.",
+    calc:(m, h) => { const sem = m*h, an = sem*52, mois = an/12;
+      return { big:eur(mois), txt:`Par mois, pour ${eur(m)} de l'heure et ${nb(h)} h par semaine`,
+               det:[["Par semaine", eur(sem)], ["Par mois", eur(mois)], ["Par an", eur(an)]] }; } },
+  { id:"sh", nom:"Salaire → Horaire", label:"Salaire (€)", ph:"1820", periode:true,
+    aide:"Entre ton salaire mensuel ou annuel et ton nombre d'heures par semaine pour connaître ton taux horaire.",
+    calc:(m, h, parAn) => { const an = parAn ? m : m*12, taux = an/(h*52);
+      return { big:eur(taux) + " / h", txt:`Pour ${eur(m)} ${parAn ? "par an" : "par mois"} et ${nb(h)} h par semaine`,
+               det:[["Heures par semaine", nb(h) + " h"], ["Heures par mois", nb(h*52/12) + " h"], ["Heures par an", nb(h*52) + " h"]] }; } },
+  { id:"mois", nom:"Je gagne X par mois", label:"Ce que tu gagnes par mois (€)", ph:"1820", periode:false,
+    aide:"Entre ce que tu gagnes par mois : la page te dit combien tu es payé de l'heure, et compare avec d'autres durées de travail.",
+    calc:(m, h) => { const taux = m*12/(h*52);
+      return { big:eur(taux) + " / h",
+               txt:`Si tu gagnes ${eur(m)} par mois à ${nb(h)} h par semaine, tu es payé ${eur(taux)} de l'heure.`,
+               det:[20, 24, 28, 35, 39].map(x => [`À ${x} h par semaine`, eur(m*12/(x*52)) + " / h"]) }; } }
+];
+
+const tabs = document.getElementById("tabs");
+const aide = document.getElementById("aide");
+const fm = document.getElementById("f-m"), fp = document.getElementById("f-p"), fh = document.getElementById("f-h");
+const boxP = document.getElementById("box-p");
+const result = document.getElementById("result");
+let mode = MODES[0];
+
+function renderTabs(){
+  tabs.innerHTML = MODES.map(m =>
+    `<button type="button" role="tab" data-id="${m.id}" aria-selected="${m===mode}">${m.nom}</button>`).join("");
+  aide.textContent = mode.aide;
+  document.getElementById("l-m").textContent = mode.label;
+  fm.placeholder = "Ex. " + mode.ph;
+  boxP.hidden = !mode.periode;
+  document.querySelectorAll("[data-mode]").forEach(d => d.hidden = d.dataset.mode !== mode.id);
+}
+
+function compute(){
+  const m = num(fm.value), h = num(fh.value);
+  let msg = null;
+  if (fm.value.trim() === "") msg = "Écris un montant pour voir le résultat.";
+  else if (isNaN(m) || m < 0) msg = "Entre un montant valide (nombre positif).";
+  else if (isNaN(h) || h <= 0 || h > 80) msg = "Entre un nombre d'heures par semaine entre 1 et 80.";
+
+  result.classList.toggle("err", !!msg);
+  if (msg){ result.innerHTML = `<div class="big">${msg}</div>`; return; }
+
+  const r = mode.calc(m, h, fp.value === "an");
+  result.innerHTML =
+    `<div class="big">${r.big}</div>
+     <div class="txt">${r.txt}</div>
+     <div class="detail">${r.det.map(d => `<span>${d[0]} : <b>${d[1]}</b></span>`).join("")}</div>`;
+}
+
+tabs.addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  mode = MODES.find(x => x.id === b.dataset.id);
+  renderTabs(); compute();
+});
+[fm, fp, fh].forEach(el => el.addEventListener("input", compute));
+
+renderTabs(); compute();
+document.getElementById("y").textContent = new Date().getFullYear();
+</script>
+</body>
+</html>

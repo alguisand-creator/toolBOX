@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calculateur de moyenne scolaire avec coefficients – ToolBOX</title>
+<meta name="description" content="Calcule ta moyenne générale pondérée avec les coefficients de chaque matière. Ajoute tes notes sur 20, le résultat s'affiche tout de suite.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/outil.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="../index.html">Tool<span>BOX</span></a>
+  </header>
+
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="../index.html">Accueil</a> › <a href="../index.html#outils">Études</a> › Moyenne scolaire
+  </nav>
+
+  <main>
+    <h1>Moyenne scolaire</h1>
+    <p class="lead">Entre tes notes sur 20 et leurs coefficients pour obtenir ta moyenne pondérée.</p>
+
+    <section class="tool" aria-label="Calculateur de moyenne">
+      <div class="rows" id="rows"></div>
+      <button type="button" class="btn ghost" id="add">+ Ajouter une note</button>
+      <div class="result" id="result" aria-live="polite"></div>
+    </section>
+
+    <section class="explain">
+      <h2>Comment calculer une moyenne avec coefficients ?</h2>
+      <p>Multiplie chaque note par son coefficient, additionne le tout, puis divise par la somme des coefficients : <code>(note₁ × coef₁ + note₂ × coef₂ + …) ÷ (coef₁ + coef₂ + …)</code>.</p>
+      <p>Exemple : 14 avec un coefficient 2 et 10 avec un coefficient 1 donnent <code>(14×2 + 10×1) ÷ 3 = 12,67</code>. Une matière à fort coefficient pèse plus lourd dans la moyenne.</p>
+    </section>
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX – Tes données restent dans ton navigateur.</footer>
+</div>
+
+<script>
+const num = s => parseFloat(String(s).replace(",", "."));
+const fmt = n => new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 2 }).format(n);
+
+const rows = [["Maths", "14", "3"], ["Français", "11", "3"], ["Anglais", "16", "2"]];
+const box = document.getElementById("rows");
+const result = document.getElementById("result");
+
+function render(){
+  box.innerHTML = "";
+  rows.forEach((r, i) => {
+    const row = document.createElement("div");
+    row.className = "row";
+    row.innerHTML =
+      `<input class="grow" type="text" aria-label="Matière" placeholder="Matière" autocomplete="off">
+       <input class="small" type="text" inputmode="decimal" aria-label="Note sur 20" placeholder="Note /20" autocomplete="off">
+       <input class="small" type="text" inputmode="decimal" aria-label="Coefficient" placeholder="Coef." autocomplete="off">
+       <button type="button" class="x" aria-label="Supprimer la ligne">×</button>`;
+    const [n, v, c, x] = row.children;
+    n.value = r[0]; v.value = r[1]; c.value = r[2];
+    n.addEventListener("input", () => { r[0] = n.value; });
+    v.addEventListener("input", () => { r[1] = v.value; compute(); });
+    c.addEventListener("input", () => { r[2] = c.value; compute(); });
+    x.addEventListener("click", () => { rows.splice(i, 1); render(); compute(); });
+    box.appendChild(row);
+  });
+}
+
+function compute(){
+  let sum = 0, coefs = 0, used = 0, bad = false;
+  rows.forEach(r => {
+    if (r[1].trim() === "" && r[2].trim() === "") return;
+    const v = num(r[1]), c = num(r[2]);
+    if (isNaN(v) || isNaN(c) || v < 0 || v > 20 || c <= 0) { bad = true; return; }
+    sum += v * c; coefs += c; used++;
+  });
+  const ok = !bad && coefs > 0;
+  result.classList.toggle("err", !ok);
+  result.innerHTML = ok
+    ? `<div class="big">${fmt(sum / coefs)} / 20</div><div class="txt">Moyenne sur ${used} note${used > 1 ? "s" : ""}, total des coefficients : ${fmt(coefs)}</div>`
+    : `<div class="big">${bad ? "Vérifie tes lignes : note entre 0 et 20, coefficient supérieur à 0." : "Ajoute au moins une note avec son coefficient."}</div>`;
+}
+
+document.getElementById("add").addEventListener("click", () => {
+  rows.push(["", "", "1"]); render();
+  box.lastElementChild.querySelector("input").focus();
+});
+
+render(); compute();
+document.getElementById("y").textContent = new Date().getFullYear();
+</script>
+</body>
+</html>

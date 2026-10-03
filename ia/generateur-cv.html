@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Générateur de CV : texte prêt à mettre en page – ToolBOX</title>
+<meta name="description" content="Remplis tes informations, expériences, formations et compétences : obtiens un CV structuré à copier dans Word ou Google Docs. Gratuit.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/outil.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="../index.html">Tool<span>BOX</span></a>
+  </header>
+
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="../index.html">Accueil</a> › <a href="../index.html#outils">IA &amp; Texte</a> › Générateur de CV
+  </nav>
+
+  <main>
+    <h1>Générateur de CV</h1>
+    <p class="lead">Remplis tes informations : tu obtiens un CV structuré, à copier dans ton traitement de texte.</p>
+
+    <section class="tool" aria-label="Générateur de CV">
+      <form class="ia-form" id="form"></form>
+      <div class="outs" id="out" aria-live="polite"></div>
+    </section>
+
+    <section class="explain">
+      <h2>Comment utiliser le résultat ?</h2>
+      <p>L'outil produit un texte organisé en sections (profil, expériences, formation, compétences, langues). Copie-le dans Word ou Google Docs, puis choisis une mise en page sobre : une page, une seule police, des dates cohérentes.</p>
+      <p>Pour les expériences et les formations, sépare chaque élément par le signe <code>|</code> : <code>Poste | Entreprise | dates | missions</code>. Les parties vides sont ignorées. Si tu laisses le profil vide, une phrase générique est proposée : personnalise-la.</p>
+    </section>
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX – Tes informations restent dans ton navigateur.</footer>
+</div>
+
+<script src="../assets/ia.js"></script>
+<script>
+const parts = l => l.split("|").map(x => x.trim());
+
+ToolIA.init({
+  button: "Générer le CV",
+  fields: [
+    { id:"name", label:"Prénom et nom", required:true, half:true, placeholder:"Camille Dupont" },
+    { id:"title", label:"Titre ou poste visé", required:true, half:true, placeholder:"Assistant commercial" },
+    { id:"email", label:"E-mail", half:true, placeholder:"camille@exemple.fr" },
+    { id:"phone", label:"Téléphone", half:true, placeholder:"06 12 34 56 78" },
+    { id:"city", label:"Ville", placeholder:"Lyon" },
+    { id:"profile", label:"Profil (facultatif)", type:"textarea", rows:3, placeholder:"Deux ou trois phrases sur toi. Laisse vide pour une phrase générique." },
+    { id:"jobs", label:"Expériences (une par ligne : Poste | Entreprise | Dates | Missions)", type:"textarea", rows:5, placeholder:"Vendeur | Boutique Soleil | 2022–2024 | Accueil client, gestion de caisse" },
+    { id:"studies", label:"Formations (une par ligne : Diplôme | École | Année)", type:"textarea", rows:3, placeholder:"BTS Commerce | Lycée Jean Moulin | 2022" },
+    { id:"skills", label:"Compétences (séparées par des virgules)", placeholder:"Relation client, Excel, Anglais courant" },
+    { id:"langs", label:"Langues (séparées par des virgules)", placeholder:"Français (natif), Anglais (B2)" },
+    { id:"hobbies", label:"Centres d'intérêt (séparés par des virgules)", placeholder:"Photographie, randonnée, bénévolat" }
+  ],
+  example: {
+    name: "Camille Dupont", title: "Assistant commercial", email: "camille.dupont@exemple.fr", phone: "06 12 34 56 78", city: "Lyon",
+    profile: "",
+    jobs: "Vendeur | Boutique Soleil | 2022–2024 | Accueil client, conseil, gestion de caisse\nStagiaire commercial | Agence Horizon | 2021 | Prospection téléphonique et suivi de clients",
+    studies: "BTS Négociation et digitalisation de la relation client | Lycée Jean Moulin | 2022\nBaccalauréat STMG | Lycée Jean Moulin | 2020",
+    skills: "Relation client, Négociation, Excel, Réseaux sociaux", langs: "Français (natif), Anglais (B2)", hobbies: "Photographie, randonnée"
+  },
+  generate(v) {
+    const skills = ToolIA.csv(v.skills);
+    const profile = v.profile || `${v.title}, à l'aise en équipe et orienté résultats.` +
+      (skills.length ? ` Compétences clés : ${ToolIA.list(skills.slice(0, 3))}.` : "");
+    const out = [];
+    out.push(v.name.toUpperCase(), v.title);
+    const contact = [v.email, v.phone, v.city].filter(Boolean).join(" · ");
+    if (contact) out.push(contact);
+
+    out.push("", "PROFIL", profile);
+
+    const jobs = ToolIA.lines(v.jobs).map(parts);
+    if (jobs.length) {
+      out.push("", "EXPÉRIENCES");
+      jobs.forEach(([post, firm, dates, tasks]) => {
+        out.push("• " + post + (firm ? " – " + firm : "") + (dates ? " (" + dates + ")" : ""));
+        if (tasks) out.push("  " + tasks);
+      });
+    }
+    const studies = ToolIA.lines(v.studies).map(parts);
+    if (studies.length) {
+      out.push("", "FORMATION");
+      studies.forEach(([dip, school, year]) => out.push("• " + dip + (school ? " – " + school : "") + (year ? " (" + year + ")" : "")));
+    }
+    if (skills.length) out.push("", "COMPÉTENCES", skills.join(" · "));
+    const langs = ToolIA.csv(v.langs);
+    if (langs.length) out.push("", "LANGUES", langs.join(" · "));
+    const hobbies = ToolIA.csv(v.hobbies);
+    if (hobbies.length) out.push("", "CENTRES D'INTÉRÊT", hobbies.join(" · "));
+
+    return { items: [out.join("\n")], labels: ["Ton CV"], note: "Copie ce texte dans Word ou Google Docs pour la mise en page. Vérifie les dates et relis le profil." };
+  }
+});
+</script>
+</body>
+</html>

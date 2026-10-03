@@ -1,0 +1,101 @@
+/* ToolBOX – style commun des pages d'outils */
+:root{
+  --bg:#eceff2; --surface:#ffffff; --ink:#15212b; --muted:#5b6b78;
+  --line:#d3dae0; --accent:#ffc21a; --accent-ink:#15212b; --steel:#2f5573;
+  --display:"Bricolage Grotesque","Trebuchet MS",sans-serif;
+  --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#121a21;--surface:#1b262f;--ink:#eef2f5;--muted:#9aabb8;--line:#2d3b46;--steel:#8fb6d3}
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1rem/1.6 var(--body)}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--steel);outline-offset:2px;border-radius:4px}
+.wrap{max-width:760px;margin:0 auto;padding:0 1.25rem}
+
+header.top{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 0}
+.logo{font:800 1.5rem var(--display);text-decoration:none;letter-spacing:-.02em}
+.logo span{background:var(--accent);color:var(--accent-ink);padding:0 .35rem;border-radius:5px;margin-left:.1rem}
+
+.crumbs{color:var(--muted);font-size:.95rem;margin:1rem 0 0}
+.crumbs a{text-decoration:none;border-bottom:1px solid var(--line)}
+.crumbs a:hover{border-bottom-color:var(--ink)}
+
+h1{font:800 clamp(2rem,5vw,3rem)/1.05 var(--display);letter-spacing:-.03em;margin:.6rem 0 .6rem}
+.lead{color:var(--muted);font-size:1.1rem;margin:0 0 1.75rem;max-width:56ch}
+
+/* Boîte de l'outil */
+.tool{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:6px 6px 14px 14px;padding:2.1rem 1.4rem 1.5rem;margin-bottom:2.5rem}
+.tool::before{content:"";position:absolute;top:.75rem;left:50%;transform:translateX(-50%);width:64px;height:9px;border-radius:99px;background:var(--accent)}
+
+.tabs{display:flex;flex-wrap:wrap;gap:.5rem;margin:0 0 1.4rem}
+.tabs button{font:500 .95rem var(--body);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:99px;padding:.45rem .95rem;cursor:pointer}
+.tabs button:hover{border-color:var(--ink)}
+.tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+.fields{display:flex;flex-wrap:wrap;align-items:flex-end;gap:.75rem 1rem}
+.field{display:flex;flex-direction:column;gap:.3rem;flex:1 1 140px}
+.field label{font-size:.9rem;color:var(--muted);font-weight:500}
+.field input,.field select{font:500 1.25rem var(--body);color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:10px;padding:.6rem .8rem;width:100%}
+.field input:focus,.field select:focus{outline:none;border-color:var(--steel)}
+
+.result{margin-top:1.5rem;padding:1.1rem 1.2rem;border-radius:12px;background:var(--bg);border-left:8px solid var(--accent);min-height:5.2rem}
+.result .big{font:800 clamp(1.8rem,5vw,2.6rem)/1.1 var(--display);letter-spacing:-.02em;color:var(--steel);overflow-wrap:anywhere}
+.result .txt{color:var(--muted);margin-top:.25rem}
+.result.err .big{color:var(--muted);font-size:1.15rem;font-weight:500}
+
+/* Lignes dynamiques, boutons, détails */
+.rows{display:grid;gap:.6rem;margin-bottom:.8rem}
+.row{display:flex;gap:.6rem;align-items:center}
+.row input{font:500 1.1rem var(--body);color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:10px;padding:.5rem .7rem;min-width:0;width:100%}
+.row input:focus{outline:none;border-color:var(--steel)}
+.row .grow{flex:2 1 0}.row .small{flex:1 1 0}
+.row .x{flex:0 0 auto;font:600 1.1rem var(--body);width:2.4rem;height:2.4rem;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--muted);cursor:pointer}
+.row .x:hover{border-color:var(--ink);color:var(--ink)}
+.sect{font:800 1.1rem var(--display);margin:1.2rem 0 .6rem}
+.sect:first-child{margin-top:0}
+.btn{font:600 1rem var(--body);background:var(--accent);color:var(--accent-ink);border:2px solid var(--ink);border-radius:10px;padding:.55rem 1rem;cursor:pointer;text-decoration:none;display:inline-block}
+.btn.ghost{background:var(--bg);color:var(--ink);border-color:var(--line)}
+.btn.ghost:hover{border-color:var(--ink)}
+.btn[aria-disabled="true"],.btn:disabled{opacity:.45;pointer-events:none}
+.actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1rem}
+.detail{display:flex;flex-wrap:wrap;gap:.4rem 1.5rem;margin-top:.6rem;color:var(--muted)}
+.detail b{color:var(--ink);font-weight:600}
+.field textarea{font:500 1.05rem var(--body);color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:10px;padding:.6rem .8rem;width:100%;min-height:7rem;resize:vertical}
+.field textarea:focus{outline:none;border-color:var(--steel)}
+.field input[type=file]{font-size:1rem;padding:.5rem}
+.field input[type=range]{padding:0;accent-color:var(--steel)}
+.preview{margin-top:1rem}
+.preview img{max-width:100%;max-height:320px;border-radius:10px;border:1px solid var(--line);background:repeating-conic-gradient(var(--line) 0 25%,transparent 0 50%) 50%/16px 16px}
+table.tbl{width:100%;border-collapse:collapse;margin-top:.6rem}
+table.tbl td,table.tbl th{text-align:left;padding:.35rem .2rem;border-top:1px solid var(--line)}
+table.tbl td:last-child,table.tbl th:last-child{text-align:right;font-weight:600;color:var(--ink)}
+
+/* Les éléments cachés restent cachés même s'ils ont un display (ex. .btn) */
+[hidden]{display:none!important}
+
+/* Outils texte / générateurs (assets/ia.js) */
+.ia-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}
+.ia-form .field{grid-column:1/-1}
+.ia-form .field.half{grid-column:span 1}
+.ia-form .field.check{flex-direction:row;align-items:center;gap:.6rem}
+.ia-form .field.check input{width:1.3rem;height:1.3rem;padding:0;flex:0 0 auto;accent-color:var(--steel)}
+.ia-form .field.check label{font-size:1rem;color:var(--ink)}
+.ia-form .actions{grid-column:1/-1;margin-top:0}
+@media (max-width:520px){.ia-form .field.half{grid-column:1/-1}}
+.outs{display:grid;gap:.9rem;margin-top:1.5rem}
+.outs:empty{margin-top:0}
+.outbox{background:var(--bg);border-left:8px solid var(--accent);border-radius:12px;padding:1rem 1.1rem}
+.outbox .lbl{font:600 .8rem var(--body);color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem}
+.outbox pre{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font:500 1rem/1.55 var(--body)}
+.outbox .meta{display:flex;justify-content:space-between;align-items:center;gap:.8rem;margin-top:.8rem;color:var(--muted);font-size:.9rem}
+.outbox .meta .btn{padding:.35rem .8rem;font-size:.9rem}
+.ia-note{color:var(--muted);margin:.2rem 0 0}
+
+/* Texte explicatif (utile aussi pour le référencement) */
+.explain h2{font:800 1.3rem var(--display);margin:2rem 0 .5rem}
+.explain p{margin:0 0 .8rem;max-width:62ch}
+.explain code{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:.1rem .45rem;font-size:.95em}
+
+footer{padding:2rem 0 3rem;color:var(--muted);font-size:.9rem}
