@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ToolBOX – Calculateurs et outils gratuits en ligne</title>
-<meta name="description" content="Pourcentage, TVA, salaire, moyenne scolaire, compression d'images… Des outils simples, rapides et gratuits. Tout se passe dans ton navigateur.">
+<meta name="description" content="Pourcentage, TVA, salaire, moyenne scolaire, compression d'images, générateurs de texte… Des outils simples, rapides et gratuits, sans inscription.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
@@ -72,6 +72,8 @@ nav.top a:hover{color:var(--ink)}
 .pillars p{margin:0;color:var(--muted)}
 
 footer{padding:2rem 0 3rem;color:var(--muted);font-size:.9rem}
+.legal-links{margin:.5rem 0 0}
+.legal-links a{text-underline-offset:2px}
 
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 @media (max-width:560px){nav.top{display:none}.bar .res{font-size:1.15rem;padding:0 .4rem}}
@@ -90,7 +92,7 @@ footer{padding:2rem 0 3rem;color:var(--muted);font-size:.9rem}
   <main>
     <section class="hero">
       <h1>Les petits outils du quotidien, sous la main.</h1>
-      <p class="lead">Pourcentages, TVA, salaire, images… Gratuit, sans inscription, et tout se calcule dans ton navigateur.</p>
+      <p class="lead">Calculs, images, textes, générateurs… Gratuit, sans inscription, et les calculs se font directement dans ton navigateur.</p>
 
       <label class="bar" for="q">
         <input id="q" type="text" autocomplete="off" spellcheck="false" placeholder="Rechercher un outil ou faire un calcul" aria-describedby="msg">
@@ -111,13 +113,13 @@ footer{padding:2rem 0 3rem;color:var(--muted);font-size:.9rem}
     </section>
 
     <section class="pillars" id="a-propos">
-      <div><h3>Dans ton navigateur</h3><p>Tes chiffres et tes images ne quittent jamais ton appareil.</p></div>
+      <div><h3>Dans ton navigateur</h3><p>Calculs et images sont traités sur ton appareil. Seules les fonctions d'IA envoient ton texte à un service extérieur, et c'est toujours indiqué.</p></div>
       <div><h3>Une page, un outil</h3><p>Chaque outil a sa propre page, claire et rapide à utiliser.</p></div>
-      <div><h3>Gratuit</h3><p>Pas de compte, pas d'abonnement.</p></div>
+      <div><h3>Gratuit</h3><p>Pas de compte, pas d'abonnement. Tu choisis ce qui est enregistré dans ton navigateur.</p></div>
     </section>
   </main>
 
-  <footer>© <span id="y"></span> ToolBOX – Version 1</footer>
+  <footer>© <span id="y"></span> ToolBOX – Version 1<nav class="legal-links" aria-label="Informations légales"><a href="legal/mentions-legales.html">Mentions légales</a> · <a href="legal/confidentialite.html">Confidentialité</a> · <a href="legal/contact.html">Contact</a> · <a href="#" data-cookie-settings>Cookies</a></nav></footer>
 </div>
 
 <script>
@@ -235,5 +237,6 @@ document.querySelectorAll("[data-ex]").forEach(b => b.addEventListener("click", 
 }));
 document.getElementById("y").textContent = new Date().getFullYear();
 </script>
+<script src="assets/consent.js"></script>
 </body>
 </html>
