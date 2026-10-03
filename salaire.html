@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calculateur de salaire brut / net – ToolBOX</title>
+<meta name="description" content="Convertis un salaire brut en net, ou un net en brut, par mois ou par an. Non-cadre, cadre, fonction publique ou taux personnalisé. Estimation gratuite.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/outil.css">
+<style>
+  .aide{margin:0 0 1.1rem;color:var(--muted)}
+  .field input::placeholder{color:var(--muted);opacity:.7}
+  .rates{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;margin-top:1rem}
+  .rates span{color:var(--muted);font-size:.9rem;margin-right:.25rem}
+  .rates button{font:500 .95rem var(--body);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:.35rem .7rem;cursor:pointer}
+  .rates button:hover{border-color:var(--ink)}
+  .rates button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+  .detail{display:flex;flex-wrap:wrap;gap:.4rem 1.5rem;margin-top:.8rem;color:var(--muted)}
+  .detail b{color:var(--ink);font-weight:600}
+  .note{margin:.9rem 0 0;color:var(--muted);font-size:.9rem}
+  .explain h3{font:800 .85rem var(--display);color:var(--muted);margin:.9rem 0 .2rem}
+  .explain h3 ~ p{font-size:.9rem}
+  .calc,.explain code{white-space:nowrap}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="../index.html">Tool<span>BOX</span></a>
+  </header>
+
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="../index.html">Accueil</a> › <a href="../index.html#outils">Argent</a> › Salaire
+  </nav>
+
+  <main>
+    <h1>Calculateur de salaire brut / net</h1>
+    <p class="lead">Passe d'un salaire brut à un salaire net, ou l'inverse, par mois ou par an.</p>
+
+    <section class="tool" aria-label="Calculateur">
+      <div class="tabs" role="tablist" id="tabs"></div>
+      <p class="aide" id="aide"></p>
+
+      <div class="fields">
+        <div class="field">
+          <label for="f-m" id="l-m">Salaire brut (€)</label>
+          <input id="f-m" type="text" inputmode="decimal" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="f-p">Période</label>
+          <select id="f-p"><option value="mois">Par mois</option><option value="an">Par an</option></select>
+        </div>
+        <div class="field">
+          <label for="f-t">Cotisations salariales (%)</label>
+          <input id="f-t" type="text" inputmode="decimal" autocomplete="off" value="22">
+        </div>
+      </div>
+      <div class="rates" id="rates" aria-label="Statuts courants"></div>
+
+      <div class="result" id="result" aria-live="polite"></div>
+      <p class="note">Estimation du salaire avant impôt sur le revenu (prélèvement à la source non déduit).</p>
+    </section>
+
+    <section class="explain">
+      <h2>Comment utiliser cet onglet ?</h2>
+
+      <div data-mode="brutnet">
+        <p>Cet onglet te donne <strong>ce que tu touches vraiment</strong> (le net) à partir du salaire inscrit sur ton contrat (le brut). Le brut est le salaire avant que les cotisations sociales (santé, retraite, chômage…) soient retirées.</p>
+        <h3>Le calcul</h3>
+        <p>On retire le pourcentage de cotisations du salaire brut :<br><code>net = brut × (1 − taux ÷ 100)</code></p>
+        <h3>Exemple</h3>
+        <p>2 500 € brut pour un non-cadre, avec 22 % de cotisations :<br><span class="calc">2 500 × (1 − 0,22) = <strong>1 950 €</strong></span></p>
+      </div>
+
+      <div data-mode="netbrut" hidden>
+        <p>Cet onglet te donne <strong>le salaire brut à demander</strong> pour toucher un net précis, par exemple pour négocier une offre ou comparer des salaires.</p>
+        <h3>Le calcul</h3>
+        <p>On divise le salaire net par la part qui reste après les cotisations :<br><code>brut = net ÷ (1 − taux ÷ 100)</code></p>
+        <h3>Exemple</h3>
+        <p>1 950 € net pour un non-cadre, avec 22 % de cotisations :<br><span class="calc">1 950 ÷ 0,78 = <strong>2 500 €</strong></span></p>
+      </div>
+
+      <h3>Quel taux choisir ?</h3>
+      <p>Les boutons proposent des moyennes : environ 22 % pour un non-cadre du privé, 25 % pour un cadre, 17 % pour la fonction publique. Le taux réel dépend de ton salaire, de ton entreprise et de ta convention collective. Pour un chiffre exact, regarde ta fiche de paie ou demande à ton employeur. Tu peux aussi taper n'importe quel taux dans la case.</p>
+      <p>Pour passer du mensuel à l'annuel, on multiplie par 12, sans tenir compte des primes éventuelles (13e mois…).</p>
+    </section>
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX – Tes données restent dans ton navigateur.</footer>
+</div>
+
+<script>
+const num = s => parseFloat(String(s).replace(",", "."));
+const eur = n => new Intl.NumberFormat("fr-FR", { style:"currency", currency:"EUR" }).format(n);
+const pct = n => new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 2 }).format(n);
+const STATUTS = [["Non-cadre", 22], ["Cadre", 25], ["Fonction publique", 17]];
+
+const MODES = [
+  { id:"brutnet", nom:"Brut → Net", label:"Salaire brut (€)", ph:"2500",
+    aide:"Entre ton salaire brut pour connaître ton salaire net, avant impôt sur le revenu.",
+    calc:(m, t) => ({ brut:m, net:m*(1 - t/100), cible:"net" }) },
+  { id:"netbrut", nom:"Net → Brut", label:"Salaire net (€)", ph:"1950",
+    aide:"Entre le salaire net que tu veux toucher pour connaître le brut correspondant.",
+    calc:(m, t) => ({ brut:m/(1 - t/100), net:m, cible:"brut" }) }
+];
+
+const tabs = document.getElementById("tabs");
+const aide = document.getElementById("aide");
+const fm = document.getElementById("f-m"), fp = document.getElementById("f-p"), ft = document.getElementById("f-t");
+const ratesBox = document.getElementById("rates");
+const result = document.getElementById("result");
+let mode = MODES[0];
+
+function renderTabs(){
+  tabs.innerHTML = MODES.map(m =>
+    `<button type="button" role="tab" data-id="${m.id}" aria-selected="${m===mode}">${m.nom}</button>`).join("");
+  aide.textContent = mode.aide;
+  document.getElementById("l-m").textContent = mode.label;
+  fm.placeholder = "Ex. " + mode.ph;
+  document.querySelectorAll("[data-mode]").forEach(d => d.hidden = d.dataset.mode !== mode.id);
+}
+
+function renderRates(){
+  ratesBox.innerHTML = `<span>Statuts courants :</span>` + STATUTS.map(s =>
+    `<button type="button" data-r="${s[1]}" aria-pressed="${num(ft.value)===s[1]}">${s[0]} (${s[1]} %)</button>`).join("");
+}
+
+function compute(){
+  const m = num(fm.value), t = num(ft.value);
+  let msg = null;
+  if (fm.value.trim() === "") msg = "Écris un montant pour voir le résultat.";
+  else if (isNaN(m) || m < 0) msg = "Entre un montant valide (nombre positif).";
+  else if (isNaN(t) || t < 0 || t >= 100) msg = "Entre un taux de cotisations entre 0 et 99 %.";
+
+  result.classList.toggle("err", !!msg);
+  if (msg){ result.innerHTML = `<div class="big">${msg}</div>`; renderRates(); return; }
+
+  const r = mode.calc(m, t);
+  const parAn = fp.value === "an";
+  const unit = parAn ? "par an" : "par mois";
+  const autre = parAn ? "par mois" : "par an";
+  const conv = v => parAn ? v / 12 : v * 12;
+  const cible = r[r.cible];
+  const nom = r.cible === "net" ? "Salaire net" : "Salaire brut";
+
+  result.innerHTML =
+    `<div class="big">${eur(cible)}</div>
+     <div class="txt">${nom} ${unit}, soit environ ${eur(conv(cible))} ${autre}</div>
+     <div class="detail">
+       <span>Brut : <b>${eur(r.brut)}</b></span>
+       <span>Cotisations (${pct(t)} %) : <b>${eur(r.brut - r.net)}</b></span>
+       <span>Net : <b>${eur(r.net)}</b></span>
+     </div>`;
+  renderRates();
+}
+
+tabs.addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  mode = MODES.find(x => x.id === b.dataset.id);
+  renderTabs(); compute();
+});
+ratesBox.addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  ft.value = b.dataset.r; compute();
+});
+[fm, fp, ft].forEach(el => el.addEventListener("input", compute));
+
+renderTabs(); compute();
+document.getElementById("y").textContent = new Date().getFullYear();
+</script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calculateur de moyenne – ToolBOX</title>
+<meta name="description" content="Calcule la moyenne d'une liste de nombres, avec la somme, la médiane, le minimum et le maximum. Gratuit et instantané.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/outil.css">
+<style>
+  .fields .field{flex:1 1 100%}
+  .field textarea{font:500 1.25rem/1.5 var(--body);color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:10px;padding:.6rem .8rem;width:100%;min-height:7rem;resize:vertical}
+  .field textarea:focus{outline:none;border-color:var(--steel)}
+  .field textarea::placeholder{color:var(--muted);opacity:.7}
+  .detail{display:flex;flex-wrap:wrap;gap:.4rem 1.5rem;margin-top:.8rem;color:var(--muted)}
+  .detail b{color:var(--ink);font-weight:600}
+  .note{margin-top:.6rem;color:var(--muted);font-size:.9rem}
+  .explain h3{font:800 .85rem var(--display);color:var(--muted);margin:.9rem 0 .2rem}
+  .explain h3 ~ p{font-size:.9rem}
+  .calc,.explain code{white-space:nowrap}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="../index.html">Tool<span>BOX</span></a>
+  </header>
+
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="../index.html">Accueil</a> › <a href="../index.html#outils">Calcul</a> › Moyenne
+  </nav>
+
+  <main>
+    <h1>Calculateur de moyenne</h1>
+    <p class="lead">Entre une liste de nombres et obtiens leur moyenne, avec la somme, la médiane, le minimum et le maximum.</p>
+
+    <section class="tool" aria-label="Calculateur">
+      <div class="fields">
+        <div class="field">
+          <label for="liste">Tes nombres</label>
+          <textarea id="liste" spellcheck="false" placeholder="Ex. 12 15 9 18 10"></textarea>
+        </div>
+      </div>
+      <p class="note">Sépare les nombres par un espace, un point-virgule ou un retour à la ligne. Pour les décimales, utilise la virgule ou le point (12,5).</p>
+      <div class="result" id="result" aria-live="polite"></div>
+    </section>
+
+    <section class="explain">
+      <h2>Comment ça marche ?</h2>
+      <p>La moyenne est <strong>la valeur « au milieu » d'une série de nombres</strong> : celle que tout le monde aurait si on partageait le total à parts égales.</p>
+      <h3>Le calcul</h3>
+      <p>On additionne tous les nombres, puis on divise par le nombre de valeurs :<br><code>somme ÷ nombre de valeurs</code></p>
+      <h3>Exemple</h3>
+      <p>Avec 12, 15, 9, 18 et 10 :<br><span class="calc">(12 + 15 + 9 + 18 + 10) ÷ 5 = 64 ÷ 5 = <strong>12,8</strong></span></p>
+      <h3>La médiane</h3>
+      <p>C'est la valeur du milieu une fois les nombres rangés dans l'ordre : la moitié des valeurs est en dessous, l'autre moitié au-dessus. Avec 9, 10, 12, 15, 18, la médiane est <strong>12</strong>. Quand une valeur est très éloignée des autres, la médiane est souvent plus représentative que la moyenne.</p>
+    </section>
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX – Tes données restent dans ton navigateur.</footer>
+</div>
+
+<script>
+const fmt = n => new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 4 }).format(n);
+const liste = document.getElementById("liste");
+const result = document.getElementById("result");
+
+function parse(raw){
+  const vals = [], bad = [];
+  raw.split(/[\s;]+/).filter(Boolean).forEach(t => {
+    if (/^-?\d+([.,]\d+)?$/.test(t)) vals.push(parseFloat(t.replace(",", ".")));
+    else bad.push(t);
+  });
+  return { vals, bad };
+}
+
+function compute(){
+  const { vals, bad } = parse(liste.value);
+  if (vals.length === 0){
+    result.classList.add("err");
+    result.innerHTML = `<div class="big">${liste.value.trim() ? "Aucun nombre valide." : "Écris tes nombres pour voir la moyenne."}</div>`;
+    return;
+  }
+  result.classList.remove("err");
+  const sum = vals.reduce((a, b) => a + b, 0);
+  const avg = sum / vals.length;
+  const s = [...vals].sort((a, b) => a - b);
+  const mid = Math.floor(s.length / 2);
+  const median = s.length % 2 ? s[mid] : (s[mid - 1] + s[mid]) / 2;
+  const ignored = bad.length
+    ? `<div class="note">Ignoré (pas un nombre) : ${bad.map(b => b.replace(/</g, "&lt;")).join(", ")}</div>` : "";
+
+  result.innerHTML =
+    `<div class="big">${fmt(avg)}</div>
+     <div class="txt">Moyenne de ${vals.length} valeur${vals.length > 1 ? "s" : ""}</div>
+     <div class="detail">
+       <span>Somme : <b>${fmt(sum)}</b></span>
+       <span>Médiane : <b>${fmt(median)}</b></span>
+       <span>Minimum : <b>${fmt(s[0])}</b></span>
+       <span>Maximum : <b>${fmt(s[s.length - 1])}</b></span>
+     </div>${ignored}`;
+}
+
+liste.addEventListener("input", compute);
+compute();
+document.getElementById("y").textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
