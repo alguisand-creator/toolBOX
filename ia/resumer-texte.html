@@ -33,11 +33,11 @@
       <h2>Comment le résumé est-il fait ?</h2>
       <p>L'outil repère les mots importants du texte (ceux qui reviennent souvent, hors mots courants), donne une note à chaque phrase, puis garde les mieux notées jusqu'à atteindre la longueur demandée. Elles sont remises dans l'ordre d'origine.</p>
       <p>C'est un résumé par extraction : les phrases sont reprises telles quelles, pas réécrites. Il fonctionne mieux sur des textes structurés (articles, cours, comptes rendus) que sur des dialogues. Relis toujours le résultat avant de l'utiliser.</p>
-      <p>Ton texte n'est envoyé nulle part : tout se passe dans ton navigateur.</p>
+      <p><strong>Avec l'IA.</strong> Si la case « Utiliser l'IA » est cochée, ton texte est envoyé à un modèle d'IA hébergé par Cloudflare, qui rédige un résumé en reformulant. Ne colle pas d'informations confidentielles. Si l'IA est indisponible (limite quotidienne atteinte, par exemple), l'outil bascule seul sur la méthode ci-dessus. Décoche la case pour que ton texte ne quitte jamais ton navigateur.</p>
     </section>
   </main>
 
-  <footer>© <span id="y"></span> ToolBOX – Tes textes restent dans ton navigateur.</footer>
+  <footer>© <span id="y"></span> ToolBOX – Sans l'IA, tes textes restent dans ton navigateur.<nav class="legal-links" aria-label="Informations légales"><a href="../legal/mentions-legales.html">Mentions légales</a> · <a href="../legal/confidentialite.html">Confidentialité</a> · <a href="../legal/contact.html">Contact</a> · <a href="#" data-cookie-settings>Cookies</a></nav></footer>
 </div>
 
 <script src="../assets/ia.js"></script>
@@ -46,18 +46,50 @@ const STOP = new Set(("le la les un une des de du d l et ou mais donc or ni car 
 const toks = s => s.toLowerCase().match(/[\p{L}\p{N}]+/gu) || [];
 const nWords = s => s.split(/\s+/).filter(Boolean).length; // même comptage que l'affichage des résultats
 
+const AI_MAX_CHARS = 8000; // doit correspondre à MAX_CHARS dans worker.js
+
+async function askAI(v) {
+  const r = await fetch("/api/ai", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ tool: "resume", text: v.text, target: parseInt(v.target, 10), format: v.format })
+  });
+  if (!r.ok) throw new Error("HTTP " + r.status);
+  const d = await r.json();
+  if (!d.text) throw new Error("vide");
+  return d.text;
+}
+
 ToolIA.init({
   button: "Résumer",
   fields: [
     { id:"text", label:"Texte à résumer", type:"textarea", rows:10, required:true, placeholder:"Colle ici ton texte (au moins 3 phrases)…" },
     { id:"target", label:"Longueur du résumé (mots)", type:"number", min:10, value:"100", half:true, required:true },
-    { id:"format", label:"Présentation", type:"select", options:["Paragraphe", "Liste à puces"], half:true }
+    { id:"format", label:"Présentation", type:"select", options:["Paragraphe", "Liste à puces"], half:true },
+    { id:"useAI", label:"Utiliser l'IA (résumé réécrit, plus fluide)", type:"checkbox", checked:true }
   ],
   example: {
     text: "Le télétravail s'est largement développé ces dernières années. Beaucoup d'entreprises ont adopté des modèles hybrides, où les salariés travaillent quelques jours à distance chaque semaine. Cette organisation réduit le temps passé dans les transports et améliore souvent l'équilibre entre vie privée et vie professionnelle. Cependant, le télétravail pose aussi des défis. Certains salariés se sentent isolés et la frontière entre travail et repos devient floue. Les managers doivent adapter leurs méthodes de suivi et de communication. Pour réussir, les entreprises misent sur des outils collaboratifs et sur des règles claires concernant les horaires et la disponibilité. Au final, le télétravail est un levier de flexibilité, à condition d'être bien encadré.",
     target: "50", format: "Paragraphe"
   },
-  generate(v) {
+  async generate(v) {
+    const local = summarize(v);
+    if (local.error || !v.useAI) return local;
+    if (v.text.length > AI_MAX_CHARS) {
+      local.note = `Texte trop long pour l'IA (maximum ${AI_MAX_CHARS} caractères) : résumé par extraction de phrases. ` + local.note;
+      return local;
+    }
+    try {
+      return { items: [await askAI(v)], note: "Résumé rédigé par une IA : relis-le, elle peut se tromper ou omettre un détail. Ton texte a été envoyé à Cloudflare pour être traité." };
+    } catch (_) {
+      local.note = "L'IA est indisponible pour le moment (limite atteinte ou connexion) : voici un résumé de secours par extraction de phrases. " + local.note;
+      return local;
+    }
+  }
+});
+
+function summarize(v) {
+  {
     const sents = v.text.replace(/\s*\n+\s*/g, " ").split(/(?<=[.!?…]["»”)]?)\s+(?=[\p{Lu}«"“(\d])/u).map(s => s.trim()).filter(Boolean);
     const target = parseInt(v.target, 10);
     if (isNaN(target) || target < 10) return { error: "Choisis une longueur d'au moins 10 mots." };
@@ -82,7 +114,8 @@ ToolIA.init({
     const text = v.format === "Liste à puces" ? chosen.map(x => "• " + x.s).join("\n") : chosen.map(x => x.s).join(" ");
     return { items: [text], note: `${used} mots gardés sur ${total} (${Math.round(used / total * 100)} % du texte), ${chosen.length} phrase${chosen.length > 1 ? "s" : ""} sur ${sents.length}.` };
   }
-});
+}
 </script>
+<script src="../assets/consent.js"></script>
 </body>
 </html>
