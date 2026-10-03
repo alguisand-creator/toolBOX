@@ -92,12 +92,29 @@
       if (res.note) { const p = document.createElement("p"); p.className = "ia-note"; p.textContent = res.note; out.append(p); }
     }
 
-    function run() {
+    // generate() peut renvoyer une promesse (appel à l'IA) : on affiche alors un message d'attente
+    let busy = false;
+    async function run() {
+      if (busy) return;
       const v = values();
       const missing = cfg.fields.filter(f => f.required && (!f.when || f.when(v)) && !v[f.id]);
       if (missing.length) return fail("Remplis : " + missing.map(f => f.label).join(", ") + ".");
+      const submit = form.querySelector('[type="submit"]');
+      busy = true; submit.disabled = true;
       let res;
-      try { res = cfg.generate(v); } catch (e) { return fail("Une erreur est survenue. Vérifie les champs."); }
+      try {
+        res = cfg.generate(v);
+        if (res && typeof res.then === "function") {
+          out.innerHTML = "";
+          const p = document.createElement("p"); p.className = "ia-note"; p.textContent = "L'IA rédige la réponse, un instant…";
+          out.append(p);
+          res = await res;
+        }
+      } catch (e) {
+        busy = false; submit.disabled = false;
+        return fail("Une erreur est survenue. Vérifie les champs.");
+      }
+      busy = false; submit.disabled = false;
       if (res && res.error) return fail(res.error);
       render(res);
       $("#again").hidden = false;

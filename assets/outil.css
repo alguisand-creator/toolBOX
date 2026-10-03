@@ -98,4 +98,10 @@ table.tbl td:last-child,table.tbl th:last-child{text-align:right;font-weight:600
 .explain p{margin:0 0 .8rem;max-width:62ch}
 .explain code{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:.1rem .45rem;font-size:.95em}
 
+.explain ul{margin:0 0 .8rem;padding-left:1.2rem;max-width:62ch}
+.explain li{margin-bottom:.4rem}
+.explain a{text-underline-offset:2px}
+
 footer{padding:2rem 0 3rem;color:var(--muted);font-size:.9rem}
+.legal-links{margin:.5rem 0 0}
+.legal-links a{text-underline-offset:2px}
