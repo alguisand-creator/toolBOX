@@ -58,6 +58,11 @@ nav.top a:hover{color:var(--ink)}
 .drawer li a small{color:var(--muted);font-weight:400}
 .drawer li a:hover small{color:var(--ink)}
 .drawer.soon li a{color:var(--muted)}
+.drawer.collapsed li.extra{display:none}
+.drawer .more{display:flex;align-items:center;justify-content:center;gap:.5rem;width:100%;margin-top:.2rem;padding:.65rem .2rem .2rem;background:none;border:0;border-top:1px solid var(--line);color:var(--muted);font:500 .95rem var(--body);cursor:pointer}
+.drawer .more:hover{color:var(--ink)}
+.drawer .more svg{width:1.1rem;height:1.1rem;transition:transform .2s}
+.drawer .more[aria-expanded="true"] svg{transform:rotate(180deg)}
 [hidden]{display:none!important}
 #empty{padding:2rem 0 4rem;color:var(--muted)}
 
@@ -155,16 +160,33 @@ const CATEGORIES = [
 
 const norm = s => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
 const box = document.getElementById("drawers");
+const LIMIT = 5; // outils visibles avant le bouton « Voir les autres »
 
 // Construction des tiroirs
-box.innerHTML = CATEGORIES.map(c => `
-  <article class="drawer" data-cat="${c.id}">
+box.innerHTML = CATEGORIES.map(c => {
+  const more = c.outils.length - LIMIT;
+  return `
+  <article class="drawer${more > 0 ? " collapsed" : ""}" data-cat="${c.id}">
     <h2>${c.nom}</h2>
     <p class="sub">${c.desc}</p>
-    <ul>${c.outils.map(o => `
-      <li data-name="${norm(o[0]+" "+o[1])}"><a href="${o[2]}"><span>${o[0]}</span><small>${o[1]}</small></a></li>`).join("")}
-    </ul>
-  </article>`).join("");
+    <ul id="list-${c.id}">${c.outils.map((o, i) => `
+      <li${i >= LIMIT ? ' class="extra"' : ""} data-name="${norm(o[0]+" "+o[1])}"><a href="${o[2]}"><span>${o[0]}</span><small>${o[1]}</small></a></li>`).join("")}
+    </ul>${more > 0 ? `
+    <button type="button" class="more" aria-expanded="false" aria-controls="list-${c.id}" data-more="${more}">
+      <span>Voir les ${more} autres</span>
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8l5 5 5-5"/></svg>
+    </button>` : ""}
+  </article>`;
+}).join("");
+
+box.addEventListener("click", e => {
+  const b = e.target.closest(".more"); if (!b) return;
+  const d = b.closest(".drawer");
+  const open = d.classList.toggle("collapsed") === false;
+  d.dataset.open = open ? "1" : "";
+  b.setAttribute("aria-expanded", open);
+  b.firstElementChild.textContent = open ? "Réduire" : `Voir les ${b.dataset.more} autres`;
+});
 
 // Calcul rapide + recherche, dans la même barre
 const q = document.getElementById("q"), res = document.getElementById("res"), msg = document.getElementById("msg");
@@ -197,6 +219,12 @@ function update(){
       li.hidden = !show; if (show) n++;
     });
     d.hidden = n === 0; total += n;
+    // Pendant une recherche, tout s'affiche ; sinon on respecte l'état plié/déplié
+    const btn = d.querySelector(".more");
+    if (btn) {
+      d.classList.toggle("collapsed", !term && d.dataset.open !== "1");
+      btn.hidden = !!term;
+    }
   });
   empty.hidden = total > 0;
 }
