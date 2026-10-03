@@ -29,6 +29,10 @@ a{color:inherit}
 header.top{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 0}
 .logo{font:800 1.5rem var(--display);text-decoration:none;letter-spacing:-.02em}
 .logo span{background:var(--accent);color:var(--accent-ink);padding:0 .35rem;border-radius:5px;margin-left:.1rem}
+.top-right{display:flex;align-items:center;gap:1.25rem}
+.install{font:600 .9rem var(--body);color:var(--accent-ink);background:var(--accent);border:2px solid var(--ink);border-radius:10px;padding:.4rem .85rem;cursor:pointer;white-space:nowrap}
+.install:hover{filter:brightness(1.05)}
+.install-tip{background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--accent);border-radius:10px;padding:.7rem 1rem;margin:0 0 1rem}
 nav.top a{margin-left:1.25rem;text-decoration:none;color:var(--muted);font-weight:500}
 nav.top a:hover{color:var(--ink)}
 
@@ -78,16 +82,25 @@ footer{padding:2rem 0 3rem;color:var(--muted);font-size:.9rem}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 @media (max-width:560px){nav.top{display:none}.bar .res{font-size:1.15rem;padding:0 .4rem}}
 </style>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#eceff2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121a21" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 </head>
 <body>
 <div class="wrap">
   <header class="top">
     <a class="logo" href="index.html">Tool<span>BOX</span></a>
-    <nav class="top" aria-label="Navigation principale">
-      <a href="#outils">Outils</a>
-      <a href="#a-propos">À propos</a>
-    </nav>
+    <div class="top-right">
+      <nav class="top" aria-label="Navigation principale">
+        <a href="#outils">Outils</a>
+        <a href="#a-propos">À propos</a>
+      </nav>
+      <button type="button" class="install" data-install hidden>Installer l'app</button>
+    </div>
   </header>
+  <p class="install-tip" id="install-tip" role="status" hidden>Sur iPhone ou iPad : ouvre le menu Partager de ton navigateur, puis choisis « Sur l'écran d'accueil ».</p>
 
   <main>
     <section class="hero">
@@ -238,5 +251,6 @@ document.querySelectorAll("[data-ex]").forEach(b => b.addEventListener("click", 
 document.getElementById("y").textContent = new Date().getFullYear();
 </script>
 <script src="assets/consent.js"></script>
+<script src="assets/pwa.js"></script>
 </body>
 </html>
