@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta name="google-site-verification" content="zIcCpNnr83XRWX4ZZ8O4Bn5eEjX8Yakip1Rc62aNTd0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ToolBOX – Calculateurs et outils gratuits en ligne</title>
+<meta name="description" content="Pourcentage, TVA, salaire, moyenne scolaire, compression d'images, générateurs de texte… Des outils simples, rapides et gratuits, sans inscription.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#eceff2; --surface:#ffffff; --ink:#15212b; --muted:#5b6b78;
+  --line:#d3dae0; --accent:#ffc21a; --accent-ink:#15212b; --steel:#2f5573;
+  --display:"Bricolage Grotesque","Trebuchet MS",sans-serif;
+  --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--bg:#121a21;--surface:#1b262f;--ink:#eef2f5;--muted:#9aabb8;--line:#2d3b46;--steel:#8fb6d3}
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1rem/1.55 var(--body)}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--steel);outline-offset:2px;border-radius:4px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 1.25rem}
+
+header.top{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 0}
+.logo{font:800 1.5rem var(--display);text-decoration:none;letter-spacing:-.02em}
+.logo span{background:var(--accent);color:var(--accent-ink);padding:0 .35rem;border-radius:5px;margin-left:.1rem}
+nav.top a{margin-left:1.25rem;text-decoration:none;color:var(--muted);font-weight:500}
+nav.top a:hover{color:var(--ink)}
+
+.hero{padding:3rem 0 2.5rem}
+.hero h1{font:800 clamp(2.4rem,6vw,4.4rem)/1 var(--display);letter-spacing:-.03em;margin:0 0 1rem;max-width:14ch}
+.hero p.lead{font-size:1.125rem;color:var(--muted);max-width:52ch;margin:0 0 2rem}
+
+.bar{display:flex;align-items:center;gap:.75rem;background:var(--surface);border:2px solid var(--ink);border-radius:14px;padding:.35rem .35rem .35rem 1.1rem;box-shadow:6px 6px 0 var(--accent);max-width:640px}
+.bar:focus-within{border-color:var(--steel)}
+.bar input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:500 1.2rem var(--body);padding:.7rem 0}
+.bar input:focus{outline:none}
+.bar input::placeholder{color:var(--muted)}
+.bar .res{min-width:5.5ch;text-align:right;font:800 1.5rem var(--display);padding:0 .9rem;color:var(--steel)}
+.hint{margin:1.1rem 0 0;color:var(--muted);font-size:.95rem}
+.hint button{font:inherit;background:none;border:0;border-bottom:1px dashed var(--muted);color:var(--ink);cursor:pointer;padding:0;margin-right:.9rem}
+.hint button:hover{border-bottom-color:var(--ink)}
+#msg{min-height:1.5rem;margin:.9rem 0 0;font-weight:600}
+
+.drawers{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;padding:1rem 0 3rem}
+.drawer{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:6px 6px 14px 14px;padding:2.1rem 1.4rem 1.3rem}
+.drawer::before{content:"";position:absolute;top:.75rem;left:50%;transform:translateX(-50%);width:64px;height:9px;border-radius:99px;background:var(--accent)}
+.drawer h2{font:800 1.5rem var(--display);margin:0 0 .25rem;letter-spacing:-.01em}
+.drawer .sub{color:var(--muted);margin:0 0 1rem;font-size:.95rem}
+.drawer ul{list-style:none;margin:0;padding:0}
+.drawer li a{display:flex;justify-content:space-between;align-items:center;padding:.6rem .2rem;border-top:1px solid var(--line);text-decoration:none;font-weight:500}
+.drawer li a:hover{background:var(--bg);padding-left:.6rem}
+.drawer li a small{color:var(--muted);font-weight:400}
+.drawer li a:hover small{color:var(--ink)}
+.drawer.soon li a{color:var(--muted)}
+.drawer.collapsed li.extra{display:none}
+.drawer .more{display:flex;align-items:center;justify-content:center;gap:.5rem;width:100%;margin-top:.2rem;padding:.65rem .2rem .2rem;background:none;border:0;border-top:1px solid var(--line);color:var(--muted);font:500 .95rem var(--body);cursor:pointer}
+.drawer .more:hover{color:var(--ink)}
+.drawer .more svg{width:1.1rem;height:1.1rem;transition:transform .2s}
+.drawer .more[aria-expanded="true"] svg{transform:rotate(180deg)}
+[hidden]{display:none!important}
+#empty{padding:2rem 0 4rem;color:var(--muted)}
+
+.pillars{display:flex;flex-wrap:wrap;gap:1rem 3rem;padding:2rem 0;border-top:2px solid var(--ink)}
+.pillars div{flex:1 1 220px}
+.pillars h3{font:800 1.1rem var(--display);margin:0 0 .25rem}
+.pillars p{margin:0;color:var(--muted)}
+
+footer{padding:2rem 0 3rem;color:var(--muted);font-size:.9rem}
+.legal-links{margin:.5rem 0 0}
+.legal-links a{text-underline-offset:2px}
+
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media (max-width:560px){nav.top{display:none}.bar .res{font-size:1.15rem;padding:0 .4rem}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="index.html">Tool<span>BOX</span></a>
+    <nav class="top" aria-label="Navigation principale">
+      <a href="#outils">Outils</a>
+      <a href="#a-propos">À propos</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1>Les petits outils du quotidien, sous la main.</h1>
+      <p class="lead">Calculs, images, textes, générateurs… Gratuit, sans inscription, et les calculs se font directement dans ton navigateur.</p>
+
+      <label class="bar" for="q">
+        <input id="q" type="text" autocomplete="off" spellcheck="false" placeholder="Rechercher un outil ou faire un calcul" aria-describedby="msg">
+        <output class="res" id="res" aria-live="polite"></output>
+      </label>
+      <p id="msg"></p>
+      <p class="hint">Exemples :
+        <button type="button" data-ex="10% de 58">10% de 58</button>
+        <button type="button" data-ex="120 + 20%">120 + 20%</button>
+        <button type="button" data-ex="80 - 15%">80 - 15%</button>
+        <button type="button" data-ex="TVA">chercher « TVA »</button>
+      </p>
+    </section>
+
+    <section id="outils" aria-label="Catégories d'outils">
+      <div class="drawers" id="drawers"></div>
+      <p id="empty" hidden>Aucun outil ne correspond. Efface la recherche pour tout revoir.</p>
+    </section>
+
+    <section class="pillars" id="a-propos">
+      <div><h3>Dans ton navigateur</h3><p>Calculs et images sont traités sur ton appareil. Seules les fonctions d'IA envoient ton texte à un service extérieur, et c'est toujours indiqué.</p></div>
+      <div><h3>Une page, un outil</h3><p>Chaque outil a sa propre page, claire et rapide à utiliser.</p></div>
+      <div><h3>Gratuit</h3><p>Pas de compte, pas d'abonnement. Tu choisis ce qui est enregistré dans ton navigateur.</p></div>
+    </section>
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX – Version 1<nav class="legal-links" aria-label="Informations légales"><a href="legal/mentions-legales.html">Mentions légales</a> · <a href="legal/confidentialite.html">Confidentialité</a> · <a href="legal/contact.html">Contact</a> · <a href="#" data-cookie-settings>Cookies</a></nav></footer>
+</div>
+
+<script>
+// Catalogue : pour ajouter un outil, ajoute une ligne ici. "ok:false" = bientôt.
+const CATEGORIES = [
+  { id:"calcul", nom:"Calcul", desc:"Les maths du quotidien.", outils:[
+    ["Pourcentage","Ex. 10% de 58","calcul/pourcentage.html"],
+    ["TVA","HT ⇄ TTC","calcul/tva.html"],
+    ["Moyenne","Liste de nombres","calcul/moyenne.html"],
+    ["Règle de trois","Produit en croix","calcul/regle-de-trois.html"],
+    ["Âge","Depuis ta naissance","calcul/age.html"]]},
+  { id:"argent", nom:"Argent", desc:"Salaire et budget.", outils:[
+    ["Salaire","Brut ⇄ net","argent/salaire.html"],
+    ["Salaire horaire","Par heure","argent/salaire-horaire.html"],
+    ["Budget","Revenus et dépenses","argent/budget.html"]]},
+  { id:"etudes", nom:"Études", desc:"Notes et organisation.", outils:[
+    ["Moyenne scolaire","Avec coefficients","etudes/moyenne-scolaire.html"],
+    ["Note nécessaire","Pour atteindre ta cible","etudes/note-necessaire.html"],
+    ["Planning","Réviser sans stress","etudes/planning.html"]]},
+  { id:"informatique", nom:"Informatique", desc:"Pour les configs PC.", outils:[
+    ["Alimentation PC","Puissance conseillée","informatique/alimentation-pc.html"],
+    ["Stockage","Conversion Go, To…","informatique/stockage.html"],
+    ["Comparaison GPU","Bientôt","informatique/comparaison-gpu.html",false]]},
+  { id:"images", nom:"Images", desc:"Retouches rapides.", outils:[
+    ["JPG → PNG","Conversion","images/jpg-vers-png.html"],
+    ["Compression","Allège tes images","images/compression.html"],
+    ["Redimensionnement","Nouvelle taille","images/redimensionnement.html"]]},
+  { id:"ia", nom:"IA & Texte", desc:"Résumés, reformulation et générateurs.", outils:[
+    ["Résumer un texte","Garde les phrases clés","ia/resumer-texte.html"],
+    ["Reformulateur","Pro, simple, académique…","ia/reformulateur.html"],
+    ["Générateur de titre","Articles, vidéos, posts","ia/generateur-titre.html"],
+    ["Générateur d'idées","Contenus et projets","ia/generateur-idees.html"],
+    ["Générateur de description","Produit ou annonce","ia/generateur-description.html"],
+    ["Générateur de CV","Texte prêt à mettre en page","ia/generateur-cv.html"],
+    ["Générateur de lettre","Motivation, démission…","ia/generateur-lettre.html"],
+    ["Générateur de bio","Instagram, LinkedIn, X…","ia/generateur-bio.html"],
+    ["Générateur de prompt","Prompt structuré pour IA","ia/generateur-prompt.html"],
+    ["Description Vinted","Annonce prête à copier","ia/description-vinted.html"]]}
+];
+
+const norm = s => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+const box = document.getElementById("drawers");
+const LIMIT = 5; // outils visibles avant le bouton « Voir les autres »
+
+// Construction des tiroirs
+box.innerHTML = CATEGORIES.map(c => {
+  const more = c.outils.length - LIMIT;
+  return `
+  <article class="drawer${more > 0 ? " collapsed" : ""}" data-cat="${c.id}">
+    <h2>${c.nom}</h2>
+    <p class="sub">${c.desc}</p>
+    <ul id="list-${c.id}">${c.outils.map((o, i) => `
+      <li${i >= LIMIT ? ' class="extra"' : ""} data-name="${norm(o[0]+" "+o[1])}"><a href="${o[2]}"><span>${o[0]}</span><small>${o[1]}</small></a></li>`).join("")}
+    </ul>${more > 0 ? `
+    <button type="button" class="more" aria-expanded="false" aria-controls="list-${c.id}" data-more="${more}">
+      <span>Voir les ${more} autres</span>
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8l5 5 5-5"/></svg>
+    </button>` : ""}
+  </article>`;
+}).join("");
+
+box.addEventListener("click", e => {
+  const b = e.target.closest(".more"); if (!b) return;
+  const d = b.closest(".drawer");
+  const open = d.classList.toggle("collapsed") === false;
+  d.dataset.open = open ? "1" : "";
+  b.setAttribute("aria-expanded", open);
+  b.firstElementChild.textContent = open ? "Réduire" : `Voir les ${b.dataset.more} autres`;
+});
+
+// Calcul rapide + recherche, dans la même barre
+const q = document.getElementById("q"), res = document.getElementById("res"), msg = document.getElementById("msg");
+const empty = document.getElementById("empty");
+const num = s => parseFloat(s.replace(",", "."));
+const fmt = n => new Intl.NumberFormat("fr-FR",{maximumFractionDigits:4}).format(n);
+
+function quick(v){
+  let m;
+  if ((m = v.match(/^([\d.,]+)\s*%\s*de\s*([\d.,]+)$/i)))
+    return { r:num(m[1])*num(m[2])/100, t:`${m[1]}% de ${m[2]}` };
+  if ((m = v.match(/^([\d.,]+)\s*([+-])\s*([\d.,]+)\s*%$/)))
+    { const b=num(m[1]), p=num(m[3]); return { r: m[2]==="+" ? b*(1+p/100) : b*(1-p/100), t:`${m[1]} ${m[2]} ${m[3]}%` }; }
+  return null;
+}
+
+function update(){
+  const v = q.value.trim();
+  const out = quick(v);
+  res.textContent = out && isFinite(out.r) ? fmt(out.r) : "";
+  msg.textContent = out && isFinite(out.r) ? `${out.t} = ${fmt(out.r)}` : "";
+
+  // Filtre : actif seulement si ce n'est pas un calcul
+  const term = out ? "" : norm(v);
+  let total = 0;
+  box.querySelectorAll(".drawer").forEach(d => {
+    let n = 0;
+    d.querySelectorAll("li").forEach(li => {
+      const show = !term || li.dataset.name.includes(term) || norm(d.querySelector("h2").textContent).includes(term);
+      li.hidden = !show; if (show) n++;
+    });
+    d.hidden = n === 0; total += n;
+    // Pendant une recherche, tout s'affiche ; sinon on respecte l'état plié/déplié
+    const btn = d.querySelector(".more");
+    if (btn) {
+      d.classList.toggle("collapsed", !term && d.dataset.open !== "1");
+      btn.hidden = !!term;
+    }
+  });
+  empty.hidden = total > 0;
+}
+
+q.addEventListener("input", update);
+document.querySelectorAll("[data-ex]").forEach(b => b.addEventListener("click", () => {
+  q.value = b.dataset.ex; update(); q.focus();
+}));
+document.getElementById("y").textContent = new Date().getFullYear();
+</script>
+<script src="assets/consent.js"></script>
+</body>
+</html>

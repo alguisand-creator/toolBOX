@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Résumer un texte en ligne – ToolBOX</title>
+<meta name="description" content="Colle un long texte et obtiens un résumé de la longueur que tu choisis, en paragraphe ou en points clés. Gratuit, fait dans ton navigateur.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/outil.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="../index.html">Tool<span>BOX</span></a>
+  </header>
+
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="../index.html">Accueil</a> › <a href="../index.html#outils">IA &amp; Texte</a> › Résumer un texte
+  </nav>
+
+  <main>
+    <h1>Résumer un texte</h1>
+    <p class="lead">Colle ton texte, choisis la longueur : les phrases les plus importantes sont gardées.</p>
+
+    <section class="tool" aria-label="Résumeur de texte">
+      <form class="ia-form" id="form"></form>
+      <div class="outs" id="out" aria-live="polite"></div>
+    </section>
+
+    <section class="explain">
+      <h2>Comment le résumé est-il fait ?</h2>
+      <p>L'outil repère les mots importants du texte (ceux qui reviennent souvent, hors mots courants), donne une note à chaque phrase, puis garde les mieux notées jusqu'à atteindre la longueur demandée. Elles sont remises dans l'ordre d'origine.</p>
+      <p>C'est un résumé par extraction : les phrases sont reprises telles quelles, pas réécrites. Il fonctionne mieux sur des textes structurés (articles, cours, comptes rendus) que sur des dialogues. Relis toujours le résultat avant de l'utiliser.</p>
+      <p><strong>Avec l'IA.</strong> Si la case « Utiliser l'IA » est cochée, ton texte est envoyé à un modèle d'IA hébergé par Cloudflare, qui rédige un résumé en reformulant. Ne colle pas d'informations confidentielles. Si l'IA est indisponible (limite quotidienne atteinte, par exemple), l'outil bascule seul sur la méthode ci-dessus. Décoche la case pour que ton texte ne quitte jamais ton navigateur.</p>
+    </section>
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX – Sans l'IA, tes textes restent dans ton navigateur.<nav class="legal-links" aria-label="Informations légales"><a href="../legal/mentions-legales.html">Mentions légales</a> · <a href="../legal/confidentialite.html">Confidentialité</a> · <a href="../legal/contact.html">Contact</a> · <a href="#" data-cookie-settings>Cookies</a></nav></footer>
+</div>
+
+<script src="../assets/ia.js"></script>
+<script>
+const STOP = new Set(("le la les un une des de du d l et ou mais donc or ni car que qui quoi dont où à au aux en dans sur sous par pour avec sans ce cet cette ces se sa son ses leur leurs nos notre votre vos il elle ils elles on nous vous je tu me te lui y est sont était étaient être a ont avait avaient avoir été sera seront plus très aussi comme ne pas n s c qu j m t ainsi alors cela ça si tout tous toute toutes même autre autres peut peuvent fait font bien").split(" "));
+const toks = s => s.toLowerCase().match(/[\p{L}\p{N}]+/gu) || [];
+const nWords = s => s.split(/\s+/).filter(Boolean).length; // même comptage que l'affichage des résultats
+
+const AI_MAX_CHARS = 8000; // doit correspondre à MAX_CHARS dans worker.js
+
+async function askAI(v) {
+  const r = await fetch("/api/ai", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ tool: "resume", text: v.text, target: parseInt(v.target, 10), format: v.format })
+  });
+  if (!r.ok) throw new Error("HTTP " + r.status);
+  const d = await r.json();
+  if (!d.text) throw new Error("vide");
+  return d.text;
+}
+
+ToolIA.init({
+  button: "Résumer",
+  fields: [
+    { id:"text", label:"Texte à résumer", type:"textarea", rows:10, required:true, placeholder:"Colle ici ton texte (au moins 3 phrases)…" },
+    { id:"target", label:"Longueur du résumé (mots)", type:"number", min:10, value:"100", half:true, required:true },
+    { id:"format", label:"Présentation", type:"select", options:["Paragraphe", "Liste à puces"], half:true },
+    { id:"useAI", label:"Utiliser l'IA (résumé réécrit, plus fluide)", type:"checkbox", checked:true }
+  ],
+  example: {
+    text: "Le télétravail s'est largement développé ces dernières années. Beaucoup d'entreprises ont adopté des modèles hybrides, où les salariés travaillent quelques jours à distance chaque semaine. Cette organisation réduit le temps passé dans les transports et améliore souvent l'équilibre entre vie privée et vie professionnelle. Cependant, le télétravail pose aussi des défis. Certains salariés se sentent isolés et la frontière entre travail et repos devient floue. Les managers doivent adapter leurs méthodes de suivi et de communication. Pour réussir, les entreprises misent sur des outils collaboratifs et sur des règles claires concernant les horaires et la disponibilité. Au final, le télétravail est un levier de flexibilité, à condition d'être bien encadré.",
+    target: "50", format: "Paragraphe"
+  },
+  async generate(v) {
+    const local = summarize(v);
+    if (local.error || !v.useAI) return local;
+    if (v.text.length > AI_MAX_CHARS) {
+      local.note = `Texte trop long pour l'IA (maximum ${AI_MAX_CHARS} caractères) : résumé par extraction de phrases. ` + local.note;
+      return local;
+    }
+    try {
+      return { items: [await askAI(v)], note: "Résumé rédigé par une IA : relis-le, elle peut se tromper ou omettre un détail. Ton texte a été envoyé à Cloudflare pour être traité." };
+    } catch (_) {
+      local.note = "L'IA est indisponible pour le moment (limite atteinte ou connexion) : voici un résumé de secours par extraction de phrases. " + local.note;
+      return local;
+    }
+  }
+});
+
+function summarize(v) {
+  {
+    const sents = v.text.replace(/\s*\n+\s*/g, " ").split(/(?<=[.!?…]["»”)]?)\s+(?=[\p{Lu}«"“(\d])/u).map(s => s.trim()).filter(Boolean);
+    const target = parseInt(v.target, 10);
+    if (isNaN(target) || target < 10) return { error: "Choisis une longueur d'au moins 10 mots." };
+    if (sents.length < 3) return { error: "Colle un texte d'au moins 3 phrases." };
+
+    const total = sents.reduce((n, s) => n + nWords(s), 0);
+    if (total <= target) return { error: `Ton texte fait déjà ${total} mots : choisis une longueur plus courte.` };
+
+    const freq = {};
+    toks(v.text).forEach(w => { if (w.length > 2 && !STOP.has(w)) freq[w] = (freq[w] || 0) + 1; });
+    const scored = sents.map((s, i) => {
+      const t = toks(s);
+      const sum = t.reduce((a, w) => a + (freq[w] || 0), 0);
+      return { i, s, n: nWords(s), score: sum / Math.sqrt(Math.max(t.length, 1)) * (i === 0 ? 1.3 : 1) };
+    }).sort((a, b) => b.score - a.score);
+
+    let used = 0;
+    const chosen = [];
+    scored.forEach(x => { if (chosen.length === 0 || used + x.n <= target) { chosen.push(x); used += x.n; } });
+    chosen.sort((a, b) => a.i - b.i);
+
+    const text = v.format === "Liste à puces" ? chosen.map(x => "• " + x.s).join("\n") : chosen.map(x => x.s).join(" ");
+    return { items: [text], note: `${used} mots gardés sur ${total} (${Math.round(used / total * 100)} % du texte), ${chosen.length} phrase${chosen.length > 1 ? "s" : ""} sur ${sents.length}.` };
+  }
+}
+</script>
+<script src="../assets/consent.js"></script>
+</body>
+</html>

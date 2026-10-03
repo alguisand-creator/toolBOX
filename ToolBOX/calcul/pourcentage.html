@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calculateur de pourcentage – ToolBOX</title>
+<meta name="description" content="Calcule un pourcentage en un clic : X% de Y, quel pourcentage, augmentation, réduction et variation. Gratuit et instantané.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/outil.css">
+<style>
+  .sep{flex:0 0 auto;align-self:flex-end;padding-bottom:.55rem;font:600 1.1rem/1.6 var(--body);color:var(--muted)}
+  .aide{margin:0 0 1.1rem;color:var(--muted)}
+  .explain h3{font:800 .85rem var(--display);color:var(--muted);margin:.9rem 0 .2rem}
+  .explain h3 ~ p{font-size:.9rem}
+  .calc,.explain code{white-space:nowrap}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="../index.html">Tool<span>BOX</span></a>
+  </header>
+
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="../index.html">Accueil</a> › <a href="../index.html#outils">Calcul</a> › Pourcentage
+  </nav>
+
+  <main>
+    <h1>Calculateur de pourcentage</h1>
+    <p class="lead">Choisis ton cas, entre deux nombres, le résultat s'affiche tout de suite.</p>
+
+    <section class="tool" aria-label="Calculateur">
+      <div class="tabs" role="tablist" id="tabs"></div>
+      <p class="aide" id="aide"></p>
+      <div class="fields" id="fields"></div>
+      <div class="result" id="result" aria-live="polite"></div>
+    </section>
+
+    <section class="explain">
+      <h2>Comment utiliser cet onglet ?</h2>
+
+      <div data-mode="de">
+        <p>Cet onglet sert à trouver <strong>la part d'un nombre</strong>. Tu écris le pourcentage dans la première case, le nombre dans la deuxième, et tu lis la phrase comme ça : « 10 % <em>de</em> 58 ».</p>
+        <h3>Le calcul</h3>
+        <p>On multiplie le nombre par le pourcentage, puis on divise par 100 :<br><code>nombre × pourcentage ÷ 100</code></p>
+        <h3>Exemple</h3>
+        <p>10 % de 58 :<br><span class="calc">58 × 10 ÷ 100 = <strong>5,8</strong></span></p>
+        <p>C'est aussi ce qu'on utilise pour une remise :<br><span class="calc">30 % de 80 € = 24 €</span></p>
+      </div>
+
+      <div data-mode="quel" hidden>
+        <p>Cet onglet répond à la question : <strong>« ce nombre représente quel pourcentage de ma valeur de base ? »</strong></p>
+        <p>La <strong>valeur de base</strong> est le total, le « 100 % » : par exemple 60. Le <strong>nombre</strong> est la part que tu veux comparer à ce total : par exemple 15. Tu écris 15 dans la première case et 60 dans la deuxième.</p>
+        <h3>Le calcul</h3>
+        <p>On divise le nombre par la valeur de base, puis on multiplie par 100 :<br><code>nombre ÷ valeur de base × 100</code></p>
+        <h3>Exemple</h3>
+        <p>Avec 15 et une base de 60 :<br><span class="calc">15 ÷ 60 × 100 = <strong>25 %</strong></span></p>
+        <p>Donc 15 représente 25 % de 60, soit un quart. Autre cas concret : 15 bonnes réponses sur 60 questions, c'est 25 % de réussite.</p>
+        <p>Retiens que la valeur de base est toujours celle qui vient <em>après</em> le « de ».</p>
+      </div>
+
+      <div data-mode="mod" hidden>
+        <p>Cet onglet <strong>ajoute ou retire un pourcentage</strong> à un nombre de départ, par exemple pour un prix après une hausse ou une remise.</p>
+        <h3>Le calcul</h3>
+        <p>Pour augmenter de 20 %, on multiplie par 1,20. Pour réduire de 20 %, on multiplie par 0,80.</p>
+        <h3>Exemple</h3>
+        <p>120 augmenté de 20 % :<br><span class="calc">120 × 1,20 = <strong>144</strong></span></p>
+        <p>120 réduit de 20 % :<br><span class="calc">120 × 0,80 = <strong>96</strong></span></p>
+      </div>
+
+      <div data-mode="var" hidden>
+        <p>Cet onglet mesure <strong>de combien de pourcents une valeur a changé</strong> entre un point de départ et un point d'arrivée.</p>
+        <h3>Le calcul</h3>
+        <p><code>(arrivée − départ) ÷ départ × 100</code>. Un résultat positif est une hausse, un résultat négatif une baisse.</p>
+        <h3>Exemple</h3>
+        <p>De 80 à 100 :<br><span class="calc">(100 − 80) ÷ 80 × 100 = <strong>+25 %</strong></span></p>
+        <p>Attention, redescendre de 100 à 80 correspond à <strong>−20 %</strong>, pas à −25 %, car le point de départ n'est plus le même.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX – Tes données restent dans ton navigateur.<nav class="legal-links" aria-label="Informations légales"><a href="../legal/mentions-legales.html">Mentions légales</a> · <a href="../legal/confidentialite.html">Confidentialité</a> · <a href="../legal/contact.html">Contact</a> · <a href="#" data-cookie-settings>Cookies</a></nav></footer>
+</div>
+
+<script>
+const num = s => parseFloat(String(s).replace(",", "."));
+const fmt = n => new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 4 }).format(n);
+
+// Chaque mode : champs + fonction de calcul. "avant" = mot affiché avant le champ.
+const MODES = [
+  { id:"de", nom:"X % de Y",
+    aide:"Écris le pourcentage, puis le nombre : « 10 % de 58 » donne la part de 58 qui correspond à 10 %.",
+    champs:[{id:"x",label:"Pourcentage (%)",v:10},
+            {id:"y",label:"Nombre",avant:"de",v:58}],
+    calc:({x,y}) => ({ big:fmt(x*y/100), txt:`${fmt(x)} % de ${fmt(y)} = ${fmt(x*y/100)}` }) },
+
+  { id:"quel", nom:"Quel pourcentage ?",
+    aide:"Écris le nombre que tu compares, puis la valeur de base : « 15 représente quel % de 60 ? » donne 25 %.",
+    champs:[{id:"x",label:"Le nombre",v:15},
+            {id:"y",label:"La valeur de base (le total)",avant:"représente quel % de",v:60}],
+    calc:({x,y}) => y===0 ? null : ({ big:fmt(x/y*100)+" %", txt:`${fmt(x)} représente ${fmt(x/y*100)} % de ${fmt(y)}` }) },
+
+  { id:"mod", nom:"Augmenter / réduire",
+    aide:"Choisis si tu ajoutes ou retires un pourcentage à ton nombre de départ.",
+    champs:[{id:"y",label:"Nombre de départ",v:120},
+            {id:"s",label:"Action",select:[["+","Augmenter de"],["-","Réduire de"]]},
+            {id:"x",label:"Pourcentage (%)",v:20}],
+    calc:({x,y,s}) => { const r = s==="-" ? y*(1-x/100) : y*(1+x/100);
+      return { big:fmt(r), txt:`${fmt(y)} ${s==="-"?"réduit":"augmenté"} de ${fmt(x)} % = ${fmt(r)}` }; } },
+
+  { id:"var", nom:"Variation",
+    aide:"Indique d'où tu pars et où tu arrives : le résultat dit de combien de % la valeur a monté ou baissé.",
+    champs:[{id:"a",label:"Valeur de départ",v:80},
+            {id:"b",label:"Valeur d'arrivée",v:100}],
+    calc:({a,b}) => { if (a===0) return null; const r=(b-a)/a*100;
+      return { big:(r>0?"+":"")+fmt(r)+" %", txt:`De ${fmt(a)} à ${fmt(b)} : ${r>=0?"hausse":"baisse"} de ${fmt(Math.abs(r))} %` }; } }
+];
+
+const tabs = document.getElementById("tabs");
+const fields = document.getElementById("fields");
+const result = document.getElementById("result");
+const aide = document.getElementById("aide");
+let mode = MODES[0];
+
+function renderTabs(){
+  tabs.innerHTML = MODES.map(m =>
+    `<button type="button" role="tab" data-id="${m.id}" aria-selected="${m===mode}">${m.nom}</button>`).join("");
+  aide.textContent = mode.aide;
+  // N'affiche que l'explication de l'onglet actif
+  document.querySelectorAll("[data-mode]").forEach(d => d.hidden = d.dataset.mode !== mode.id);
+}
+
+function renderFields(){
+  fields.innerHTML = mode.champs.map(c =>
+    (c.avant ? `<span class="sep">${c.avant}</span>` : "") +
+    (c.select
+      ? `<div class="field"><label for="f-${c.id}">${c.label}</label>
+           <select id="f-${c.id}">${c.select.map(o=>`<option value="${o[0]}">${o[1]}</option>`).join("")}</select></div>`
+      : `<div class="field"><label for="f-${c.id}">${c.label}</label>
+           <input id="f-${c.id}" type="text" inputmode="decimal" autocomplete="off" value="${c.v}"></div>`)
+  ).join("");
+  fields.querySelectorAll("input,select").forEach(el => el.addEventListener("input", compute));
+  compute();
+}
+
+function compute(){
+  const vals = {};
+  let ok = true;
+  mode.champs.forEach(c => {
+    const el = document.getElementById("f-"+c.id);
+    if (c.select) vals[c.id] = el.value;
+    else { const n = num(el.value); if (el.value.trim()==="" || isNaN(n)) ok = false; vals[c.id] = n; }
+  });
+  const out = ok ? mode.calc(vals) : null;
+  result.classList.toggle("err", !out);
+  result.innerHTML = out
+    ? `<div class="big">${out.big}</div><div class="txt">${out.txt}</div>`
+    : `<div class="big">${ok ? "Calcul impossible (division par zéro)." : "Entre des nombres valides."}</div>`;
+}
+
+tabs.addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  mode = MODES.find(m => m.id === b.dataset.id);
+  renderTabs(); renderFields();
+});
+
+renderTabs(); renderFields();
+document.getElementById("y").textContent = new Date().getFullYear();
+</script>
+<script src="../assets/consent.js"></script>
+</body>
+</html>

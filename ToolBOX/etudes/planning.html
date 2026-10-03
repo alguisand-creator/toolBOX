@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agenda et planning de révisions – ToolBOX</title>
+<meta name="description" content="Un agenda simple pour organiser tes révisions : clique sur un jour, ajoute tes événements et construis ton planning toi-même. Gratuit, enregistré dans ton navigateur.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/outil.css">
+<style>
+  .wrap{max-width:980px}
+  .cal-head{display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-bottom:1rem;flex-wrap:wrap}
+  .cal-head h2{font:800 1.5rem var(--display);margin:0;text-transform:capitalize;letter-spacing:-.01em}
+  .cal-nav{display:flex;gap:.4rem}
+  .cal-nav .btn{padding:.4rem .8rem}
+  .grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+  .dow{font-size:.8rem;font-weight:600;color:var(--muted);text-align:center;padding:.2rem 0;text-transform:uppercase;letter-spacing:.04em}
+  .day{font:500 .95rem var(--body);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;min-height:5.2rem;padding:.3rem .35rem;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:.2rem;overflow:hidden}
+  .day:hover{border-color:var(--ink)}
+  .day.out{opacity:.45}
+  .day.today .n{background:var(--accent);color:var(--accent-ink);border-radius:99px;padding:0 .45rem;font-weight:700}
+  .day[aria-pressed="true"]{border:2px solid var(--steel);background:var(--surface)}
+  .day .n{align-self:flex-start;font-weight:600;line-height:1.5}
+  .chips{display:flex;flex-direction:column;gap:2px;min-width:0}
+  .chip{font-size:.75rem;line-height:1.3;padding:0 .3rem;border-radius:4px;border-left:3px solid var(--c);background:var(--surface);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .chip.more{border-left-color:transparent;color:var(--muted);background:none}
+  .dots{display:none;gap:3px;flex-wrap:wrap}
+  .dots i{width:7px;height:7px;border-radius:50%;background:var(--c)}
+  @media (max-width:640px){
+    .day{min-height:3.4rem;padding:.25rem}
+    .chips{display:none}.dots{display:flex}
+  }
+
+  .panel{margin-top:1.5rem;padding-top:1.2rem;border-top:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+  @media (max-width:760px){.panel{grid-template-columns:1fr}}
+  .panel h3{font:800 1.15rem var(--display);margin:0 0 .6rem;text-transform:capitalize}
+  .ev{display:flex;align-items:flex-start;gap:.6rem;padding:.55rem .7rem;margin-bottom:.5rem;background:var(--bg);border-radius:10px;border-left:6px solid var(--c)}
+  .ev .t{flex:1;min-width:0}
+  .ev .t b{display:block;overflow-wrap:anywhere}
+  .ev .t span{color:var(--muted);font-size:.9rem}
+  .ev button{font:500 .85rem var(--body);background:none;border:0;border-bottom:1px dashed var(--muted);color:var(--ink);cursor:pointer;padding:0;margin-left:.4rem}
+  .empty{color:var(--muted);margin:0 0 .5rem}
+  .frm{display:grid;gap:.7rem}
+  .frm .two{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
+  .frm .field input,.frm .field select{font-size:1.05rem}
+  .colors{display:flex;gap:.5rem;flex-wrap:wrap}
+  .colors label{cursor:pointer}
+  .colors input{position:absolute;opacity:0;pointer-events:none}
+  .colors span{display:block;width:2rem;height:2rem;border-radius:50%;background:var(--c);border:3px solid transparent;box-shadow:0 0 0 1px var(--line)}
+  .colors input:checked + span{border-color:var(--surface);box-shadow:0 0 0 3px var(--ink)}
+  .colors input:focus-visible + span{outline:3px solid var(--steel);outline-offset:3px}
+  .up{margin-top:1.5rem;padding-top:1.2rem;border-top:1px solid var(--line)}
+  .up h3{font:800 1.15rem var(--display);margin:0 0 .6rem}
+  .up .ev{cursor:pointer}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="../index.html">Tool<span>BOX</span></a>
+  </header>
+
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="../index.html">Accueil</a> › <a href="../index.html#outils">Études</a> › Planning
+  </nav>
+
+  <main>
+    <h1>Agenda de révisions</h1>
+    <p class="lead">Clique sur un jour, ajoute tes événements et construis ton planning comme tu veux.</p>
+
+    <section class="tool" aria-label="Agenda">
+      <div class="cal-head">
+        <h2 id="title" aria-live="polite"></h2>
+        <div class="cal-nav">
+          <button type="button" class="btn ghost" id="prev" aria-label="Mois précédent">‹</button>
+          <button type="button" class="btn ghost" id="today">Aujourd'hui</button>
+          <button type="button" class="btn ghost" id="next" aria-label="Mois suivant">›</button>
+        </div>
+      </div>
+      <div class="grid" id="grid" role="group" aria-label="Jours du mois"></div>
+
+      <div class="panel">
+        <div>
+          <h3 id="dayTitle"></h3>
+          <div id="dayList"></div>
+        </div>
+        <form class="frm" id="form" autocomplete="off">
+          <h3 id="formTitle" style="margin:0">Ajouter un événement</h3>
+          <div class="field"><label for="evTitle">Titre</label>
+            <input id="evTitle" type="text" maxlength="80" placeholder="Ex. Réviser les maths" required></div>
+          <div class="field"><label for="evDate">Date</label>
+            <input id="evDate" type="date" required></div>
+          <div class="two">
+            <div class="field"><label for="evStart">Début</label><input id="evStart" type="time"></div>
+            <div class="field"><label for="evEnd">Fin</label><input id="evEnd" type="time"></div>
+          </div>
+          <div class="field"><span style="font-size:.9rem;color:var(--muted);font-weight:500" id="colLbl">Couleur</span>
+            <div class="colors" id="colors" role="radiogroup" aria-labelledby="colLbl"></div></div>
+          <div class="actions" style="margin-top:.2rem">
+            <button type="submit" class="btn" id="save">Ajouter</button>
+            <button type="button" class="btn ghost" id="cancel" hidden>Annuler</button>
+          </div>
+          <p class="empty" id="err" role="alert" style="color:var(--steel);font-weight:600" hidden></p>
+        </form>
+      </div>
+
+      <div class="up">
+        <h3>À venir</h3>
+        <div id="upcoming"></div>
+      </div>
+    </section>
+
+    <section class="explain">
+      <h2>Comment utiliser l'agenda ?</h2>
+      <p>Clique sur un jour du calendrier pour voir ses événements, puis remplis le formulaire pour en ajouter. Tu peux modifier ou supprimer chaque événement, et lui donner une couleur par matière ou par type de tâche (cours, révision, examen…).</p>
+      <p>Tes événements sont enregistrés dans ce navigateur, sur cet appareil uniquement : ils ne sont envoyés nulle part. Si tu vides les données du navigateur ou que tu changes d'appareil, ils ne te suivront pas.</p>
+    </section>
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX – Tes données restent dans ton navigateur.<nav class="legal-links" aria-label="Informations légales"><a href="../legal/mentions-legales.html">Mentions légales</a> · <a href="../legal/confidentialite.html">Confidentialité</a> · <a href="../legal/contact.html">Contact</a> · <a href="#" data-cookie-settings>Cookies</a></nav></footer>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const KEY = "toolbox-planning-v1";
+const COLORS = [["#ffc21a", "Jaune"], ["#2f8fd8", "Bleu"], ["#2fa36b", "Vert"], ["#e0553f", "Rouge"], ["#8a5cd6", "Violet"]];
+
+// Dates en heure locale (toISOString décalerait d'un jour selon le fuseau)
+const pad = n => String(n).padStart(2, "0");
+const ymd = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const parse = s => { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d); };
+const longDate = s => new Intl.DateTimeFormat("fr-FR", { weekday: "long", day: "numeric", month: "long" }).format(parse(s));
+const hours = e => e.start ? (e.end ? `${e.start} – ${e.end}` : e.start) : "Toute la journée";
+
+let events = [];
+try { events = JSON.parse(localStorage.getItem(KEY)) || []; if (!Array.isArray(events)) events = []; } catch (_) { events = []; }
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(events)); } catch (_) {} };
+const byTime = (a, b) => (a.date + (a.start || "")).localeCompare(b.date + (b.start || ""));
+
+const now = new Date();
+let view = new Date(now.getFullYear(), now.getMonth(), 1);
+let selected = ymd(now);
+let editing = null;
+
+function eventNode(e, withDate){
+  const el = document.createElement("div");
+  el.className = "ev";
+  el.style.setProperty("--c", e.color);
+  const t = document.createElement("div"); t.className = "t";
+  const b = document.createElement("b"); b.textContent = e.title;
+  const s = document.createElement("span"); s.textContent = (withDate ? longDate(e.date) + " · " : "") + hours(e);
+  t.append(b, s); el.append(t);
+  return el;
+}
+
+function renderGrid(){
+  $("title").textContent = new Intl.DateTimeFormat("fr-FR", { month: "long", year: "numeric" }).format(view);
+  const first = new Date(view.getFullYear(), view.getMonth(), 1);
+  const offset = (first.getDay() + 6) % 7; // semaine qui commence le lundi
+  const count = new Date(view.getFullYear(), view.getMonth() + 1, 0).getDate();
+  const cells = Math.ceil((offset + count) / 7) * 7;
+  const todayKey = ymd(new Date());
+  const g = $("grid");
+  g.innerHTML = ["lun", "mar", "mer", "jeu", "ven", "sam", "dim"].map(d => `<div class="dow">${d}</div>`).join("");
+  for (let i = 0; i < cells; i++) {
+    const d = new Date(view.getFullYear(), view.getMonth(), 1 - offset + i);
+    const key = ymd(d);
+    const evs = events.filter(e => e.date === key).sort(byTime);
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "day" + (d.getMonth() !== view.getMonth() ? " out" : "") + (key === todayKey ? " today" : "");
+    b.dataset.date = key;
+    b.setAttribute("aria-pressed", key === selected);
+    b.setAttribute("aria-label", longDate(key) + (evs.length ? `, ${evs.length} événement${evs.length > 1 ? "s" : ""}` : ""));
+    const n = document.createElement("span"); n.className = "n"; n.textContent = d.getDate();
+    const chips = document.createElement("div"); chips.className = "chips";
+    evs.slice(0, 2).forEach(e => {
+      const c = document.createElement("div"); c.className = "chip"; c.style.setProperty("--c", e.color);
+      c.textContent = (e.start ? e.start + " " : "") + e.title; chips.append(c);
+    });
+    if (evs.length > 2) { const m = document.createElement("div"); m.className = "chip more"; m.textContent = `+${evs.length - 2} autre${evs.length - 2 > 1 ? "s" : ""}`; chips.append(m); }
+    const dots = document.createElement("div"); dots.className = "dots";
+    evs.slice(0, 4).forEach(e => { const i2 = document.createElement("i"); i2.style.setProperty("--c", e.color); dots.append(i2); });
+    b.append(n, chips, dots);
+    g.append(b);
+  }
+}
+
+function renderDay(){
+  $("dayTitle").textContent = longDate(selected);
+  const list = $("dayList");
+  list.innerHTML = "";
+  const evs = events.filter(e => e.date === selected).sort(byTime);
+  if (!evs.length) { list.innerHTML = `<p class="empty">Rien de prévu ce jour-là.</p>`; return; }
+  evs.forEach(e => {
+    const el = eventNode(e, false);
+    const mod = document.createElement("button"); mod.type = "button"; mod.textContent = "Modifier";
+    mod.addEventListener("click", () => startEdit(e.id));
+    const del = document.createElement("button"); del.type = "button"; del.textContent = "Supprimer";
+    del.addEventListener("click", () => remove(e.id));
+    const box = document.createElement("div"); box.append(mod, del);
+    el.append(box); list.append(el);
+  });
+}
+
+function renderUpcoming(){
+  const box = $("upcoming");
+  box.innerHTML = "";
+  const today = ymd(new Date());
+  const next = events.filter(e => e.date >= today).sort(byTime).slice(0, 5);
+  if (!next.length) { box.innerHTML = `<p class="empty">Aucun événement à venir.</p>`; return; }
+  next.forEach(e => {
+    const el = eventNode(e, true);
+    el.addEventListener("click", () => goTo(e.date));
+    box.append(el);
+  });
+}
+
+function renderAll(){ renderGrid(); renderDay(); renderUpcoming(); }
+
+function goTo(key){
+  selected = key;
+  const d = parse(key);
+  view = new Date(d.getFullYear(), d.getMonth(), 1);
+  if (!editing) $("evDate").value = key;
+  renderAll();
+}
+
+function resetForm(){
+  editing = null;
+  $("form").reset();
+  $("evDate").value = selected;
+  setColor(COLORS[0][0]);
+  $("formTitle").textContent = "Ajouter un événement";
+  $("save").textContent = "Ajouter";
+  $("cancel").hidden = true;
+  $("err").hidden = true;
+}
+
+function setColor(c){
+  const r = document.querySelector(`#colors input[value="${c}"]`);
+  if (r) r.checked = true;
+}
+
+function startEdit(id){
+  const e = events.find(x => x.id === id); if (!e) return;
+  editing = id;
+  $("evTitle").value = e.title; $("evDate").value = e.date;
+  $("evStart").value = e.start || ""; $("evEnd").value = e.end || "";
+  setColor(e.color);
+  $("formTitle").textContent = "Modifier l'événement";
+  $("save").textContent = "Enregistrer";
+  $("cancel").hidden = false;
+  $("err").hidden = true;
+  $("evTitle").focus();
+}
+
+function remove(id){
+  const e = events.find(x => x.id === id); if (!e) return;
+  if (!confirm(`Supprimer « ${e.title} » ?`)) return;
+  events = events.filter(x => x.id !== id);
+  save();
+  if (editing === id) resetForm();
+  renderAll();
+}
+
+$("form").addEventListener("submit", ev => {
+  ev.preventDefault();
+  const title = $("evTitle").value.trim();
+  const date = $("evDate").value, start = $("evStart").value, end = $("evEnd").value;
+  const color = (document.querySelector("#colors input:checked") || {}).value || COLORS[0][0];
+  const fail = m => { $("err").textContent = m; $("err").hidden = false; };
+  if (!title) return fail("Donne un titre à l'événement.");
+  if (!date) return fail("Choisis une date.");
+  if (end && !start) return fail("Indique une heure de début avant l'heure de fin.");
+  if (start && end && end <= start) return fail("L'heure de fin doit être après l'heure de début.");
+  if (editing) {
+    Object.assign(events.find(x => x.id === editing), { title, date, start, end, color });
+  } else {
+    events.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), title, date, start, end, color });
+  }
+  save();
+  const target = date;
+  resetForm();
+  goTo(target);
+});
+
+$("cancel").addEventListener("click", () => { resetForm(); });
+$("grid").addEventListener("click", e => {
+  const b = e.target.closest(".day"); if (!b) return;
+  selected = b.dataset.date;
+  const d = parse(selected);
+  if (d.getMonth() !== view.getMonth()) view = new Date(d.getFullYear(), d.getMonth(), 1);
+  if (!editing) $("evDate").value = selected;
+  renderAll();
+});
+$("prev").addEventListener("click", () => { view = new Date(view.getFullYear(), view.getMonth() - 1, 1); renderGrid(); });
+$("next").addEventListener("click", () => { view = new Date(view.getFullYear(), view.getMonth() + 1, 1); renderGrid(); });
+$("today").addEventListener("click", () => { selected = ymd(new Date()); goTo(selected); });
+
+$("colors").innerHTML = COLORS.map(([c, n], i) =>
+  `<label title="${n}"><input type="radio" name="color" value="${c}" aria-label="${n}"${i === 0 ? " checked" : ""}><span style="--c:${c}"></span></label>`).join("");
+
+resetForm();
+renderAll();
+$("y").textContent = new Date().getFullYear();
+</script>
+<script src="../assets/consent.js"></script>
+</body>
+</html>

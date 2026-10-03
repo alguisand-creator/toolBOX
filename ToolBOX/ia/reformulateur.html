@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reformulateur de texte : pro, simple, naturel, académique – ToolBOX</title>
+<meta name="description" content="Change le ton d'un texte français : plus professionnel, plus simple, plus naturel ou plus académique. Gratuit, fait dans ton navigateur.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/outil.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="../index.html">Tool<span>BOX</span></a>
+  </header>
+
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="../index.html">Accueil</a> › <a href="../index.html#outils">IA &amp; Texte</a> › Reformulateur
+  </nav>
+
+  <main>
+    <h1>Reformulateur</h1>
+    <p class="lead">Choisis un ton et remplace les tournures de ton texte par des équivalents plus adaptés.</p>
+
+    <section class="tool" aria-label="Reformulateur de texte">
+      <form class="ia-form" id="form"></form>
+      <div class="outs" id="out" aria-live="polite"></div>
+    </section>
+
+    <section class="explain">
+      <h2>Ce que fait (et ne fait pas) cet outil</h2>
+      <p>Le reformulateur applique des règles de remplacement : par exemple « afin de » devient « pour » en ton simple, « ça » devient « cela » en ton professionnel, « mais » devient « cependant » en ton académique. Les mots changés sont ceux que l'outil connaît.</p>
+      <p>Il ne réécrit pas tes phrases en entier et ne comprend pas le sens du texte : ce n'est pas un modèle d'IA. Relis toujours le résultat, surtout pour les accords et la ponctuation, et ajuste à la main si besoin.</p>
+    </section>
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX – Tes textes restent dans ton navigateur.<nav class="legal-links" aria-label="Informations légales"><a href="../legal/mentions-legales.html">Mentions légales</a> · <a href="../legal/confidentialite.html">Confidentialité</a> · <a href="../legal/contact.html">Contact</a> · <a href="#" data-cookie-settings>Cookies</a></nav></footer>
+</div>
+
+<script src="../assets/ia.js"></script>
+<script>
+// [motif, remplacement] : les motifs les plus longs d'abord. Un motif finissant par ] (apostrophe) n'exige pas de fin de mot.
+const RULES = {
+  "Simple": [
+    ["afin d['’]", "pour "], ["afin que", "pour que"], ["afin de", "pour"], ["dans le but de", "pour"],
+    ["néanmoins", "pourtant"], ["toutefois", "mais"], ["cependant", "mais"], ["en outre", "aussi"], ["de surcroît", "en plus"],
+    ["par conséquent", "donc"], ["en raison de", "à cause de"], ["au sein de", "dans"], ["à l['’]instar de", "comme "],
+    ["il est nécessaire de", "il faut"], ["il est important de", "il faut"], ["il convient de", "il faut"], ["il est possible de", "on peut"],
+    ["procéder à", "faire"], ["effectuer", "faire"], ["lorsque", "quand"], ["puisque", "comme"], ["notamment", "par exemple"],
+    ["approximativement", "environ"], ["actuellement", "maintenant"], ["un grand nombre de", "beaucoup de"], ["une multitude de", "beaucoup de"], ["de nombreux", "beaucoup de"]
+  ],
+  "Naturel": [
+    ["afin d['’]", "pour "], ["afin que", "pour que"], ["afin de", "pour"], ["néanmoins", "pourtant"], ["toutefois", "mais"], ["cependant", "mais"],
+    ["il est nécessaire de", "il faut"], ["il convient de", "il faut"], ["il est possible de", "on peut"], ["en outre", "en plus"], ["de surcroît", "en plus"],
+    ["par conséquent", "du coup"], ["en raison de", "à cause de"], ["nous allons", "on va"], ["nous avons", "on a"], ["nous sommes", "on est"],
+    ["nous pouvons", "on peut"], ["nous devons", "on doit"], ["cela", "ça"], ["également", "aussi"], ["lorsque", "quand"], ["puisque", "comme"],
+    ["approximativement", "à peu près"], ["un grand nombre de", "plein de"], ["de nombreux", "plein de"], ["extrêmement", "super"]
+  ],
+  "Professionnel": [
+    ["il faut que", "il convient que"], ["il faut", "il convient de"], ["on peut", "il est possible de"], ["on va", "nous allons"], ["on a", "nous avons"],
+    ["on est", "nous sommes"], ["on doit", "nous devons"], ["du coup", "par conséquent"], ["en gros", "globalement"], ["bref", "en résumé"],
+    ["ça", "cela"], ["ok", "d'accord"], ["super", "excellent"], ["génial", "remarquable"], ["trucs", "éléments"], ["truc", "élément"],
+    ["plein de", "une grande quantité de"], ["beaucoup de", "une grande quantité de"], ["pas mal de", "une grande quantité de"], ["salut", "bonjour"], ["merci beaucoup", "je vous remercie"],
+    ["tout de suite", "immédiatement"], ["asap", "dans les meilleurs délais"], ["boulot", "travail"], ["bosser", "travailler"]
+  ],
+  "Académique": [
+    ["il faut que", "il est nécessaire que"], ["il faut", "il est nécessaire de"], ["on peut", "il est possible de"], ["on voit que", "on constate que"],
+    ["parce que", "dans la mesure où"], ["pour finir", "enfin"], ["en fait", "en réalité"], ["du coup", "par conséquent"], ["bref", "en somme"],
+    ["un peu", "quelque peu"], ["beaucoup de", "une grande quantité de"], ["plein de", "une grande quantité de"], ["montrer", "démontrer"], ["montre", "démontre"],
+    ["mais", "cependant"], ["donc", "par conséquent"], ["aussi", "également"], ["ça", "cela"], ["énormément", "considérablement"], ["vraiment", "véritablement"]
+  ]
+};
+const compile = rules => rules.map(([a, b]) => [new RegExp(`(?<![\\p{L}])(?:${a})${/\]$/.test(a) ? "" : "(?![\\p{L}])"}`, "giu"), b]);
+const COMPILED = Object.fromEntries(Object.entries(RULES).map(([k, r]) => [k, compile(r)]));
+
+ToolIA.init({
+  button: "Reformuler",
+  fields: [
+    { id:"text", label:"Texte original", type:"textarea", rows:8, required:true, placeholder:"Colle ici ton texte…" },
+    { id:"tone", label:"Ton souhaité", type:"select", options:Object.keys(RULES) }
+  ],
+  example: {
+    text: "Salut, on a pas mal de trucs à voir ensemble. Il faut que ça soit prêt demain, donc on va bosser tout de suite. C'est super mais il y a plein de choses à vérifier.",
+    tone: "Professionnel"
+  },
+  generate(v) {
+    let count = 0;
+    let text = v.text;
+    COMPILED[v.tone].forEach(([re, rep]) => {
+      text = text.replace(re, m => { count++; return /^\p{Lu}/u.test(m) ? ToolIA.cap(rep) : rep; });
+    });
+    // Élision après un remplacement qui finit par « de » (ex. « de éléments » → « d'éléments »)
+    text = text.replace(/(^|[^\p{L}])([Dd])e (?=[aeiouyàâéèêëîïôûœ])/gu, "$1$2'");
+    return {
+      items: [text],
+      note: count
+        ? `${count} remplacement${count > 1 ? "s" : ""} appliqué${count > 1 ? "s" : ""}. Relis le résultat : l'outil ne vérifie ni les accords ni le sens.`
+        : "Aucune expression connue à remplacer pour ce ton : le texte est inchangé."
+    };
+  }
+});
+</script>
+<script src="../assets/consent.js"></script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Convertisseur Go, To, Mo, Ko (stockage) – ToolBOX</title>
+<meta name="description" content="Convertis octets, Ko, Mo, Go, To et Po. Choisis entre 1000 (décimal) et 1024 (binaire) pour comprendre pourquoi ton disque affiche moins que prévu.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/outil.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="../index.html">Tool<span>BOX</span></a>
+  </header>
+
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="../index.html">Accueil</a> › <a href="../index.html#outils">Informatique</a> › Stockage
+  </nav>
+
+  <main>
+    <h1>Convertisseur de stockage</h1>
+    <p class="lead">Passe d'une unité à l'autre : octets, Ko, Mo, Go, To et Po.</p>
+
+    <section class="tool" aria-label="Convertisseur de stockage">
+      <div class="tabs" role="tablist" id="tabs"></div>
+      <div class="fields">
+        <div class="field"><label for="v">Valeur</label>
+          <input id="v" type="text" inputmode="decimal" autocomplete="off" value="1"></div>
+        <div class="field"><label for="u">Unité</label>
+          <select id="u"></select></div>
+      </div>
+      <div class="result" id="result" aria-live="polite"></div>
+    </section>
+
+    <section class="explain">
+      <h2>Pourquoi mon disque de 1 To affiche 931 Go ?</h2>
+      <p>Les fabricants comptent en base 10 : <code>1 To = 1 000 Go</code>. Windows compte en base 2 : <code>1 Tio = 1 024 Gio</code>, mais affiche « Go ». Un disque de 1 To fait donc environ 931 Gio, ce qui n'est pas une perte d'espace, seulement deux façons de compter.</p>
+      <p>Utilise l'onglet « Décimal » pour les valeurs commerciales (disques, clés USB, forfaits) et « Binaire » pour ce qu'affiche ton système.</p>
+    </section>
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX – Tes données restent dans ton navigateur.<nav class="legal-links" aria-label="Informations légales"><a href="../legal/mentions-legales.html">Mentions légales</a> · <a href="../legal/confidentialite.html">Confidentialité</a> · <a href="../legal/contact.html">Contact</a> · <a href="#" data-cookie-settings>Cookies</a></nav></footer>
+</div>
+
+<script>
+const num = s => parseFloat(String(s).replace(",", "."));
+const fmt = n => new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 6 }).format(n);
+
+const MODES = [
+  { id:"dec", nom:"Décimal (1000)", base:1000, units:["o", "Ko", "Mo", "Go", "To", "Po"] },
+  { id:"bin", nom:"Binaire (1024)", base:1024, units:["o", "Kio", "Mio", "Gio", "Tio", "Pio"] }
+];
+let mode = MODES[0];
+let unit = 3;
+
+const $ = id => document.getElementById(id);
+
+function renderTabs(){
+  $("tabs").innerHTML = MODES.map(m =>
+    `<button type="button" role="tab" data-id="${m.id}" aria-selected="${m === mode}">${m.nom}</button>`).join("");
+  $("u").innerHTML = mode.units.map((n, i) => `<option value="${i}">${n}</option>`).join("");
+  $("u").value = unit;
+}
+
+function compute(){
+  const v = num($("v").value);
+  const r = $("result");
+  const bad = isNaN(v) || v < 0;
+  r.classList.toggle("err", bad);
+  if (bad) { r.innerHTML = `<div class="big">Entre une valeur positive.</div>`; return; }
+  const bytes = v * Math.pow(mode.base, unit);
+  r.innerHTML = `<div class="big">${fmt(v)} ${mode.units[unit]}</div>
+    <table class="tbl"><tbody>${mode.units.map((n, i) =>
+      `<tr><td>${n}</td><td>${fmt(bytes / Math.pow(mode.base, i))}</td></tr>`).join("")}</tbody></table>`;
+}
+
+$("tabs").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  mode = MODES.find(m => m.id === b.dataset.id);
+  renderTabs(); compute();
+});
+$("u").addEventListener("change", () => { unit = +$("u").value; compute(); });
+$("v").addEventListener("input", compute);
+
+renderTabs(); compute();
+$("y").textContent = new Date().getFullYear();
+</script>
+<script src="../assets/consent.js"></script>
+</body>
+</html>
