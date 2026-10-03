@@ -2,7 +2,12 @@
 // Sert le site (fichiers statiques) et répond à POST /api/ai.
 // Les prompts sont définis ici, côté serveur : l'endpoint ne peut servir qu'aux outils listés dans TOOLS.
 
-const MODEL = "@cf/meta/llama-3.1-8b-instruct"; // à changer si Cloudflare retire ce modèle
+// Modèles essayés dans l'ordre : si l'un est retiré ou indisponible, on passe au suivant.
+const MODELS = [
+  "@cf/meta/llama-3.1-8b-instruct",
+  "@cf/meta/llama-3.2-3b-instruct",
+  "@cf/google/gemma-3-12b-it"
+];
 const MAX_CHARS = 8000;      // taille maximale du texte envoyé à l'IA
 const MAX_BODY = 20000;      // taille maximale de la requête
 const LIMIT = 8;             // demandes par minute et par visiteur (au mieux, par instance)
@@ -61,13 +66,22 @@ export default {
     const job = build ? build(body) : null;
     if (!job) return json({ error: "Requête invalide" }, 400);
 
-    try {
-      const out = await env.AI.run(MODEL, { messages: job.messages, max_tokens: job.max_tokens, temperature: 0.3 });
-      const text = (out && out.response || "").trim();
-      if (!text) return json({ error: "Réponse vide" }, 502);
-      return json({ text });
-    } catch (e) {
+    if (!env.AI) {
+      console.error("Binding AI absent : vérifie wrangler.jsonc et Settings > Bindings");
       return json({ error: "IA indisponible" }, 502);
     }
+    for (const model of MODELS) {
+      try {
+        const out = await env.AI.run(model, { messages: job.messages, max_tokens: job.max_tokens, temperature: 0.3 });
+        // Selon le modèle, la réponse est dans `response` ou au format OpenAI (`choices`)
+        const raw = (out && (out.response || (out.choices && out.choices[0] && out.choices[0].message && out.choices[0].message.content))) || "";
+        const text = String(raw).trim();
+        if (text) return json({ text });
+        console.error("Réponse vide", model);
+      } catch (e) {
+        console.error("Échec du modèle", model, e && e.message);
+      }
+    }
+    return json({ error: "IA indisponible" }, 502);
   }
 };
