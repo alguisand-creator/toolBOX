@@ -50,6 +50,11 @@ nav.top a:hover{color:var(--ink)}
 .hint button{font:inherit;background:none;border:0;border-bottom:1px dashed var(--muted);color:var(--ink);cursor:pointer;padding:0;margin-right:.9rem}
 .hint button:hover{border-bottom-color:var(--ink)}
 #msg{min-height:1.5rem;margin:.9rem 0 0;font-weight:600}
+.popular{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;margin:1.1rem 0 0}
+.popular-label{color:var(--muted);font-size:.9rem;margin-right:.3rem}
+.popular button{font:500 .95rem var(--body);color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:.4rem .9rem;cursor:pointer}
+.popular button:hover{border-color:var(--ink)}
+.popular button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 
 .drawers{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;padding:1rem 0 3rem}
 .drawer{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:6px 6px 14px 14px;padding:2.1rem 1.4rem 1.3rem}
@@ -133,6 +138,20 @@ footer{padding:2rem 0 3rem;color:var(--muted);font-size:.9rem}
         <button type="button" data-ex="80 - 15%">80 - 15%</button>
         <button type="button" data-ex="TVA">chercher « TVA »</button>
       </p>
+      <div class="popular" id="popular" role="group" aria-label="Recherches populaires">
+        <span class="popular-label">Recherches populaires</span>
+        <button type="button" data-q="" aria-pressed="true">Tout</button>
+        <button type="button" data-q="imc" aria-pressed="false">IMC</button>
+        <button type="button" data-q="salaire" aria-pressed="false">Salaire</button>
+        <button type="button" data-q="tva" aria-pressed="false">TVA</button>
+        <button type="button" data-q="calories" aria-pressed="false">Calories</button>
+        <button type="button" data-q="eau" aria-pressed="false">Eau</button>
+        <button type="button" data-q="pourcentage" aria-pressed="false">Pourcentage</button>
+        <button type="button" data-q="devises" aria-pressed="false">Devises</button>
+        <button type="button" data-q="mot de passe" aria-pressed="false">Mot de passe</button>
+        <button type="button" data-q="notaire" aria-pressed="false">Frais de notaire</button>
+        <button type="button" data-q="naissance" aria-pressed="false">Âge</button>
+      </div>
     </section>
 
     <section id="outils" aria-label="Catégories d'outils">
@@ -272,9 +291,20 @@ function update(){
   empty.hidden = total > 0;
 }
 
+// Onglets « recherches populaires » : un clic remplit la recherche, l'onglet actif suit ce qui est tapé
+const tabs = [...document.querySelectorAll("#popular button")];
+function syncTabs(){
+  const v = norm(q.value.trim());
+  tabs.forEach(t => t.setAttribute("aria-pressed", String(norm(t.dataset.q) === v)));
+}
+document.getElementById("popular").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  q.value = b.dataset.q; update(); syncTabs();
+});
+q.addEventListener("input", syncTabs);
 q.addEventListener("input", update);
 document.querySelectorAll("[data-ex]").forEach(b => b.addEventListener("click", () => {
-  q.value = b.dataset.ex; update(); q.focus();
+  q.value = b.dataset.ex; update(); syncTabs(); q.focus();
 }));
 document.getElementById("y").textContent = new Date().getFullYear();
 </script>
