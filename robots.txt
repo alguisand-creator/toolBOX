@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+
+Sitemap: https://toolbox.alguisand.workers.dev/sitemap.xml

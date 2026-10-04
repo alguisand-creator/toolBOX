@@ -1,0 +1,59 @@
+{
+  "_aide": "Chaque règle : motif de nom de fichier (jokers * et ?) -> dossier de destination relatif à la racine du site. La première règle qui correspond gagne.",
+  "rules": [
+    { "match": "index.html",               "dest": "." },
+    { "match": "manifest.json",            "dest": "." },
+    { "match": "robots.txt",               "dest": "." },
+    { "match": "sitemap.xml",              "dest": "." },
+    { "match": "sw.js",                    "dest": "." },
+    { "match": "worker.js",                "dest": "." },
+    { "match": "wrangler.jsonc",           "dest": "." },
+    { "match": ".assetsignore",            "dest": "." },
+
+    { "match": "consent.js",               "dest": "assets" },
+    { "match": "ia.js",                    "dest": "assets" },
+    { "match": "pwa.js",                   "dest": "assets" },
+    { "match": "outil.css",                "dest": "assets" },
+
+    { "match": "icon-*.png",               "dest": "icons" },
+    { "match": "apple-touch-icon.png",     "dest": "icons" },
+    { "match": "og-image.png",             "dest": "icons" },
+
+    { "match": "budget.html",              "dest": "argent" },
+    { "match": "devises.html",             "dest": "argent" },
+    { "match": "frais-de-notaire.html",    "dest": "argent" },
+    { "match": "salaire*.html",            "dest": "argent" },
+
+    { "match": "age.html",                 "dest": "calcul" },
+    { "match": "imc.html",                 "dest": "calcul" },
+    { "match": "jours-entre-dates.html",   "dest": "calcul" },
+    { "match": "moyenne.html",             "dest": "calcul" },
+    { "match": "pourcentage.html",         "dest": "calcul" },
+    { "match": "regle-de-trois.html",      "dest": "calcul" },
+    { "match": "tva.html",                 "dest": "calcul" },
+
+    { "match": "moyenne-scolaire.html",    "dest": "etudes" },
+    { "match": "note-necessaire.html",     "dest": "etudes" },
+    { "match": "planning.html",            "dest": "etudes" },
+
+    { "match": "generateur-*.html",        "dest": "ia" },
+    { "match": "description-vinted.html",  "dest": "ia" },
+    { "match": "reformulateur.html",       "dest": "ia" },
+    { "match": "resumer-texte.html",       "dest": "ia" },
+
+    { "match": "compression.html",         "dest": "images" },
+    { "match": "jpg-vers-png.html",        "dest": "images" },
+    { "match": "redimensionnement.html",   "dest": "images" },
+
+    { "match": "alimentation-pc.html",     "dest": "informatique" },
+    { "match": "comparaison-gpu.html",     "dest": "informatique" },
+    { "match": "mot-de-passe.html",        "dest": "informatique" },
+    { "match": "stockage.html",            "dest": "informatique" },
+
+    { "match": "confidentialite.html",     "dest": "legal" },
+    { "match": "contact.html",             "dest": "legal" },
+    { "match": "mentions-legales.html",    "dest": "legal" },
+
+    { "match": "compteur-de-mots.html",    "dest": "texte" }
+  ]
+}

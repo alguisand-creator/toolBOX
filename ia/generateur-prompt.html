@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Générateur de prompts pour ChatGPT et autres IA – ToolBOX</title>
+<meta name="description" content="Construis un prompt clair et structuré (rôle, contexte, tâche, format) pour ChatGPT, Claude ou une autre IA. Gratuit, fait dans ton navigateur.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/outil.css">
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#eceff2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121a21" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" href="../icons/icon-192.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<!-- seo -->
+<link rel="canonical" href="https://toolbox.alguisand.workers.dev/ia/generateur-prompt">
+<meta property="og:site_name" content="ToolBOX">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="Générateur de prompts pour ChatGPT et autres IA – ToolBOX">
+<meta property="og:description" content="Construis un prompt clair et structuré (rôle, contexte, tâche, format) pour ChatGPT, Claude ou une autre IA. Gratuit, fait dans ton navigateur.">
+<meta property="og:url" content="https://toolbox.alguisand.workers.dev/ia/generateur-prompt">
+<meta property="og:image" content="https://toolbox.alguisand.workers.dev/icons/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ToolBOX : les petits outils du quotidien">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Générateur de prompt","url":"https://toolbox.alguisand.workers.dev/ia/generateur-prompt","description":"Construis un prompt clair et structuré (rôle, contexte, tâche, format) pour ChatGPT, Claude ou une autre IA. Gratuit, fait dans ton navigateur.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","inLanguage":"fr-FR","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://toolbox.alguisand.workers.dev/"},{"@type":"ListItem","position":2,"name":"Générateur de prompt","item":"https://toolbox.alguisand.workers.dev/ia/generateur-prompt"}]}]</script>
+<!-- /seo -->
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="../index.html">Tool<span>BOX</span></a>
+  </header>
+
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="../index.html">Accueil</a> › <a href="../index.html#outils">IA &amp; Texte</a> › Générateur de prompt
+  </nav>
+
+  <main>
+    <h1>Générateur de prompt</h1>
+    <p class="lead">Décris ce que tu veux : tu obtiens un prompt structuré à coller dans l'IA de ton choix.</p>
+
+    <section class="tool" aria-label="Générateur de prompts">
+      <form class="ia-form" id="form"></form>
+      <div class="outs" id="out" aria-live="polite"></div>
+    </section>
+
+    <section class="explain">
+      <h2>Pourquoi structurer un prompt ?</h2>
+      <p>Une IA répond mieux quand on lui dit qui elle doit être (le rôle), dans quelle situation (le contexte), ce qu'elle doit faire (la tâche) et sous quelle forme répondre (le format). Ce sont les blocs que l'outil assemble pour toi.</p>
+      <p>Ce générateur n'envoie rien à une IA : il te prépare le texte, que tu copies ensuite dans ChatGPT, Claude, Gemini ou un autre assistant. Plus ta tâche est précise, meilleur sera le résultat.</p>
+    </section>
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX – Tes textes restent dans ton navigateur.<nav class="legal-links" aria-label="Informations légales"><a href="../legal/mentions-legales.html">Mentions légales</a> · <a href="../legal/confidentialite.html">Confidentialité</a> · <a href="../legal/contact.html">Contact</a> · <a href="#" data-cookie-settings>Cookies</a></nav></footer>
+</div>
+
+<script src="../assets/ia.js"></script>
+<script>
+const ROLES = {
+  "Rédiger un texte": "un rédacteur professionnel expérimenté",
+  "Résumer ou synthétiser": "un expert en synthèse de documents",
+  "Expliquer un sujet": "un professeur pédagogue",
+  "Coder": "un développeur senior",
+  "Analyser": "un analyste rigoureux",
+  "Trouver des idées": "un directeur créatif",
+  "Traduire ou corriger": "un traducteur et correcteur professionnel",
+  "Autre": "un assistant expert du domaine concerné"
+};
+
+ToolIA.init({
+  button: "Générer le prompt",
+  fields: [
+    { id:"goal", label:"Objectif", type:"select", options:Object.keys(ROLES) },
+    { id:"task", label:"Ce que tu veux obtenir", type:"textarea", rows:4, required:true, placeholder:"Ex. Écrire un e-mail pour relancer un client qui n'a pas payé sa facture." },
+    { id:"role", label:"Rôle de l'IA (facultatif)", placeholder:"Laisse vide pour un rôle adapté à l'objectif" },
+    { id:"context", label:"Contexte (facultatif)", type:"textarea", rows:3, placeholder:"Qui es-tu, pour qui, dans quelle situation ?" },
+    { id:"format", label:"Format de la réponse", type:"select", options:["Texte libre", "Liste à puces", "Étapes numérotées", "Tableau", "Plan détaillé", "JSON"], half:true },
+    { id:"tone", label:"Ton", type:"select", options:["Neutre", "Professionnel", "Pédagogique", "Décontracté", "Convaincant"], half:true },
+    { id:"length", label:"Longueur (facultatif)", half:true, placeholder:"environ 200 mots" },
+    { id:"rules", label:"Contraintes (une par ligne, facultatif)", type:"textarea", rows:3, placeholder:"Pas de jargon\nTutoiement\nPas plus de 3 paragraphes" },
+    { id:"ask", label:"Demander des précisions si des infos manquent", type:"checkbox", checked:true }
+  ],
+  example: { goal: "Rédiger un texte", task: "Écrire un e-mail pour relancer poliment un client dont la facture est en retard de 15 jours.", role: "", context: "Je suis graphiste indépendant. Le client est une petite entreprise avec qui je travaille depuis un an.", format: "Texte libre", tone: "Professionnel", length: "environ 120 mots", rules: "Reste courtois\nPropose un nouveau délai de paiement", ask: true },
+  generate(v) {
+    const role = v.role || ROLES[v.goal];
+    const rules = ToolIA.lines(v.rules);
+    const blocks = [
+      `Rôle : Tu es ${role}.`,
+      v.context ? `Contexte : ${v.context}` : "",
+      `Tâche : ${v.task}`,
+      `Format de réponse : ${v.format}.`,
+      `Ton : ${v.tone.toLowerCase()}.`,
+      v.length ? `Longueur : ${v.length}.` : "",
+      rules.length ? `Contraintes :\n${rules.map(r => "- " + r).join("\n")}` : "",
+      v.ask ? "Avant de répondre, pose-moi les questions nécessaires si des informations te manquent." : ""
+    ].filter(Boolean);
+    const full = blocks.join("\n\n");
+
+    const shortParts = [`Agis comme ${role}.`, v.context || "", v.task, `Réponds sous forme de : ${v.format.toLowerCase()}, sur un ton ${v.tone.toLowerCase()}${v.length ? ", " + v.length : ""}.`, rules.length ? "Contraintes : " + rules.join(" ; ") + "." : ""].filter(Boolean);
+    return { items: [full, shortParts.join(" ")], labels: ["Prompt structuré", "Version courte (un seul paragraphe)"] };
+  }
+});
+</script>
+<script src="../assets/consent.js"></script>
+<script src="../assets/pwa.js"></script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calculateur d'âge – ToolBOX</title>
+<meta name="description" content="Calcule ton âge exact en années, mois et jours à partir de ta date de naissance, avec le nombre de jours vécus et la date de ton prochain anniversaire.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/outil.css">
+<style>
+  .field input[type="date"]{color-scheme:light dark}
+  .fields .field{flex:1 1 200px}
+  .today{font:inherit;font-size:.9rem;background:none;border:0;border-bottom:1px dashed var(--muted);color:var(--ink);cursor:pointer;padding:0;margin-top:.9rem}
+  .today:hover{border-bottom-color:var(--ink)}
+  .detail{display:flex;flex-direction:column;gap:.3rem;margin-top:.8rem;color:var(--muted)}
+  .detail b{color:var(--ink);font-weight:600}
+  .explain h3{font:800 .85rem var(--display);color:var(--muted);margin:.9rem 0 .2rem}
+  .explain h3 ~ p{font-size:.9rem}
+  .calc,.explain code{white-space:nowrap}
+</style>
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#eceff2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121a21" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" href="../icons/icon-192.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<!-- seo -->
+<link rel="canonical" href="https://toolbox.alguisand.workers.dev/calcul/age">
+<meta property="og:site_name" content="ToolBOX">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="Calculateur d'âge – ToolBOX">
+<meta property="og:description" content="Calcule ton âge exact en années, mois et jours à partir de ta date de naissance, avec le nombre de jours vécus et la date de ton prochain anniversaire.">
+<meta property="og:url" content="https://toolbox.alguisand.workers.dev/calcul/age">
+<meta property="og:image" content="https://toolbox.alguisand.workers.dev/icons/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ToolBOX : les petits outils du quotidien">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Calculateur d\u0027âge","url":"https://toolbox.alguisand.workers.dev/calcul/age","description":"Calcule ton âge exact en années, mois et jours à partir de ta date de naissance, avec le nombre de jours vécus et la date de ton prochain anniversaire.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","inLanguage":"fr-FR","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://toolbox.alguisand.workers.dev/"},{"@type":"ListItem","position":2,"name":"Calculateur d\u0027âge","item":"https://toolbox.alguisand.workers.dev/calcul/age"}]}]</script>
+<!-- /seo -->
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="../index.html">Tool<span>BOX</span></a>
+  </header>
+
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="../index.html">Accueil</a> › <a href="../index.html#outils">Calcul</a> › Âge
+  </nav>
+
+  <main>
+    <h1>Calculateur d'âge</h1>
+    <p class="lead">Entre ta date de naissance pour connaître ton âge exact, en années, mois et jours.</p>
+
+    <section class="tool" aria-label="Calculateur">
+      <div class="fields">
+        <div class="field">
+          <label for="naissance">Date de naissance</label>
+          <input id="naissance" type="date">
+        </div>
+        <div class="field">
+          <label for="cible">Calculer à la date du</label>
+          <input id="cible" type="date">
+        </div>
+      </div>
+      <button type="button" class="today" id="today">Remettre la date d'aujourd'hui</button>
+      <div class="result" id="result" aria-live="polite"></div>
+    </section>
+
+    <section class="explain">
+      <h2>Comment ça marche ?</h2>
+      <p>Cet outil calcule ton <strong>âge exact</strong> entre ta date de naissance et une autre date. Par défaut, c'est aujourd'hui, mais tu peux choisir n'importe quelle date, passée ou future, pour savoir quel âge tu avais ou auras ce jour-là.</p>
+      <h3>Le calcul</h3>
+      <p>On compare les deux dates année par année, puis mois par mois, puis jour par jour. Si le résultat en jours est négatif, on retire un mois et on ajoute le nombre de jours du mois précédent. Si le résultat en mois est négatif, on retire une année.</p>
+      <h3>Exemple</h3>
+      <p>Né le 15 mars 2000, calculé au 10 juin 2026 :<br><span class="calc">26 ans, 3 mois et −5 jours</span></p>
+      <p>Les jours sont négatifs : on retire un mois et on ajoute les 31 jours de mai.<br><span class="calc">26 ans, 2 mois et <strong>26 jours</strong></span></p>
+      <h3>Né un 29 février ?</h3>
+      <p>Les années qui ne sont pas bissextiles, l'anniversaire est affiché au 1er mars.</p>
+    </section>
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX – Tes données restent dans ton navigateur.<nav class="legal-links" aria-label="Informations légales"><a href="../legal/mentions-legales.html">Mentions légales</a> · <a href="../legal/confidentialite.html">Confidentialité</a> · <a href="../legal/contact.html">Contact</a> · <a href="#" data-cookie-settings>Cookies</a></nav></footer>
+</div>
+
+<script>
+const nf = new Intl.NumberFormat("fr-FR");
+const dateFr = new Intl.DateTimeFormat("fr-FR", { weekday:"long", day:"numeric", month:"long", year:"numeric", timeZone:"UTC" });
+const naissance = document.getElementById("naissance");
+const cible = document.getElementById("cible");
+const result = document.getElementById("result");
+const plural = (n, un, plus) => `${nf.format(n)} ${n > 1 ? plus : un}`;
+
+// "2000-03-15" -> {y, m, d} (sans passer par les fuseaux horaires)
+const parts = s => { const [y, m, d] = s.split("-").map(Number); return { y, m, d }; };
+const utc = o => Date.UTC(o.y, o.m - 1, o.d);
+const DAY = 86400000;
+
+function todayStr(){
+  const t = new Date();
+  return `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, "0")}-${String(t.getDate()).padStart(2, "0")}`;
+}
+
+function compute(){
+  let msg = null;
+  if (!naissance.value) msg = "Choisis ta date de naissance pour voir ton âge.";
+  else if (!cible.value) msg = "Choisis la date à laquelle calculer l'âge.";
+  let b, t;
+  if (!msg){ b = parts(naissance.value); t = parts(cible.value);
+    if (utc(b) > utc(t)) msg = "La date de naissance est après la date de calcul."; }
+
+  result.classList.toggle("err", !!msg);
+  if (msg){ result.innerHTML = `<div class="big">${msg}</div>`; return; }
+
+  // Années, mois, jours
+  // On cherche le plus grand nombre de mois entiers écoulés, puis on compte les jours restants.
+  const anchor = k => Date.UTC(b.y, b.m - 1 + k, b.d);
+  let M = (t.y - b.y) * 12 + (t.m - b.m);
+  while (anchor(M) > utc(t)) M--;
+  const d = Math.round((utc(t) - anchor(M)) / DAY);
+  const y = Math.floor(M / 12), m = M % 12;
+
+  const days = Math.round((utc(t) - utc(b)) / DAY);
+
+  // Prochain anniversaire
+  let next = { y: t.y, m: b.m, d: b.d };
+  if (utc(next) < utc(t)) next.y++;
+  const untilNext = Math.round((utc(next) - utc(t)) / DAY);
+  const nextLine = untilNext === 0
+    ? `<span><b>C'est ton anniversaire ce jour-là !</b></span>`
+    : `<span>Prochain anniversaire : <b>${dateFr.format(utc(next))}</b>, dans ${plural(untilNext, "jour", "jours")}</span>`;
+
+  result.innerHTML =
+    `<div class="big">${plural(y, "an", "ans")}</div>
+     <div class="txt">${plural(y, "an", "ans")}, ${plural(m, "mois", "mois")} et ${plural(d, "jour", "jours")}</div>
+     <div class="detail">
+       <span>Jours depuis la naissance : <b>${nf.format(days)}</b></span>
+       <span>Semaines : <b>${nf.format(Math.floor(days / 7))}</b></span>
+       <span>Mois : <b>${nf.format(y * 12 + m)}</b></span>
+       ${nextLine}
+     </div>`;
+}
+
+naissance.addEventListener("input", compute);
+cible.addEventListener("input", compute);
+document.getElementById("today").addEventListener("click", () => { cible.value = todayStr(); compute(); });
+
+cible.value = todayStr();
+compute();
+document.getElementById("y").textContent = new Date().getFullYear();
+</script>
+<script src="../assets/consent.js"></script>
+<script src="../assets/pwa.js"></script>
+</body>
+</html>

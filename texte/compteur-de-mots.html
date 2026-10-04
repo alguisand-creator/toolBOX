@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compteur de mots et de caractères en ligne – ToolBOX</title>
+<meta name="description" content="Compte les mots, caractères, phrases et paragraphes de ton texte, avec le temps de lecture et les limites des réseaux sociaux et du SEO. Gratuit et instantané.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/outil.css">
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#eceff2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121a21" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" href="../icons/icon-192.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<style>
+  .field textarea{min-height:14rem}
+  .limits{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:.5rem .9rem;margin:.6rem 0 0;padding:0;list-style:none}
+  .limits li{display:flex;justify-content:space-between;gap:.6rem;padding:.4rem .7rem;background:var(--bg);border-radius:8px;font-size:.95rem}
+  .limits li span:last-child{font-weight:600;white-space:nowrap}
+  .limits li.over span:last-child{color:#e0553f}
+  .top-words{margin:.6rem 0 0;color:var(--muted)}
+  .top-words b{color:var(--ink);font-weight:600}
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://toolbox.alguisand.workers.dev/texte/compteur-de-mots">
+<meta property="og:site_name" content="ToolBOX">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="Compteur de mots et de caractères en ligne – ToolBOX">
+<meta property="og:description" content="Compte les mots, caractères, phrases et paragraphes de ton texte, avec le temps de lecture et les limites des réseaux sociaux et du SEO. Gratuit et instantané.">
+<meta property="og:url" content="https://toolbox.alguisand.workers.dev/texte/compteur-de-mots">
+<meta property="og:image" content="https://toolbox.alguisand.workers.dev/icons/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ToolBOX : les petits outils du quotidien">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Compteur de mots","url":"https://toolbox.alguisand.workers.dev/texte/compteur-de-mots","description":"Compte les mots, caractères, phrases et paragraphes de ton texte, avec le temps de lecture et les limites des réseaux sociaux et du SEO. Gratuit et instantané.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","inLanguage":"fr-FR","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://toolbox.alguisand.workers.dev/"},{"@type":"ListItem","position":2,"name":"Compteur de mots","item":"https://toolbox.alguisand.workers.dev/texte/compteur-de-mots"}]}]</script>
+<!-- /seo -->
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="../index.html">Tool<span>BOX</span></a>
+  </header>
+
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="../index.html">Accueil</a> › <a href="../index.html#outils">IA &amp; Texte</a> › Compteur de mots
+  </nav>
+
+  <main>
+    <h1>Compteur de mots</h1>
+    <p class="lead">Colle ou écris ton texte : les chiffres se mettent à jour pendant que tu tapes.</p>
+
+    <section class="tool" aria-label="Compteur de mots et de caractères">
+      <div class="field">
+        <label for="text">Ton texte</label>
+        <textarea id="text" spellcheck="false" placeholder="Écris ou colle ton texte ici…"></textarea>
+      </div>
+      <div class="stats" id="stats" aria-live="polite"></div>
+      <p class="top-words" id="top"></p>
+
+      <h2 class="sect" style="margin-top:1.4rem">Limites courantes</h2>
+      <ul class="limits" id="limits"></ul>
+
+      <div class="actions"><button type="button" class="btn ghost" id="clear">Effacer le texte</button></div>
+    </section>
+
+    <section class="explain">
+      <h2>Comment sont comptés les mots ?</h2>
+      <p>Un mot est une suite de lettres ou de chiffres. Les mots avec apostrophe ou trait d'union comptent pour un seul mot : « l'enfant » et « peut-être » valent chacun un mot, comme dans la plupart des logiciels de traitement de texte. Les caractères comptent les lettres, chiffres, signes et espaces ; la deuxième valeur ignore les espaces.</p>
+      <h2>Temps de lecture et de parole</h2>
+      <p>Le temps de lecture est estimé à environ 230 mots par minute (lecture silencieuse), le temps de parole à environ 130 mots par minute (discours à voix haute). Ce sont des moyennes : elles varient selon le lecteur et le sujet.</p>
+      <h2>À quoi servent les limites ?</h2>
+      <p>Chaque plateforme limite la longueur des textes : 280 caractères pour un message sur X, 160 pour un SMS, environ 155 pour une meta description et 60 pour un titre de page afin qu'ils s'affichent en entier sur Google. Les valeurs varient selon les plateformes et peuvent évoluer : vérifie celles de la plateforme visée.</p>
+      <p>Ton texte reste dans ton navigateur : il n'est ni envoyé ni enregistré.</p>
+    </section>
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX – Ton texte reste dans ton navigateur.<nav class="legal-links" aria-label="Informations légales"><a href="../legal/mentions-legales.html">Mentions légales</a> · <a href="../legal/confidentialite.html">Confidentialité</a> · <a href="../legal/contact.html">Contact</a> · <a href="#" data-cookie-settings>Cookies</a></nav></footer>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const nf = new Intl.NumberFormat("fr-FR");
+
+const LIMITS = [["Message sur X", 280], ["SMS (1 message)", 160], ["Bio Instagram", 150], ["Meta description", 155], ["Titre de page (SEO)", 60], ["Légende Instagram", 2200]];
+const STOP = new Set("les des une dans pour que qui est sont avec sur pas plus par mais comme aux ces ses son sa leur leurs vous nous elle ils elles cette tout tous très aussi fait faire être avoir était ont ete the and".split(" "));
+const WORD = /[\p{L}\p{N}]+(?:['’\-][\p{L}\p{N}]+)*/gu;
+
+function minutes(words, wpm) {
+  const m = words / wpm;
+  if (words === 0) return "0 s";
+  if (m < 1) return "moins d'1 min";
+  return Math.round(m) + " min";
+}
+
+function compute() {
+  const text = $("text").value;
+  const words = text.match(WORD) || [];
+  const chars = Array.from(text).length;
+  const noSpace = Array.from(text.replace(/\s/g, "")).length;
+  const sentences = text.split(/[.!?…]+(?:\s|$)/).filter(s => /[\p{L}\p{N}]/u.test(s)).length;
+  const paragraphs = text.split(/\n+/).filter(l => l.trim()).length;
+
+  // 0 et 1 s'accordent au singulier en français
+  const s = (n, one, many) => n <= 1 ? one : many;
+  const cards = [
+    [words.length, s(words.length, "mot", "mots")], [chars, s(chars, "caractère", "caractères")],
+    [noSpace, s(noSpace, "caractère sans espace", "caractères sans espaces")],
+    [sentences, s(sentences, "phrase", "phrases")], [paragraphs, s(paragraphs, "paragraphe", "paragraphes")],
+    [minutes(words.length, 230), "de lecture"], [minutes(words.length, 130), "de parole"]
+  ];
+  $("stats").innerHTML = cards.map(([n, l]) => `<div class="stat"><b>${typeof n === "number" ? nf.format(n) : n}</b><span>${l}</span></div>`).join("");
+
+  const freq = {};
+  words.forEach(w => { const k = w.toLowerCase(); if (k.length > 3 && !STOP.has(k)) freq[k] = (freq[k] || 0) + 1; });
+  const top = Object.entries(freq).filter(([, n]) => n > 1).sort((a, b) => b[1] - a[1]).slice(0, 8);
+  $("top").innerHTML = top.length ? "Mots les plus répétés : " + top.map(([w, n]) => `<b>${w}</b> (${n})`).join(", ") + "." : "";
+
+  $("limits").innerHTML = LIMITS.map(([name, max]) => {
+    const over = chars > max;
+    return `<li class="${over ? "over" : ""}"><span>${name}</span><span>${nf.format(chars)} / ${nf.format(max)}${over ? " (+" + nf.format(chars - max) + ")" : ""}</span></li>`;
+  }).join("");
+}
+
+$("text").addEventListener("input", compute);
+$("clear").addEventListener("click", () => { $("text").value = ""; compute(); $("text").focus(); });
+compute();
+$("y").textContent = new Date().getFullYear();
+</script>
+<script src="../assets/consent.js"></script>
+<script src="../assets/pwa.js"></script>
+</body>
+</html>

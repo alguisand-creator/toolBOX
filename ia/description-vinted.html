@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Générateur de description Vinted – ToolBOX</title>
+<meta name="description" content="Renseigne la marque, le produit, l'état, la taille et la couleur : obtiens une description Vinted prête à copier, avec titre et hashtags. Gratuit.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/outil.css">
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#eceff2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121a21" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" href="../icons/icon-192.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<!-- seo -->
+<link rel="canonical" href="https://toolbox.alguisand.workers.dev/ia/description-vinted">
+<meta property="og:site_name" content="ToolBOX">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="Générateur de description Vinted – ToolBOX">
+<meta property="og:description" content="Renseigne la marque, le produit, l'état, la taille et la couleur : obtiens une description Vinted prête à copier, avec titre et hashtags. Gratuit.">
+<meta property="og:url" content="https://toolbox.alguisand.workers.dev/ia/description-vinted">
+<meta property="og:image" content="https://toolbox.alguisand.workers.dev/icons/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ToolBOX : les petits outils du quotidien">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Description Vinted","url":"https://toolbox.alguisand.workers.dev/ia/description-vinted","description":"Renseigne la marque, le produit, l\u0027état, la taille et la couleur : obtiens une description Vinted prête à copier, avec titre et hashtags. Gratuit.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","inLanguage":"fr-FR","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://toolbox.alguisand.workers.dev/"},{"@type":"ListItem","position":2,"name":"Description Vinted","item":"https://toolbox.alguisand.workers.dev/ia/description-vinted"}]}]</script>
+<!-- /seo -->
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="../index.html">Tool<span>BOX</span></a>
+  </header>
+
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="../index.html">Accueil</a> › <a href="../index.html#outils">IA &amp; Texte</a> › Description Vinted
+  </nav>
+
+  <main>
+    <h1>Description Vinted</h1>
+    <p class="lead">Marque, produit, état, taille, couleur : une annonce prête à copier, en trois styles.</p>
+
+    <section class="tool" aria-label="Générateur de description Vinted">
+      <form class="ia-form" id="form"></form>
+      <div class="outs" id="out" aria-live="polite"></div>
+    </section>
+
+    <section class="explain">
+      <h2>Comment vendre plus vite sur Vinted ?</h2>
+      <p>Un bon titre contient le produit, la marque, la couleur et la taille : c'est ce que les acheteurs recherchent. Indique l'état honnêtement et mentionne les défauts éventuels pour éviter les litiges.</p>
+      <p>Prends des photos nettes en lumière naturelle, avec l'étiquette de taille visible, et réponds vite aux messages. Les descriptions générées sont des bases : ajoute ce qui rend ton article unique (occasion d'achat, coupe, mesures).</p>
+    </section>
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX – Tes textes restent dans ton navigateur.<nav class="legal-links" aria-label="Informations légales"><a href="../legal/mentions-legales.html">Mentions légales</a> · <a href="../legal/confidentialite.html">Confidentialité</a> · <a href="../legal/contact.html">Contact</a> · <a href="#" data-cookie-settings>Cookies</a></nav></footer>
+</div>
+
+<script src="../assets/ia.js"></script>
+<script>
+const STATES = {
+  "Neuf avec étiquette": "Neuf avec étiquette, jamais utilisé",
+  "Neuf sans étiquette": "Neuf sans étiquette, jamais utilisé",
+  "Très bon état": "Très bon état, très peu utilisé",
+  "Bon état": "Bon état, quelques signes d'usure normaux",
+  "Satisfaisant": "État correct, voir les détails ci-dessous"
+};
+const SMALL = new Set(["en", "de", "du", "des", "la", "le", "les", "un", "une", "et", "à", "au", "aux", "pour", "avec", "sans", "d", "l"]);
+const keywords = s => s.split(/[\s']+/).filter(w => w && !SMALL.has(w.toLowerCase())).slice(0, 2).join(" ");
+const tag = s =>"#" + s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "");
+
+ToolIA.init({
+  button: "Générer l'annonce",
+  fields: [
+    { id:"brand", label:"Marque", required:true, half:true, placeholder:"Zara" },
+    { id:"item", label:"Produit", required:true, half:true, placeholder:"Pull en maille" },
+    { id:"state", label:"État", type:"select", options:Object.keys(STATES) },
+    { id:"size", label:"Taille", half:true, placeholder:"M" },
+    { id:"color", label:"Couleur", half:true, placeholder:"bleu marine" },
+    { id:"material", label:"Matière (facultatif)", half:true, placeholder:"100 % coton" },
+    { id:"flaws", label:"Défauts à signaler (facultatif)", half:true, placeholder:"petite bouloche sous la manche" },
+    { id:"ship", label:"Envoi rapide et soigné", type:"checkbox", checked:true },
+    { id:"bundle", label:"Lot possible : remise si plusieurs articles", type:"checkbox" }
+  ],
+  example: { brand: "Zara", item: "Pull en maille", state: "Très bon état", size: "M", color: "bleu marine", material: "100 % coton", flaws: "", ship: true, bundle: true },
+  generate(v) {
+    const title = [v.item, v.brand, v.color, v.size ? "taille " + v.size : ""].filter(Boolean).join(" ");
+    const titleCap = ToolIA.cap(title);
+    const state = STATES[v.state];
+    const used = !v.state.startsWith("Neuf");
+    const tags = [tag(v.brand), ...keywords(v.item).split(" ").map(tag), v.color ? tag(v.color) : "", used ? "#secondemain" : "", v.size ? tag("taille " + v.size) : ""].filter(t => t.length > 1);
+    const tagLine = [...new Set(tags)].join(" ");
+    const shipTxt = v.ship ? "Envoi rapide et soigné sous 48 h." : "";
+    const bundleTxt = v.bundle ? "Lot possible : fais-moi une offre si tu prends plusieurs articles." : "";
+
+    const complete = [
+      titleCap,
+      ["• Marque : " + v.brand, "• État : " + state, v.size ? "• Taille : " + v.size : "", v.color ? "• Couleur : " + v.color : "", v.material ? "• Matière : " + v.material : "", v.flaws ? "• À noter : " + v.flaws : ""].filter(Boolean).join("\n"),
+      [shipTxt, bundleTxt, "N'hésite pas à me poser tes questions ou à m'envoyer une offre !"].filter(Boolean).join("\n"),
+      tagLine
+    ].join("\n\n");
+
+    const short = `${ToolIA.cap(v.item)} ${v.brand}${v.color ? ", " + v.color : ""}${v.size ? ", taille " + v.size : ""}. ${state}.` +
+      (v.material ? ` ${v.material}.` : "") + (v.flaws ? ` À noter : ${v.flaws}.` : "") + (shipTxt ? " " + shipTxt : "") + (bundleTxt ? " " + bundleTxt : "") + `\n\n${tagLine}`;
+
+    const emoji = [
+      `✨ ${titleCap} ✨`,
+      `🏷️ ${v.brand}${v.size ? " · 📏 " + v.size : ""}${v.color ? " · 🎨 " + v.color : ""}`,
+      "✅ " + state,
+      v.material ? "🧵 " + v.material : "",
+      v.flaws ? "⚠️ " + v.flaws : "",
+      v.ship ? "📦 " + shipTxt : "",
+      v.bundle ? "💸 " + bundleTxt : "",
+      "💬 Une question ? Écris-moi !",
+      "",
+      tagLine
+    ].filter((l, i, a) => l !== "" || a[i - 1] !== "").join("\n");
+
+    return { items: [complete, short, emoji], labels: ["Complète", "Courte", "Avec émojis"], note: `Titre conseillé : ${titleCap}` };
+  }
+});
+</script>
+<script src="../assets/consent.js"></script>
+<script src="../assets/pwa.js"></script>
+</body>
+</html>

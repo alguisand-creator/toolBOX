@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calculer le nombre de jours entre deux dates – ToolBOX</title>
+<meta name="description" content="Compte les jours, semaines et mois entre deux dates, les jours ouvrés (jours fériés français exclus), ou ajoute des jours à une date. Gratuit et instantané.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/outil.css">
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#eceff2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121a21" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" href="../icons/icon-192.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<!-- seo -->
+<link rel="canonical" href="https://toolbox.alguisand.workers.dev/calcul/jours-entre-dates">
+<meta property="og:site_name" content="ToolBOX">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="Calculer le nombre de jours entre deux dates – ToolBOX">
+<meta property="og:description" content="Compte les jours, semaines et mois entre deux dates, les jours ouvrés (jours fériés français exclus), ou ajoute des jours à une date. Gratuit et instantané.">
+<meta property="og:url" content="https://toolbox.alguisand.workers.dev/calcul/jours-entre-dates">
+<meta property="og:image" content="https://toolbox.alguisand.workers.dev/icons/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ToolBOX : les petits outils du quotidien">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Jours entre deux dates","url":"https://toolbox.alguisand.workers.dev/calcul/jours-entre-dates","description":"Compte les jours, semaines et mois entre deux dates, les jours ouvrés (jours fériés français exclus), ou ajoute des jours à une date. Gratuit et instantané.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","inLanguage":"fr-FR","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://toolbox.alguisand.workers.dev/"},{"@type":"ListItem","position":2,"name":"Jours entre deux dates","item":"https://toolbox.alguisand.workers.dev/calcul/jours-entre-dates"}]}]</script>
+<!-- /seo -->
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="../index.html">Tool<span>BOX</span></a>
+  </header>
+
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="../index.html">Accueil</a> › <a href="../index.html#outils">Calcul</a> › Jours entre deux dates
+  </nav>
+
+  <main>
+    <h1>Jours entre deux dates</h1>
+    <p class="lead">Compte les jours (calendaires ou ouvrés) entre deux dates, ou ajoute des jours à une date.</p>
+
+    <section class="tool" aria-label="Calculateur de dates">
+      <div class="tabs" role="tablist" id="tabs"></div>
+
+      <div id="p-between">
+        <div class="fields">
+          <div class="field"><label for="d1">Date de début</label><input id="d1" type="date"></div>
+          <div class="field"><label for="d2">Date de fin</label><input id="d2" type="date"></div>
+        </div>
+        <div class="opts">
+          <label class="chk"><input type="checkbox" id="incl"> Compter aussi le jour de fin</label>
+          <label class="chk"><input type="checkbox" id="hol1" checked> Exclure les jours fériés français</label>
+        </div>
+      </div>
+
+      <div id="p-add" hidden>
+        <div class="fields">
+          <div class="field"><label for="d0">Date de départ</label><input id="d0" type="date"></div>
+          <div class="field"><label for="dir">Opération</label>
+            <select id="dir"><option value="1">Ajouter</option><option value="-1">Retirer</option></select></div>
+          <div class="field"><label for="n">Nombre de jours</label>
+            <input id="n" type="text" inputmode="numeric" autocomplete="off" value="30"></div>
+        </div>
+        <div class="opts">
+          <label class="chk"><input type="checkbox" id="work"> Compter en jours ouvrés (du lundi au vendredi)</label>
+          <label class="chk"><input type="checkbox" id="hol2" checked> Exclure les jours fériés français</label>
+        </div>
+      </div>
+
+      <div class="result" id="result" aria-live="polite"></div>
+    </section>
+
+    <section class="explain">
+      <h2>Comment compter les jours entre deux dates ?</h2>
+      <p>Le nombre de jours est la différence entre la date de fin et la date de début. Entre le 1er et le 31 janvier, il y a 30 jours ; si tu comptes aussi le jour de fin, on arrive à 31. Coche l'option selon ton besoin : un délai légal, un préavis ou une location ne se comptent pas toujours de la même façon.</p>
+      <h2>Que sont les jours ouvrés ?</h2>
+      <p>Les jours ouvrés vont du lundi au vendredi, sans les jours fériés. L'outil retire les 11 jours fériés français : 1er janvier, lundi de Pâques, 1er mai, 8 mai, Ascension, lundi de Pentecôte, 14 juillet, 15 août, Toussaint, 11 novembre et Noël. Les jours « ouvrables » (du lundi au samedi) ne sont pas calculés ici.</p>
+      <p>Les jours fériés propres à certains territoires (Alsace-Moselle, outre-mer) et les jours de pont ne sont pas pris en compte. Pour un délai juridique ou contractuel, vérifie toujours la règle qui s'applique à ton cas.</p>
+    </section>
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX – Tes données restent dans ton navigateur.<nav class="legal-links" aria-label="Informations légales"><a href="../legal/mentions-legales.html">Mentions légales</a> · <a href="../legal/confidentialite.html">Confidentialité</a> · <a href="../legal/contact.html">Contact</a> · <a href="#" data-cookie-settings>Cookies</a></nav></footer>
+</div>
+
+<script>
+const DAY = 86400000;
+const $ = id => document.getElementById(id);
+const nf = new Intl.NumberFormat("fr-FR");
+const plural = (n, one, many) => `${nf.format(n)} ${n > 1 ? many : one}`;
+
+// Toutes les dates sont en UTC à minuit : pas de décalage dû à l'heure d'été
+const parse = s => { const [y, m, d] = s.split("-").map(Number); return Date.UTC(y, m - 1, d); };
+const iso = t => new Date(t).toISOString().slice(0, 10);
+const longDate = t => new Intl.DateTimeFormat("fr-FR", { timeZone: "UTC", weekday: "long", day: "numeric", month: "long", year: "numeric" }).format(t);
+const shortDate = t => new Intl.DateTimeFormat("fr-FR", { timeZone: "UTC", day: "numeric", month: "long", year: "numeric" }).format(t);
+
+// Dimanche de Pâques (algorithme de Meeus / Jones / Butcher)
+function easter(y) {
+  const a = y % 19, b = Math.floor(y / 100), c = y % 100, d = Math.floor(b / 4), e = b % 4;
+  const f = Math.floor((b + 8) / 25), g = Math.floor((b - f + 1) / 3);
+  const h = (19 * a + b - d - g + 15) % 30, i = Math.floor(c / 4), k = c % 4;
+  const l = (32 + 2 * e + 2 * i - h - k) % 7, m = Math.floor((a + 11 * h + 22 * l) / 451);
+  const month = Math.floor((h + l - 7 * m + 114) / 31), day = ((h + l - 7 * m + 114) % 31) + 1;
+  return Date.UTC(y, month - 1, day);
+}
+const hcache = {};
+function holidays(y) {
+  if (hcache[y]) return hcache[y];
+  const e = easter(y);
+  return hcache[y] = new Set([Date.UTC(y, 0, 1), e + DAY, Date.UTC(y, 4, 1), Date.UTC(y, 4, 8), e + 39 * DAY, e + 50 * DAY,
+    Date.UTC(y, 6, 14), Date.UTC(y, 7, 15), Date.UTC(y, 10, 1), Date.UTC(y, 10, 11), Date.UTC(y, 11, 25)]);
+}
+const isHoliday = t => holidays(new Date(t).getUTCFullYear()).has(t);
+const isWeekend = t => { const w = new Date(t).getUTCDay(); return w === 0 || w === 6; };
+
+// Écart en années, mois et jours entre deux dates (a <= b)
+function ymd(a, b) {
+  const A = new Date(a), B = new Date(b);
+  let y = B.getUTCFullYear() - A.getUTCFullYear(), m = B.getUTCMonth() - A.getUTCMonth(), d = B.getUTCDate() - A.getUTCDate();
+  if (d < 0) { m--; d += new Date(Date.UTC(B.getUTCFullYear(), B.getUTCMonth(), 0)).getUTCDate(); }
+  if (m < 0) { y--; m += 12; }
+  return { y, m, d };
+}
+
+const MODES = [{ id: "between", nom: "Entre deux dates" }, { id: "add", nom: "Ajouter ou retirer des jours" }];
+let mode = MODES[0];
+const result = $("result");
+
+function renderTabs() {
+  $("tabs").innerHTML = MODES.map(m => `<button type="button" role="tab" data-id="${m.id}" aria-selected="${m === mode}">${m.nom}</button>`).join("");
+  $("p-between").hidden = mode.id !== "between";
+  $("p-add").hidden = mode.id !== "add";
+}
+
+function showError(msg) {
+  result.classList.add("err");
+  result.innerHTML = `<div class="big">${msg}</div>`;
+}
+
+function computeBetween() {
+  if (!$("d1").value || !$("d2").value) return showError("Choisis deux dates.");
+  let a = parse($("d1").value), b = parse($("d2").value), swapped = false;
+  if (b < a) { [a, b] = [b, a]; swapped = true; }
+  const incl = $("incl").checked ? 1 : 0, skip = $("hol1").checked;
+  const total = (b - a) / DAY + incl;
+  const last = incl ? b : b - DAY;
+  let work = 0, weekend = 0, hol = 0;
+  for (let t = a; t <= last; t += DAY) {
+    if (isWeekend(t)) weekend++;
+    else if (skip && isHoliday(t)) hol++;
+    else work++;
+  }
+  const w = Math.floor(total / 7), r = total % 7, e = ymd(a, b);
+  const parts = [e.y ? plural(e.y, "an", "ans") : "", e.m ? plural(e.m, "mois", "mois") : "", e.d || (!e.y && !e.m) ? plural(e.d, "jour", "jours") : ""].filter(Boolean);
+  result.classList.remove("err");
+  result.innerHTML =
+    `<div class="big">${plural(total, "jour", "jours")}</div>
+     <div class="txt">Du ${shortDate(a)} au ${shortDate(b)}${incl ? ", jour de fin compris" : ", jour de fin exclu"}${swapped ? " (dates remises dans l'ordre)" : ""}.</div>
+     <table class="tbl"><tbody>
+       <tr><td>En semaines</td><td>${plural(w, "semaine", "semaines")}${r ? " et " + plural(r, "jour", "jours") : ""}</td></tr>
+       <tr><td>En années, mois et jours</td><td>${parts.join(", ")}</td></tr>
+       <tr><td>Jours ouvrés</td><td>${nf.format(work)}</td></tr>
+       <tr><td>Week-ends (samedis et dimanches)</td><td>${nf.format(weekend)}</td></tr>
+       ${skip ? `<tr><td>Jours fériés en semaine</td><td>${nf.format(hol)}</td></tr>` : ""}
+     </tbody></table>`;
+}
+
+function computeAdd() {
+  if (!$("d0").value) return showError("Choisis une date de départ.");
+  const n = Number($("n").value.replace(/\s/g, ""));
+  if (!Number.isInteger(n) || n < 0 || n > 36500) return showError("Entre un nombre entier de jours entre 0 et 36 500.");
+  const dir = Number($("dir").value), start = parse($("d0").value), working = $("work").checked, skip = $("hol2").checked;
+  let t = start;
+  if (!working) t = start + dir * n * DAY;
+  else {
+    let left = n;
+    while (left > 0) {
+      t += dir * DAY;
+      if (!isWeekend(t) && !(skip && isHoliday(t))) left--;
+    }
+  }
+  result.classList.remove("err");
+  result.innerHTML =
+    `<div class="big">${longDate(t)}</div>
+     <div class="txt">${plural(n, working ? "jour ouvré" : "jour", working ? "jours ouvrés" : "jours")} ${dir > 0 ? "après" : "avant"} le ${longDate(start)}.</div>`;
+}
+
+function compute() { mode.id === "between" ? computeBetween() : computeAdd(); }
+
+$("tabs").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  mode = MODES.find(m => m.id === b.dataset.id);
+  renderTabs(); compute();
+});
+document.querySelectorAll("input, select").forEach(el => el.addEventListener("input", compute));
+document.querySelectorAll("select").forEach(el => el.addEventListener("change", compute));
+
+// Valeurs de départ : aujourd'hui, et dans 30 jours
+const today = Date.UTC(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+$("d1").value = iso(today); $("d2").value = iso(today + 30 * DAY); $("d0").value = iso(today);
+renderTabs(); compute();
+$("y").textContent = new Date().getFullYear();
+</script>
+<script src="../assets/consent.js"></script>
+<script src="../assets/pwa.js"></script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Générateur d'idées de contenu et de projets – ToolBOX</title>
+<meta name="description" content="Donne un thème et obtiens des idées de vidéos, d'articles, de posts, de produits ou d'exposés. Gratuit et sans inscription.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/outil.css">
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#eceff2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121a21" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" href="../icons/icon-192.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<!-- seo -->
+<link rel="canonical" href="https://toolbox.alguisand.workers.dev/ia/generateur-idees">
+<meta property="og:site_name" content="ToolBOX">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="Générateur d'idées de contenu et de projets – ToolBOX">
+<meta property="og:description" content="Donne un thème et obtiens des idées de vidéos, d'articles, de posts, de produits ou d'exposés. Gratuit et sans inscription.">
+<meta property="og:url" content="https://toolbox.alguisand.workers.dev/ia/generateur-idees">
+<meta property="og:image" content="https://toolbox.alguisand.workers.dev/icons/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ToolBOX : les petits outils du quotidien">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Générateur d\u0027idées","url":"https://toolbox.alguisand.workers.dev/ia/generateur-idees","description":"Donne un thème et obtiens des idées de vidéos, d\u0027articles, de posts, de produits ou d\u0027exposés. Gratuit et sans inscription.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","inLanguage":"fr-FR","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://toolbox.alguisand.workers.dev/"},{"@type":"ListItem","position":2,"name":"Générateur d\u0027idées","item":"https://toolbox.alguisand.workers.dev/ia/generateur-idees"}]}]</script>
+<!-- /seo -->
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="../index.html">Tool<span>BOX</span></a>
+  </header>
+
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="../index.html">Accueil</a> › <a href="../index.html#outils">IA &amp; Texte</a> › Générateur d'idées
+  </nav>
+
+  <main>
+    <h1>Générateur d'idées</h1>
+    <p class="lead">Un thème, un format : des pistes pour ne plus rester devant une page blanche.</p>
+
+    <section class="tool" aria-label="Générateur d'idées">
+      <form class="ia-form" id="form"></form>
+      <div class="outs" id="out" aria-live="polite"></div>
+    </section>
+
+    <section class="explain">
+      <h2>Comment utiliser ces idées ?</h2>
+      <p>Les idées sont des points de départ : choisis-en une, puis personnalise-la avec ton expérience, tes exemples et ton ton. Écris ton thème avec son article (« le yoga », « la cuisine japonaise ») pour que les phrases soient correctes.</p>
+      <p>Clique sur « Autre version » pour tirer d'autres idées du même format.</p>
+    </section>
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX – Tes textes restent dans ton navigateur.<nav class="legal-links" aria-label="Informations légales"><a href="../legal/mentions-legales.html">Mentions légales</a> · <a href="../legal/confidentialite.html">Confidentialité</a> · <a href="../legal/contact.html">Contact</a> · <a href="#" data-cookie-settings>Cookies</a></nav></footer>
+</div>
+
+<script src="../assets/ia.js"></script>
+<script>
+const Y = new Date().getFullYear();
+const POOLS = {
+  "Vidéos YouTube": [
+    (t, T) => `Les erreurs de débutant sur ${t}`, (t, T) => `${T} : ce que j'aurais aimé savoir avant de commencer`, (t, T) => `Je teste ${t} pendant 30 jours`,
+    (t, T) => `${T} : mythes et réalité`, (t, T) => `Mon organisation pour ${t}`, (t, T) => `Les 5 outils indispensables pour ${t}`,
+    (t, T) => `Je réagis aux idées reçues sur ${t}`, (t, T) => `${T} en 60 secondes (format court)`, (t, T) => `Avant / après : ma progression avec ${t}`,
+    (t, T) => `Je réponds à vos questions sur ${t}`, (t, T) => `${T} : le budget réel pour se lancer`, (t, T) => `Débutant contre expert : la même tâche avec ${t}`
+  ],
+  "Articles de blog": [
+    (t, T) => `Guide du débutant : ${t}`, (t, T) => `${T} : les erreurs à éviter`, (t, T) => `Comparatif : les meilleures options pour ${t}`,
+    (t, T) => `${T} : budget et prix en ${Y}`, (t, T) => `Checklist : ${t} étape par étape`, (t, T) => `Les questions fréquentes sur ${t}`,
+    (t, T) => `${T} : avantages et inconvénients`, (t, T) => `Retour d'expérience : ce que ${t} m'a appris`, (t, T) => `Les tendances à suivre en ${Y} autour de ${t}`,
+    (t, T) => `${T} : le glossaire des termes à connaître`, (t, T) => `Étude de cas : réussir avec ${t}`, (t, T) => `Idées reçues sur ${t} : ce qui est vrai`
+  ],
+  "Posts réseaux sociaux": [
+    (t, T) => `Un conseil par jour sur ${t} (série de 7 posts)`, (t, T) => `Carrousel : 5 erreurs sur ${t}`, (t, T) => `Sondage en story : que pensez-vous de ${t} ?`,
+    (t, T) => `Coulisses : comment je m'organise avec ${t}`, (t, T) => `Avant / après autour de ${t}`, (t, T) => `Une citation et son explication sur ${t}`,
+    (t, T) => `Mini-tuto de 30 secondes sur ${t}`, (t, T) => `FAQ en stories : vos questions sur ${t}`, (t, T) => `Le mythe du jour sur ${t}`,
+    (t, T) => `Une erreur que j'ai faite avec ${t} et ce qu'elle m'a appris`, (t, T) => `La recommandation de la semaine autour de ${t}`, (t, T) => `Défi de 7 jours autour de ${t}`
+  ],
+  "Produits ou services": [
+    (t, T) => `Un guide PDF pour débuter avec ${t}`, (t, T) => `Un kit de démarrage autour de ${t}`, (t, T) => `Une newsletter autour de ${t}`,
+    (t, T) => `Des modèles prêts à l'emploi pour ${t}`, (t, T) => `Un atelier en ligne sur ${t}`, (t, T) => `Une checklist à télécharger sur ${t}`,
+    (t, T) => `Un accompagnement personnalisé autour de ${t}`, (t, T) => `Une box mensuelle autour de ${t}`, (t, T) => `Un outil gratuit pour comparer des options sur ${t}`,
+    (t, T) => `Une communauté privée autour de ${t}`, (t, T) => `Un coaching d'une heure sur ${t}`, (t, T) => `Une application mobile simple pour ${t}`
+  ],
+  "Exposés et dossiers": [
+    (t, T) => `Histoire et origines de ${t}`, (t, T) => `Les enjeux actuels de ${t}`, (t, T) => `${T} : avantages et limites`,
+    (t, T) => `L'impact de ${t} sur la société`, (t, T) => `${T} : comparaison entre plusieurs pays`, (t, T) => `L'avenir de ${t} dans les 10 prochaines années`,
+    (t, T) => `Les grandes figures liées à ${t}`, (t, T) => `Les idées reçues sur ${t}`, (t, T) => `Les aspects éthiques de ${t}`,
+    (t, T) => `Études de cas autour de ${t}`, (t, T) => `Les chiffres clés sur ${t}`, (t, T) => `${T} : quelles évolutions récentes ?`
+  ]
+};
+
+ToolIA.init({
+  button: "Trouver des idées",
+  fields: [
+    { id:"theme", label:"Thème (avec son article)", required:true, placeholder:"Ex. la cuisine japonaise" },
+    { id:"format", label:"Format", type:"select", options:Object.keys(POOLS), half:true },
+    { id:"count", label:"Nombre d'idées", type:"select", options:["5", "8", "10"], value:"8", half:true }
+  ],
+  example: { theme: "la cuisine japonaise", format: "Vidéos YouTube", count: "8" },
+  generate(v) {
+    const t = v.theme.replace(/[.?!\s]+$/, ""), T = ToolIA.cap(t);
+    return ToolIA.shuffle(POOLS[v.format]).slice(0, +v.count).map(f => f(t, T));
+  }
+});
+</script>
+<script src="../assets/consent.js"></script>
+<script src="../assets/pwa.js"></script>
+</body>
+</html>

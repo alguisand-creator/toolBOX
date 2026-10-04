@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compresser une image en ligne – ToolBOX</title>
+<meta name="description" content="Allège tes images JPG et PNG en réglant la qualité. Compression gratuite, faite dans ton navigateur, sans envoi de fichier.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/outil.css">
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#eceff2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121a21" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" href="../icons/icon-192.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<!-- seo -->
+<link rel="canonical" href="https://toolbox.alguisand.workers.dev/images/compression">
+<meta property="og:site_name" content="ToolBOX">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="Compresser une image en ligne – ToolBOX">
+<meta property="og:description" content="Allège tes images JPG et PNG en réglant la qualité. Compression gratuite, faite dans ton navigateur, sans envoi de fichier.">
+<meta property="og:url" content="https://toolbox.alguisand.workers.dev/images/compression">
+<meta property="og:image" content="https://toolbox.alguisand.workers.dev/icons/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ToolBOX : les petits outils du quotidien">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Compression d\u0027image","url":"https://toolbox.alguisand.workers.dev/images/compression","description":"Allège tes images JPG et PNG en réglant la qualité. Compression gratuite, faite dans ton navigateur, sans envoi de fichier.","applicationCategory":"MultimediaApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","inLanguage":"fr-FR","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://toolbox.alguisand.workers.dev/"},{"@type":"ListItem","position":2,"name":"Compression d\u0027image","item":"https://toolbox.alguisand.workers.dev/images/compression"}]}]</script>
+<!-- /seo -->
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="../index.html">Tool<span>BOX</span></a>
+  </header>
+
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="../index.html">Accueil</a> › <a href="../index.html#outils">Images</a> › Compression
+  </nav>
+
+  <main>
+    <h1>Compression d'image</h1>
+    <p class="lead">Réduis le poids d'une image en baissant légèrement sa qualité.</p>
+
+    <section class="tool" aria-label="Compression d'image">
+      <div class="fields">
+        <div class="field"><label for="file">Image à compresser</label>
+          <input id="file" type="file" accept="image/*"></div>
+      </div>
+      <div class="fields" style="margin-top:1rem">
+        <div class="field"><label for="q">Qualité : <span id="qv">75</span> %</label>
+          <input id="q" type="range" min="10" max="100" step="5" value="75"></div>
+      </div>
+      <div class="result" id="result" aria-live="polite"><div class="big">Choisis une image pour commencer.</div></div>
+      <div class="preview" id="preview" hidden><img id="img" alt="Aperçu de l'image compressée"></div>
+      <div class="actions"><a class="btn" id="dl" aria-disabled="true" download="image-compressee.jpg">Télécharger l'image compressée</a></div>
+    </section>
+
+    <section class="explain">
+      <h2>Comment ça marche ?</h2>
+      <p>L'image est ré-enregistrée au format JPG avec la qualité choisie. Entre 70 et 85 %, la différence est en général invisible à l'œil, pour un fichier bien plus léger. Les zones transparentes d'un PNG deviennent blanches.</p>
+      <p>Si le fichier obtenu est plus gros que l'original (cela arrive avec des images déjà très compressées), garde l'original.</p>
+    </section>
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX – Ton image reste dans ton navigateur.<nav class="legal-links" aria-label="Informations légales"><a href="../legal/mentions-legales.html">Mentions légales</a> · <a href="../legal/confidentialite.html">Confidentialité</a> · <a href="../legal/contact.html">Contact</a> · <a href="#" data-cookie-settings>Cookies</a></nav></footer>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const size = b => b < 1024 * 1024 ? (b / 1024).toFixed(0) + " Ko" : (b / 1024 / 1024).toFixed(2).replace(".", ",") + " Mo";
+let outUrl = null, source = null, name = "image";
+
+function error(msg){
+  $("result").classList.add("err");
+  $("result").innerHTML = `<div class="big">${msg}</div>`;
+  $("preview").hidden = true;
+  $("dl").setAttribute("aria-disabled", "true");
+  $("dl").removeAttribute("href");
+}
+
+function run(){
+  if (!source) return;
+  const { im, file } = source;
+  const c = document.createElement("canvas");
+  c.width = im.naturalWidth; c.height = im.naturalHeight;
+  const ctx = c.getContext("2d");
+  ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, c.width, c.height);
+  ctx.drawImage(im, 0, 0);
+  c.toBlob(blob => {
+    if (!blob) { error("La compression a échoué."); return; }
+    if (outUrl) URL.revokeObjectURL(outUrl);
+    outUrl = URL.createObjectURL(blob);
+    $("img").src = outUrl; $("preview").hidden = false;
+    $("dl").href = outUrl; $("dl").download = name + "-compresse.jpg"; $("dl").removeAttribute("aria-disabled");
+    const gain = (1 - blob.size / file.size) * 100;
+    $("result").classList.remove("err");
+    $("result").innerHTML =
+      `<div class="big">${gain >= 0 ? "−" + gain.toFixed(0) + " %" : "+" + Math.abs(gain).toFixed(0) + " %"}</div>
+       <div class="txt">${gain >= 0 ? "Poids économisé." : "Le résultat est plus lourd que l'original : garde l'original ou baisse la qualité."}</div>
+       <div class="detail"><span>Avant : <b>${size(file.size)}</b></span><span>Après : <b>${size(blob.size)}</b></span></div>`;
+  }, "image/jpeg", +$("q").value / 100);
+}
+
+$("file").addEventListener("change", () => {
+  const f = $("file").files[0];
+  if (!f) return;
+  if (!f.type.startsWith("image/")) { error("Ce fichier n'est pas une image."); return; }
+  const src = URL.createObjectURL(f);
+  const im = new Image();
+  im.onload = () => {
+    URL.revokeObjectURL(src);
+    source = { im, file: f };
+    name = f.name.replace(/\.[^.]+$/, "");
+    run();
+  };
+  im.onerror = () => { URL.revokeObjectURL(src); error("Impossible de lire cette image."); };
+  im.src = src;
+});
+
+$("q").addEventListener("input", () => { $("qv").textContent = $("q").value; run(); });
+$("y").textContent = new Date().getFullYear();
+</script>
+<script src="../assets/consent.js"></script>
+<script src="../assets/pwa.js"></script>
+</body>
+</html>

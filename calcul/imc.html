@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calcul de l'IMC (indice de masse corporelle) – ToolBOX</title>
+<meta name="description" content="Calcule ton IMC avec ton poids et ta taille, découvre ta corpulence (maigreur, normale, surpoids, obésité) et ton poids de référence. Gratuit et instantané.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/outil.css">
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#eceff2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121a21" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" href="../icons/icon-192.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<style>
+  .scale{position:relative;display:flex;height:14px;border-radius:99px;overflow:hidden;margin:1.1rem 0 .3rem}
+  .scale span{display:block;height:100%}
+  .marker{position:absolute;top:-4px;bottom:-4px;width:4px;margin-left:-2px;background:var(--ink);border-radius:2px}
+  .scale-wrap{position:relative}
+  .legend{display:flex;justify-content:space-between;color:var(--muted);font-size:.8rem}
+  .detail{display:flex;flex-wrap:wrap;gap:.4rem 1.5rem;margin-top:.6rem;color:var(--muted)}
+  .detail b{color:var(--ink);font-weight:600}
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://toolbox.alguisand.workers.dev/calcul/imc">
+<meta property="og:site_name" content="ToolBOX">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="Calcul de l'IMC (indice de masse corporelle) – ToolBOX">
+<meta property="og:description" content="Calcule ton IMC avec ton poids et ta taille, découvre ta corpulence (maigreur, normale, surpoids, obésité) et ton poids de référence. Gratuit et instantané.">
+<meta property="og:url" content="https://toolbox.alguisand.workers.dev/calcul/imc">
+<meta property="og:image" content="https://toolbox.alguisand.workers.dev/icons/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ToolBOX : les petits outils du quotidien">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Calcul de l\u0027IMC","url":"https://toolbox.alguisand.workers.dev/calcul/imc","description":"Calcule ton IMC avec ton poids et ta taille, découvre ta corpulence (maigreur, normale, surpoids, obésité) et ton poids de référence. Gratuit et instantané.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","inLanguage":"fr-FR","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://toolbox.alguisand.workers.dev/"},{"@type":"ListItem","position":2,"name":"Calcul de l\u0027IMC","item":"https://toolbox.alguisand.workers.dev/calcul/imc"}]}]</script>
+<!-- /seo -->
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="../index.html">Tool<span>BOX</span></a>
+  </header>
+
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="../index.html">Accueil</a> › <a href="../index.html#outils">Calcul</a> › IMC
+  </nav>
+
+  <main>
+    <h1>Calcul de l'IMC</h1>
+    <p class="lead">Entre ton poids et ta taille pour connaître ton indice de masse corporelle.</p>
+
+    <section class="tool" aria-label="Calculateur d'IMC">
+      <div class="fields">
+        <div class="field"><label for="w">Poids (kg)</label>
+          <input id="w" type="text" inputmode="decimal" autocomplete="off" value="70"></div>
+        <div class="field"><label for="h">Taille (cm)</label>
+          <input id="h" type="text" inputmode="decimal" autocomplete="off" value="175"></div>
+      </div>
+      <div class="result" id="result" aria-live="polite"></div>
+    </section>
+
+    <section class="explain">
+      <h2>Comment calcule-t-on l'IMC ?</h2>
+      <p>L'indice de masse corporelle se calcule en divisant le poids (en kilogrammes) par la taille (en mètres) au carré : <code>IMC = poids ÷ taille²</code>. Exemple : 70 kg pour 1,75 m donnent <code>70 ÷ (1,75 × 1,75) = 22,9</code>.</p>
+
+      <h2>Les catégories d'IMC pour un adulte</h2>
+      <table class="tbl">
+        <thead><tr><th>Interprétation</th><th>IMC</th></tr></thead>
+        <tbody>
+          <tr><td>Dénutrition</td><td>moins de 16,5</td></tr>
+          <tr><td>Maigreur</td><td>16,5 à 18,5</td></tr>
+          <tr><td>Corpulence normale</td><td>18,5 à 25</td></tr>
+          <tr><td>Surpoids</td><td>25 à 30</td></tr>
+          <tr><td>Obésité modérée</td><td>30 à 35</td></tr>
+          <tr><td>Obésité sévère</td><td>35 à 40</td></tr>
+          <tr><td>Obésité massive</td><td>40 et plus</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Les limites de l'IMC</h2>
+      <p>L'IMC est un repère, pas un diagnostic. Il ne distingue pas la masse musculaire de la masse grasse : un sportif très musclé peut avoir un IMC élevé sans excès de graisse. Il n'est pas adapté aux enfants et aux adolescents (qui se mesurent sur des courbes de croissance), aux femmes enceintes ni aux personnes âgées.</p>
+      <p>Cet outil ne remplace pas l'avis d'un médecin ou d'un diététicien. Si ton IMC te préoccupe, parles-en à un professionnel de santé.</p>
+    </section>
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX – Tes données restent dans ton navigateur.<nav class="legal-links" aria-label="Informations légales"><a href="../legal/mentions-legales.html">Mentions légales</a> · <a href="../legal/confidentialite.html">Confidentialité</a> · <a href="../legal/contact.html">Contact</a> · <a href="#" data-cookie-settings>Cookies</a></nav></footer>
+</div>
+
+<script>
+const num = s => parseFloat(String(s).replace(",", "."));
+const f1 = n => new Intl.NumberFormat("fr-FR", { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(n);
+const f0 = n => new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 }).format(n);
+
+// [limite haute, nom]
+const CATS = [[16.5, "Dénutrition"], [18.5, "Maigreur"], [25, "Corpulence normale"], [30, "Surpoids"], [35, "Obésité modérée"], [40, "Obésité sévère"], [Infinity, "Obésité massive"]];
+// Barre de 15 à 40 : largeur de chaque tranche en % et couleur
+const BAR = [[6, "#7aa7d9"], [8, "#9cc3e6"], [26, "#4caf6a"], [20, "#f0c040"], [20, "#f0913a"], [20, "#e0553f"]];
+
+const w = document.getElementById("w"), h = document.getElementById("h"), result = document.getElementById("result");
+
+function compute() {
+  const kg = num(w.value), cm = num(h.value);
+  const bad = isNaN(kg) || isNaN(cm) || kg < 20 || kg > 400 || cm < 100 || cm > 250;
+  result.classList.toggle("err", bad);
+  if (bad) {
+    result.innerHTML = `<div class="big">Entre un poids entre 20 et 400 kg et une taille entre 100 et 250 cm.</div>`;
+    return;
+  }
+  const m = cm / 100;
+  const imc = kg / (m * m);
+  const cat = CATS.find(c => imc < c[0])[1];
+  const lo = 18.5 * m * m, hi = 25 * m * m;
+  const pos = Math.max(0, Math.min(100, (imc - 15) / 25 * 100));
+  result.innerHTML =
+    `<div class="big">${f1(imc)}</div>
+     <div class="txt"><strong>${cat}</strong></div>
+     <div class="scale-wrap">
+       <div class="scale" aria-hidden="true">${BAR.map(b => `<span style="width:${b[0]}%;background:${b[1]}"></span>`).join("")}</div>
+       <div class="marker" style="left:${pos}%" aria-hidden="true"></div>
+       <div class="legend" aria-hidden="true"><span>15</span><span>18,5</span><span>25</span><span>30</span><span>40</span></div>
+     </div>
+     <div class="detail"><span>Poids de référence pour ${f0(cm)} cm : <b>${f1(lo)} à ${f1(hi)} kg</b> (IMC de 18,5 à 25)</span></div>`;
+}
+
+w.addEventListener("input", compute);
+h.addEventListener("input", compute);
+compute();
+document.getElementById("y").textContent = new Date().getFullYear();
+</script>
+<script src="../assets/consent.js"></script>
+<script src="../assets/pwa.js"></script>
+</body>
+</html>

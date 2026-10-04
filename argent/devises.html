@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Convertisseur de devises : euro, dollar, livre et plus – ToolBOX</title>
+<meta name="description" content="Convertis l'euro, le dollar, la livre, le dirham et plus de 45 devises avec les taux du jour. Gratuit, rapide, sans inscription.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/outil.css">
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#eceff2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121a21" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" href="../icons/icon-192.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<style>
+  .swap{flex:0 0 auto;align-self:flex-end;font:600 1.3rem var(--body);width:3rem;height:3.2rem;border-radius:10px;border:2px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+  .swap:hover{border-color:var(--ink)}
+  .src{color:var(--muted);font-size:.9rem;margin:.8rem 0 0}
+  .detail{display:flex;flex-wrap:wrap;gap:.4rem 1.5rem;margin-top:.6rem;color:var(--muted)}
+  .detail b{color:var(--ink);font-weight:600}
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://toolbox.alguisand.workers.dev/argent/devises">
+<meta property="og:site_name" content="ToolBOX">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="Convertisseur de devises : euro, dollar, livre et plus – ToolBOX">
+<meta property="og:description" content="Convertis l'euro, le dollar, la livre, le dirham et plus de 45 devises avec les taux du jour. Gratuit, rapide, sans inscription.">
+<meta property="og:url" content="https://toolbox.alguisand.workers.dev/argent/devises">
+<meta property="og:image" content="https://toolbox.alguisand.workers.dev/icons/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ToolBOX : les petits outils du quotidien">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Convertisseur de devises","url":"https://toolbox.alguisand.workers.dev/argent/devises","description":"Convertis l\u0027euro, le dollar, la livre, le dirham et plus de 45 devises avec les taux du jour. Gratuit, rapide, sans inscription.","applicationCategory":"FinanceApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","inLanguage":"fr-FR","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://toolbox.alguisand.workers.dev/"},{"@type":"ListItem","position":2,"name":"Convertisseur de devises","item":"https://toolbox.alguisand.workers.dev/argent/devises"}]}]</script>
+<!-- /seo -->
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="../index.html">Tool<span>BOX</span></a>
+  </header>
+
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="../index.html">Accueil</a> › <a href="../index.html#outils">Argent</a> › Convertisseur de devises
+  </nav>
+
+  <main>
+    <h1>Convertisseur de devises</h1>
+    <p class="lead">Convertis une somme d'une monnaie à une autre avec les taux du jour.</p>
+
+    <section class="tool" aria-label="Convertisseur de devises">
+      <div class="fields">
+        <div class="field"><label for="amount">Montant</label>
+          <input id="amount" type="text" inputmode="decimal" autocomplete="off" value="100"></div>
+        <div class="field"><label for="from">De</label><select id="from"></select></div>
+        <button type="button" class="swap" id="swap" aria-label="Inverser les deux devises">⇄</button>
+        <div class="field"><label for="to">Vers</label><select id="to"></select></div>
+      </div>
+      <div class="result" id="result" aria-live="polite"></div>
+      <p class="src" id="src"></p>
+    </section>
+
+    <section class="explain">
+      <h2>Comment est calculée la conversion ?</h2>
+      <p>Le montant est multiplié par le taux de change entre les deux devises. Les taux viennent d'un service public de taux de change mis à jour une fois par jour : ce sont des taux de référence, pas ceux d'une banque, d'un bureau de change ou d'une carte bancaire, qui ajoutent presque toujours une commission.</p>
+      <p>Pour un achat important, un voyage ou un virement, compare toujours avec le taux réellement proposé par ton établissement. Cet outil donne une estimation, pas une offre.</p>
+      <h2>Et sans connexion ?</h2>
+      <p>Si le service de taux est inaccessible, l'outil utilise un instantané des taux du 3 octobre 2026 et l'indique clairement. Il peut alors s'écarter du cours réel.</p>
+    </section>
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX – Seuls les taux de change sont téléchargés ; ton montant reste dans ton navigateur.<nav class="legal-links" aria-label="Informations légales"><a href="../legal/mentions-legales.html">Mentions légales</a> · <a href="../legal/confidentialite.html">Confidentialité</a> · <a href="../legal/contact.html">Contact</a> · <a href="#" data-cookie-settings>Cookies</a></nav></footer>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const num = s => parseFloat(String(s).replace(/\s/g, "").replace(",", "."));
+const digits = n => Math.abs(n) < 1 ? 6 : Math.abs(n) < 100 ? 4 : 2;
+const fmt = n => new Intl.NumberFormat("fr-FR", { maximumFractionDigits: digits(n) }).format(n);
+
+const NAMES = {
+  EUR: "Euro", USD: "Dollar américain", GBP: "Livre sterling", CHF: "Franc suisse", CAD: "Dollar canadien", AUD: "Dollar australien",
+  NZD: "Dollar néo-zélandais", JPY: "Yen japonais", CNY: "Yuan chinois", HKD: "Dollar de Hong Kong", SGD: "Dollar de Singapour",
+  KRW: "Won sud-coréen", INR: "Roupie indienne", AED: "Dirham des Émirats", SAR: "Riyal saoudien", TRY: "Livre turque",
+  ILS: "Shekel israélien", THB: "Baht thaïlandais", IDR: "Roupie indonésienne", PHP: "Peso philippin", MYR: "Ringgit malaisien",
+  VND: "Dong vietnamien", BRL: "Réal brésilien", MXN: "Peso mexicain", ARS: "Peso argentin", CLP: "Peso chilien", COP: "Peso colombien",
+  PEN: "Sol péruvien", ZAR: "Rand sud-africain", EGP: "Livre égyptienne", MAD: "Dirham marocain", TND: "Dinar tunisien",
+  DZD: "Dinar algérien", XOF: "Franc CFA (Afrique de l'Ouest)", XAF: "Franc CFA (Afrique centrale)", NGN: "Naira nigérian",
+  KES: "Shilling kényan", SEK: "Couronne suédoise", NOK: "Couronne norvégienne", DKK: "Couronne danoise", ISK: "Couronne islandaise",
+  PLN: "Zloty polonais", CZK: "Couronne tchèque", HUF: "Forint hongrois", RON: "Leu roumain", BGN: "Lev bulgare",
+  RSD: "Dinar serbe", UAH: "Hryvnia ukrainienne", RUB: "Rouble russe"
+};
+
+// Instantané de secours (base euro), utilisé seulement si le service de taux est inaccessible
+const FALLBACK = { date: "2026-10-03", rates: { EUR: 1, USD: 1.125175, GBP: 0.850777, CHF: 0.932368, CAD: 1.602851, AUD: 1.618862, NZD: 2.004555, JPY: 177.77953, CNY: 7.561541, HKD: 8.829174, SGD: 1.4393, KRW: 1517.899042, INR: 108.378991, AED: 4.132186, SAR: 4.219387, TRY: 55.287969, ILS: 3.448975, THB: 37.771905, IDR: 20100.170558, PHP: 70.36697, MYR: 4.595936, VND: 29232.971915, BRL: 5.875463, MXN: 20.494605, ARS: 1713.731398, CLP: 1106.381285, COP: 3739.484284, PEN: 3.877707, ZAR: 18.749209, EGP: 58.854053, MAD: 11.149313, TND: 3.364571, DZD: 151.425173, XOF: 655.957, XAF: 655.957, NGN: 1521.820816, KES: 147.788132, SEK: 11.295913, NOK: 10.82686, DKK: 7.475202, ISK: 137.065066, PLN: 4.375839, CZK: 24.455911, HUF: 368.432772, RON: 5.332272, BGN: 1.95583, RSD: 117.4749, UAH: 50.604424, RUB: 93.969026 } };
+
+let rates = FALLBACK.rates;
+let source = { live: false, date: FALLBACK.date };
+const KEY = "toolbox-fx";
+
+const dateFr = d => new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "long", year: "numeric" }).format(new Date(d));
+
+async function loadRates() {
+  let cached = null;
+  try { cached = JSON.parse(localStorage.getItem(KEY)); } catch (_) {}
+  if (cached && cached.rates && Date.now() - cached.t < 6 * 3600 * 1000) {
+    rates = cached.rates; source = { live: true, date: cached.date };
+    return;
+  }
+  try {
+    const ctl = new AbortController();
+    const timer = setTimeout(() => ctl.abort(), 6000);
+    const r = await fetch("https://open.er-api.com/v6/latest/EUR", { signal: ctl.signal });
+    clearTimeout(timer);
+    const j = await r.json();
+    if (j.result !== "success" || !j.rates) throw new Error("réponse invalide");
+    rates = j.rates; source = { live: true, date: j.time_last_update_utc };
+    try { localStorage.setItem(KEY, JSON.stringify({ t: Date.now(), rates, date: source.date })); } catch (_) {}
+  } catch (_) {
+    if (cached && cached.rates) { rates = cached.rates; source = { live: true, date: cached.date, old: true }; }
+    else { rates = FALLBACK.rates; source = { live: false, date: FALLBACK.date }; }
+  }
+}
+
+function fillSelects() {
+  const codes = Object.keys(NAMES).filter(c => rates[c]);
+  const opts = codes.map(c => `<option value="${c}">${c} – ${NAMES[c]}</option>`).join("");
+  $("from").innerHTML = opts; $("to").innerHTML = opts;
+  $("from").value = "EUR"; $("to").value = "USD";
+}
+
+function compute() {
+  const a = num($("amount").value), f = $("from").value, t = $("to").value;
+  const result = $("result");
+  const bad = isNaN(a) || a < 0;
+  result.classList.toggle("err", bad);
+  if (bad) { result.innerHTML = `<div class="big">Entre un montant positif.</div>`; return; }
+  const rate = rates[t] / rates[f];
+  result.innerHTML =
+    `<div class="big">${fmt(a * rate)} ${t}</div>
+     <div class="txt">${fmt(a)} ${f} (${NAMES[f]}) = ${fmt(a * rate)} ${t} (${NAMES[t]})</div>
+     <div class="detail"><span>1 ${f} = <b>${fmt(rate)} ${t}</b></span><span>1 ${t} = <b>${fmt(1 / rate)} ${f}</b></span></div>
+     <table class="tbl"><tbody>${[1, 10, 50, 100, 500, 1000].map(x => `<tr><td>${fmt(x)} ${f}</td><td>${fmt(x * rate)} ${t}</td></tr>`).join("")}</tbody></table>`;
+}
+
+function showSource() {
+  $("src").innerHTML = source.live
+    ? `Taux du ${dateFr(source.date)}${source.old ? " (dernière mise à jour connue : connexion indisponible)" : ""}. Source : <a href="https://www.exchangerate-api.com" rel="noopener">Taux fournis par ExchangeRate-API</a>.`
+    : `Connexion au service de taux impossible : taux de secours du ${dateFr(source.date)}, à titre indicatif.`;
+}
+
+["amount", "from", "to"].forEach(id => { $(id).addEventListener("input", compute); $(id).addEventListener("change", compute); });
+$("swap").addEventListener("click", () => { const f = $("from").value; $("from").value = $("to").value; $("to").value = f; compute(); });
+
+(async () => {
+  fillSelects(); compute();               // affichage immédiat avec l'instantané
+  await loadRates(); fillSelects(); compute(); showSource();
+})();
+$("y").textContent = new Date().getFullYear();
+</script>
+<script src="../assets/consent.js"></script>
+<script src="../assets/pwa.js"></script>
+</body>
+</html>
