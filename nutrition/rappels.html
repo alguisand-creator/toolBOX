@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rappels et notifications : eau, collations, repas – ToolBOX</title>
+<meta name="description" content="Reçois des notifications sur ton téléphone ou ton ordinateur : rappels pour boire de l'eau et rappels personnalisés (collation, repas) aux heures que tu choisis.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/outil.css">
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#eceff2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121a21" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" href="../icons/icon-192.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<style>
+  .field input[type=time]{min-width:7.5rem}
+  .rem{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:.7rem .8rem;display:grid;gap:.6rem}
+  .rem .row input[type=time]{flex:0 0 auto;width:auto}
+  .days{display:flex;flex-wrap:wrap;gap:.35rem}
+  .days button{font:600 .8rem var(--body);min-width:2.3rem;padding:.3rem .4rem;border-radius:99px;border:1px solid var(--line);background:var(--surface);color:var(--muted);cursor:pointer}
+  .days button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+  .chips{display:flex;flex-wrap:wrap;gap:.5rem;margin:.2rem 0 1rem}
+  .chips button{font:500 .9rem var(--body);color:var(--ink);background:var(--bg);border:1px dashed var(--muted);border-radius:99px;padding:.35rem .8rem;cursor:pointer}
+  .chips button:hover{border-style:solid;border-color:var(--ink)}
+  .note{color:var(--muted);margin:.4rem 0 0;font-size:.95rem}
+  #msg{min-height:1.5rem;margin:.9rem 0 0;font-weight:600}
+  #msg.ok{color:#2e8b57}#msg.ko{color:#c0392b}
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://toolbox.alguisand.workers.dev/nutrition/rappels">
+<meta property="og:site_name" content="ToolBOX">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="Rappels et notifications : eau, collations, repas – ToolBOX">
+<meta property="og:description" content="Reçois des notifications sur ton téléphone ou ton ordinateur : rappels pour boire de l'eau et rappels personnalisés (collation, repas) aux heures que tu choisis.">
+<meta property="og:url" content="https://toolbox.alguisand.workers.dev/nutrition/rappels">
+<meta property="og:image" content="https://toolbox.alguisand.workers.dev/icons/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ToolBOX : les petits outils du quotidien">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Rappels et notifications","url":"https://toolbox.alguisand.workers.dev/nutrition/rappels","description":"Reçois des notifications sur ton téléphone ou ton ordinateur : rappels pour boire de l'eau et rappels personnalisés (collation, repas) aux heures que tu choisis.","applicationCategory":"HealthApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","inLanguage":"fr-FR","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://toolbox.alguisand.workers.dev/"},{"@type":"ListItem","position":2,"name":"Rappels et notifications","item":"https://toolbox.alguisand.workers.dev/nutrition/rappels"}]}]</script>
+<!-- /seo -->
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="../index.html">Tool<span>BOX</span></a>
+  </header>
+
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="../index.html">Accueil</a> › <a href="../index.html#outils">Nutrition</a> › Rappels
+  </nav>
+
+  <main>
+    <h1>Rappels et notifications</h1>
+    <p class="lead">Reçois une notification pour boire de l'eau ou pour tes repas et collations, aux heures que tu choisis.</p>
+
+    <section class="tool" aria-label="Réglage des rappels">
+      <div class="result" id="status" aria-live="polite" style="margin-top:0"></div>
+
+      <div class="sect" style="margin-top:1.4rem">💧 Rappels d'eau</div>
+      <label class="chk" style="margin-top:0"><input type="checkbox" id="waterOn" checked> Me rappeler de boire</label>
+      <div class="fields" style="margin-top:.8rem">
+        <div class="field"><label for="wFrom">De</label><input id="wFrom" type="time" value="08:00"></div>
+        <div class="field"><label for="wTo">À</label><input id="wTo" type="time" value="20:00"></div>
+        <div class="field"><label for="wEvery">Toutes les</label>
+          <select id="wEvery">
+            <option value="60">1 heure</option>
+            <option value="90">1 h 30</option>
+            <option value="120" selected>2 heures</option>
+            <option value="180">3 heures</option>
+          </select></div>
+      </div>
+      <p class="note" id="wPreview"></p>
+
+      <div class="sect">⏰ Mes rappels personnalisés</div>
+      <div class="chips" id="chips" aria-label="Ajouter un rappel type"></div>
+      <div class="rows" id="list"></div>
+      <div class="actions"><button type="button" class="btn ghost" id="addRem">+ Ajouter un rappel</button></div>
+
+      <div class="actions" style="margin-top:1.6rem">
+        <button type="button" class="btn" id="save">Activer et enregistrer</button>
+        <button type="button" class="btn ghost" id="test" hidden>Envoyer une notification test</button>
+        <button type="button" class="btn ghost" id="off" hidden>Désactiver les rappels</button>
+      </div>
+      <p id="msg" role="status" aria-live="polite"></p>
+    </section>
+
+    <section class="explain">
+      <h2>Comment ça marche ?</h2>
+      <p>Choisis tes horaires, puis clique sur « Activer et enregistrer » et accepte les notifications quand ton navigateur te le demande. Les rappels arrivent ensuite aux heures choisies, même si le site est fermé. Les horaires suivent le fuseau horaire de ton appareil.</p>
+      <ul>
+        <li><strong>Android et ordinateur</strong> (Chrome, Edge, Firefox) : ça fonctionne directement dans le navigateur.</li>
+        <li><strong>iPhone et iPad</strong> : installe d'abord ToolBOX sur l'écran d'accueil (bouton Partager, puis « Sur l'écran d'accueil »), ouvre l'app depuis son icône, puis active les rappels. iOS 16.4 minimum.</li>
+      </ul>
+
+      <h2>Et ma vie privée ?</h2>
+      <p>Pour pouvoir t'envoyer les rappels quand le site est fermé, ton appareil enregistre auprès de nos serveurs une adresse d'envoi anonyme fournie par ton navigateur, ainsi que tes horaires et les textes de tes rappels. Aucun nom, e-mail ni compte n'est demandé. Quand tu désactives les rappels, tout est supprimé. Détails dans la <a href="../legal/confidentialite.html">politique de confidentialité</a>.</p>
+
+      <h2>Il y a un souci ?</h2>
+      <p>Si tu ne reçois rien, vérifie que les notifications sont autorisées pour ToolBOX dans les réglages de ton navigateur ou de ton téléphone, que le mode « Ne pas déranger » est désactivé, puis utilise le bouton « Envoyer une notification test ». Pour boire la bonne quantité, retrouve ton besoin avec <a href="besoin-en-eau.html">Besoin en eau quotidien</a>.</p>
+    </section>
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX<nav class="legal-links" aria-label="Informations légales"><a href="../legal/mentions-legales.html">Mentions légales</a> · <a href="../legal/confidentialite.html">Confidentialité</a> · <a href="../legal/contact.html">Contact</a> · <a href="#" data-cookie-settings>Cookies</a></nav></footer>
+</div>
+
+<script>
+const KEY = "toolbox-rappels-v1";
+const TIME_RE = /^([01]\d|2[0-3]):[0-5]\d$/;
+const DAYS = [["Lu", 1], ["Ma", 2], ["Me", 3], ["Je", 4], ["Ve", 5], ["Sa", 6], ["Di", 0]];
+const PRESETS = [["Petit-déjeuner", "08:00"], ["Déjeuner", "12:30"], ["Collation", "16:00"], ["Dîner", "19:30"]];
+const MAX_CUSTOM = 20, MAX_ITEMS = 48;
+
+const $ = id => document.getElementById(id);
+const el = { waterOn: $("waterOn"), wFrom: $("wFrom"), wTo: $("wTo"), wEvery: $("wEvery"), wPreview: $("wPreview"),
+  list: $("list"), chips: $("chips"), save: $("save"), test: $("test"), off: $("off"), msg: $("msg"), status: $("status") };
+
+// État : lu depuis le stockage local de l'appareil (jamais envoyé tel quel, seuls les rappels le sont)
+let custom = [{ label: "Collation", time: "16:00", days: [] }];
+try {
+  const s = JSON.parse(localStorage.getItem(KEY) || "null");
+  if (s) {
+    el.waterOn.checked = !!s.waterOn;
+    if (TIME_RE.test(s.wFrom)) el.wFrom.value = s.wFrom;
+    if (TIME_RE.test(s.wTo)) el.wTo.value = s.wTo;
+    if (["60", "90", "120", "180"].includes(String(s.wEvery))) el.wEvery.value = String(s.wEvery);
+    if (Array.isArray(s.custom)) custom = s.custom.filter(c => c && TIME_RE.test(c.time)).slice(0, MAX_CUSTOM)
+      .map(c => ({ label: String(c.label || "").slice(0, 60), time: c.time, days: Array.isArray(c.days) ? c.days : [] }));
+  }
+} catch (_) {}
+
+const persist = () => { try { localStorage.setItem(KEY, JSON.stringify({ waterOn: el.waterOn.checked, wFrom: el.wFrom.value, wTo: el.wTo.value, wEvery: el.wEvery.value, custom })); } catch (_) {} };
+const toMin = t => +t.slice(0, 2) * 60 + +t.slice(3);
+const toHHMM = m => String(Math.floor(m / 60)).padStart(2, "0") + ":" + String(m % 60).padStart(2, "0");
+
+function waterTimes() {
+  if (!el.waterOn.checked || !TIME_RE.test(el.wFrom.value) || !TIME_RE.test(el.wTo.value)) return [];
+  const from = toMin(el.wFrom.value), to = toMin(el.wTo.value), step = +el.wEvery.value, out = [];
+  for (let m = from; m <= to; m += step) out.push(toHHMM(m));
+  return out;
+}
+
+function buildItems() {
+  const items = waterTimes().map(time => ({ time, title: "💧 Il est temps de boire", body: "Un verre d'eau, c'est parti." }));
+  for (const c of custom) {
+    if (!c.label.trim() || !TIME_RE.test(c.time)) continue;
+    items.push({ time: c.time, title: c.label.trim(), body: "Rappel ToolBOX", days: c.days.length && c.days.length < 7 ? c.days : null });
+  }
+  return items;
+}
+
+function renderPreview() {
+  const t = waterTimes();
+  el.wPreview.textContent = !el.waterOn.checked ? "Rappels d'eau désactivés."
+    : !t.length ? "Choisis une heure de fin après l'heure de début."
+    : `${t.length} rappel${t.length > 1 ? "s" : ""} par jour : ${t.join(", ")}`;
+}
+
+function renderList() {
+  el.list.innerHTML = "";
+  custom.forEach((c, i) => {
+    const box = document.createElement("div"); box.className = "rem";
+    const row = document.createElement("div"); row.className = "row";
+    const label = Object.assign(document.createElement("input"), { type: "text", value: c.label, placeholder: "Nom du rappel (ex. Collation)", maxLength: 60 });
+    label.className = "grow"; label.setAttribute("aria-label", "Nom du rappel");
+    label.addEventListener("input", () => { c.label = label.value; persist(); });
+    const time = Object.assign(document.createElement("input"), { type: "time", value: c.time });
+    time.setAttribute("aria-label", "Heure du rappel");
+    time.addEventListener("input", () => { if (TIME_RE.test(time.value)) { c.time = time.value; persist(); } });
+    const del = Object.assign(document.createElement("button"), { type: "button", textContent: "×" });
+    del.className = "x"; del.setAttribute("aria-label", "Supprimer ce rappel");
+    del.addEventListener("click", () => { custom.splice(i, 1); persist(); renderList(); });
+    row.append(label, time, del);
+    const days = document.createElement("div"); days.className = "days"; days.setAttribute("role", "group"); days.setAttribute("aria-label", "Jours");
+    DAYS.forEach(([name, n]) => {
+      const b = Object.assign(document.createElement("button"), { type: "button", textContent: name });
+      const on = () => !c.days.length || c.days.includes(n);   // aucun jour choisi = tous les jours
+      b.setAttribute("aria-pressed", on());
+      b.addEventListener("click", () => {
+        const cur = c.days.length ? c.days.slice() : DAYS.map(d => d[1]);
+        const next = cur.includes(n) ? cur.filter(x => x !== n) : cur.concat(n);
+        c.days = next.length === 7 || next.length === 0 ? [] : next;
+        persist(); renderList();
+      });
+      days.append(b);
+    });
+    box.append(row, days);
+    el.list.append(box);
+  });
+  $("addRem").hidden = custom.length >= MAX_CUSTOM;
+}
+
+PRESETS.forEach(([label, time]) => {
+  const b = Object.assign(document.createElement("button"), { type: "button", textContent: `+ ${label} ${time}` });
+  b.addEventListener("click", () => { if (custom.length < MAX_CUSTOM) { custom.push({ label, time, days: [] }); persist(); renderList(); } });
+  el.chips.append(b);
+});
+$("addRem").addEventListener("click", () => { custom.push({ label: "", time: "10:00", days: [] }); persist(); renderList(); });
+[el.waterOn, el.wFrom, el.wTo, el.wEvery].forEach(e => { e.addEventListener("input", () => { persist(); renderPreview(); }); e.addEventListener("change", () => { persist(); renderPreview(); }); });
+
+// ── Notifications ──
+const ua = navigator.userAgent;
+const ios = /iphone|ipad|ipod/i.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+const standalone = matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+const supported = "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
+const say = (txt, kind) => { el.msg.textContent = txt; el.msg.className = kind || ""; };
+const setStatus = (big, txt) => { el.status.classList.remove("err"); el.status.innerHTML = `<div class="big" style="font-size:1.3rem">${big}</div><div class="txt">${txt}</div>`; };
+
+const b64uToBytes = s => Uint8Array.from(atob(s.replace(/-/g, "+").replace(/_/g, "/").padEnd(Math.ceil(s.length / 4) * 4, "=")), c => c.charCodeAt(0));
+const api = async (path, body) => {
+  const r = await fetch("/api/push/" + path, body ? { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) } : undefined);
+  let data = {}; try { data = await r.json(); } catch (_) {}
+  if (!r.ok) { const e = new Error(data.error || "Erreur " + r.status); e.status = r.status; throw e; }
+  return data;
+};
+
+async function currentSub() {
+  if (!supported) return null;
+  const reg = await navigator.serviceWorker.ready;
+  return reg.pushManager.getSubscription();
+}
+
+function showState(sub) {
+  const on = !!sub && Notification.permission === "granted";
+  el.test.hidden = !on; el.off.hidden = !on;
+  el.save.textContent = on ? "Enregistrer mes rappels" : "Activer et enregistrer";
+  if (on) setStatus("Rappels activés ✅", "Tu recevras tes notifications aux heures choisies, même site fermé.");
+}
+
+function init() {
+  renderList(); renderPreview();
+  if (!supported) {
+    el.save.disabled = true;
+    setStatus("Notifications indisponibles", ios && !standalone
+      ? "Sur iPhone et iPad, installe d'abord ToolBOX : bouton Partager, puis « Sur l'écran d'accueil ». Ouvre ensuite l'app depuis son icône."
+      : "Ton navigateur ne gère pas les notifications. Essaie avec Chrome, Edge ou Firefox à jour.");
+    return;
+  }
+  if (Notification.permission === "denied") {
+    setStatus("Notifications bloquées", "Autorise les notifications pour ToolBOX dans les réglages de ton navigateur, puis recharge la page.");
+  } else {
+    setStatus("Rappels désactivés", "Choisis tes horaires puis clique sur « Activer et enregistrer ».");
+  }
+  currentSub().then(async sub => {
+    showState(sub);
+    // Met à jour le fuseau horaire et les rappels si l'appareil a déjà tout activé
+    if (sub && Notification.permission === "granted") { try { await push(sub); } catch (_) {} }
+  }).catch(() => {});
+}
+
+async function push(sub) {
+  const items = buildItems();
+  if (!items.length || items.length > MAX_ITEMS) throw new Error(items.length ? "Trop de rappels : réduis la fréquence de l'eau ou supprime-en." : "Ajoute au moins un rappel.");
+  const j = sub.toJSON();
+  await api("save", { sub: { endpoint: j.endpoint, keys: j.keys }, tz: Intl.DateTimeFormat().resolvedOptions().timeZone, items });
+  return items.length;
+}
+
+el.save.addEventListener("click", async () => {
+  say("");
+  if (el.waterOn.checked && !waterTimes().length) { say("Choisis une heure de fin après l'heure de début.", "ko"); return; }
+  el.save.disabled = true;
+  try {
+    // La demande d'autorisation doit partir directement du clic
+    const perm = Notification.permission === "default" ? await Notification.requestPermission() : Notification.permission;
+    if (perm !== "granted") { setStatus("Notifications bloquées", "Autorise les notifications pour ToolBOX dans les réglages de ton navigateur, puis recharge la page."); say("Les notifications n'ont pas été autorisées.", "ko"); return; }
+    const reg = await navigator.serviceWorker.ready;
+    let sub = await reg.pushManager.getSubscription();
+    if (!sub) {
+      const { key } = await api("key");
+      sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64uToBytes(key) });
+    }
+    const n = await push(sub);
+    showState(sub);
+    say(`C'est enregistré : ${n} rappel${n > 1 ? "s" : ""} par jour.`, "ok");
+  } catch (e) {
+    say(e.status === 503 ? "Les rappels ne sont pas encore disponibles sur le serveur. Réessaie plus tard." : (e.message || "Impossible d'activer les rappels."), "ko");
+  } finally { el.save.disabled = false; }
+});
+
+el.test.addEventListener("click", async () => {
+  try { const sub = await currentSub(); if (!sub) return; await api("test", { endpoint: sub.endpoint }); say("Notification envoyée : elle arrive dans quelques secondes.", "ok"); }
+  catch (e) { say(e.message || "Envoi impossible.", "ko"); }
+});
+
+el.off.addEventListener("click", async () => {
+  try {
+    const sub = await currentSub();
+    if (sub) { try { await api("remove", { endpoint: sub.endpoint }); } catch (_) {} await sub.unsubscribe(); }
+    showState(null);
+    setStatus("Rappels désactivés", "Tes rappels ont été supprimés du serveur.");
+    say("Rappels désactivés.", "ok");
+  } catch (e) { say(e.message || "Impossible de désactiver.", "ko"); }
+});
+
+init();
+document.getElementById("y").textContent = new Date().getFullYear();
+</script>
+<script src="../assets/consent.js"></script>
+<script src="../assets/pwa.js"></script>
+</body>
+</html>

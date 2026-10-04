@@ -60,6 +60,7 @@
     { "match": "macronutriments.html",     "dest": "nutrition" },
     { "match": "besoin-en-eau.html",       "dest": "nutrition" },
     { "match": "objectif-poids.html",      "dest": "nutrition" },
+    { "match": "rappels.html",             "dest": "nutrition" },
 
     { "match": "compteur-de-mots.html",    "dest": "texte" }
   ]

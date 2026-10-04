@@ -24,7 +24,7 @@ const PRECACHE = [
   "/ia/generateur-description.html", "/ia/generateur-cv.html", "/ia/generateur-lettre.html", "/ia/generateur-bio.html",
   "/ia/generateur-prompt.html", "/ia/description-vinted.html",
   "/nutrition/besoins-caloriques.html", "/nutrition/compteur-calories.html", "/nutrition/macronutriments.html",
-  "/nutrition/besoin-en-eau.html", "/nutrition/objectif-poids.html",
+  "/nutrition/besoin-en-eau.html", "/nutrition/objectif-poids.html", "/nutrition/rappels.html",
   "/legal/mentions-legales.html", "/legal/confidentialite.html", "/legal/contact.html"
 ];
 
@@ -86,6 +86,31 @@ async function cacheFirst(req) {
   if (res.ok || res.type === "opaque") cache.put(req, res.clone());
   return res;
 }
+
+// Notifications push (rappels d'eau, collations…) : le serveur envoie le titre et le texte.
+self.addEventListener("push", e => {
+  let d = {};
+  try { d = e.data ? e.data.json() : {}; } catch (_) {}
+  e.waitUntil(self.registration.showNotification(d.title || "ToolBOX", {
+    body: d.body || "",
+    icon: "/icons/icon-192.png",
+    badge: "/icons/icon-192.png",
+    tag: d.tag || undefined,
+    data: { url: d.url || "/nutrition/rappels.html" }
+  }));
+});
+
+self.addEventListener("notificationclick", e => {
+  e.notification.close();
+  const target = new URL((e.notification.data && e.notification.data.url) || "/", self.location.origin).href;
+  e.waitUntil((async () => {
+    const wins = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+    for (const w of wins) {
+      if ("focus" in w) { await w.focus(); if ("navigate" in w) { try { await w.navigate(target); } catch (_) {} } return; }
+    }
+    await self.clients.openWindow(target);
+  })());
+});
 
 self.addEventListener("fetch", e => {
   const req = e.request;
