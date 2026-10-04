@@ -94,7 +94,7 @@ self.addEventListener("push", e => {
   e.waitUntil(self.registration.showNotification(d.title || "ToolBOX", {
     body: d.body || "",
     icon: "/icons/icon-192.png",
-    badge: "/icons/icon-192.png",
+    badge: "/icons/badge-96.png",   // petite icône monochrome de la barre d'état (une icône pleine s'afficherait en carré blanc)
     tag: d.tag || undefined,
     data: { url: d.url || "/nutrition/rappels.html" }
   }));
