@@ -13,6 +13,8 @@ const PRECACHE = [
   "/", "/manifest.json",
   "/assets/outil.css", "/assets/ia.js", "/assets/consent.js", "/assets/pwa.js",
   "/icons/icon-192.png", "/icons/icon-512.png", "/icons/apple-touch-icon.png",
+  "/calcul/imc.html", "/calcul/jours-entre-dates.html", "/argent/devises.html", "/argent/frais-de-notaire.html",
+  "/informatique/mot-de-passe.html", "/texte/compteur-de-mots.html",
   "/calcul/pourcentage.html", "/calcul/tva.html", "/calcul/moyenne.html", "/calcul/regle-de-trois.html", "/calcul/age.html",
   "/argent/salaire.html", "/argent/salaire-horaire.html", "/argent/budget.html",
   "/etudes/moyenne-scolaire.html", "/etudes/note-necessaire.html", "/etudes/planning.html",

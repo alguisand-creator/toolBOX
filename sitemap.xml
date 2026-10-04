@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://toolbox.alguisand.workers.dev/argent/budget</loc><lastmod>2026-10-04</lastmod></url>
+  <url><loc>https://toolbox.alguisand.workers.dev/argent/devises</loc><lastmod>2026-10-04</lastmod></url>
+  <url><loc>https://toolbox.alguisand.workers.dev/argent/frais-de-notaire</loc><lastmod>2026-10-04</lastmod></url>
   <url><loc>https://toolbox.alguisand.workers.dev/argent/salaire</loc><lastmod>2026-10-04</lastmod></url>
   <url><loc>https://toolbox.alguisand.workers.dev/argent/salaire-horaire</loc><lastmod>2026-10-04</lastmod></url>
   <url><loc>https://toolbox.alguisand.workers.dev/calcul/age</loc><lastmod>2026-10-04</lastmod></url>
+  <url><loc>https://toolbox.alguisand.workers.dev/calcul/imc</loc><lastmod>2026-10-04</lastmod></url>
+  <url><loc>https://toolbox.alguisand.workers.dev/calcul/jours-entre-dates</loc><lastmod>2026-10-04</lastmod></url>
   <url><loc>https://toolbox.alguisand.workers.dev/calcul/moyenne</loc><lastmod>2026-10-04</lastmod></url>
   <url><loc>https://toolbox.alguisand.workers.dev/calcul/pourcentage</loc><lastmod>2026-10-04</lastmod></url>
   <url><loc>https://toolbox.alguisand.workers.dev/calcul/regle-de-trois</loc><lastmod>2026-10-04</lastmod></url>
@@ -26,8 +30,10 @@
   <url><loc>https://toolbox.alguisand.workers.dev/images/redimensionnement</loc><lastmod>2026-10-04</lastmod></url>
   <url><loc>https://toolbox.alguisand.workers.dev/</loc><lastmod>2026-10-04</lastmod></url>
   <url><loc>https://toolbox.alguisand.workers.dev/informatique/alimentation-pc</loc><lastmod>2026-10-04</lastmod></url>
+  <url><loc>https://toolbox.alguisand.workers.dev/informatique/mot-de-passe</loc><lastmod>2026-10-04</lastmod></url>
   <url><loc>https://toolbox.alguisand.workers.dev/informatique/stockage</loc><lastmod>2026-10-04</lastmod></url>
   <url><loc>https://toolbox.alguisand.workers.dev/legal/confidentialite</loc><lastmod>2026-10-04</lastmod></url>
   <url><loc>https://toolbox.alguisand.workers.dev/legal/contact</loc><lastmod>2026-10-04</lastmod></url>
   <url><loc>https://toolbox.alguisand.workers.dev/legal/mentions-legales</loc><lastmod>2026-10-04</lastmod></url>
+  <url><loc>https://toolbox.alguisand.workers.dev/texte/compteur-de-mots</loc><lastmod>2026-10-04</lastmod></url>
 </urlset>
