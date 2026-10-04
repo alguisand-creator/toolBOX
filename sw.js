@@ -25,7 +25,7 @@ const PRECACHE = [
   "/ia/generateur-prompt.html", "/ia/description-vinted.html",
   "/nutrition/besoins-caloriques.html", "/nutrition/compteur-calories.html", "/nutrition/macronutriments.html",
   "/nutrition/besoin-en-eau.html", "/nutrition/objectif-poids.html", "/nutrition/rappels.html",
-  "/cuisine/grammes-en-ml.html", "/cuisine/portions-recette.html", "/cuisine/temps-de-cuisson.html", "/cuisine/celsius-fahrenheit.html",
+  "/cuisine/grammes-en-ml.html", "/cuisine/portions-recette.html", "/cuisine/convertisseur-recette.html", "/cuisine/temps-de-cuisson.html", "/cuisine/celsius-fahrenheit.html",
   "/voyage/distance-entre-villes.html", "/voyage/temps-de-trajet.html", "/voyage/fuseaux-horaires.html",
   "/temps/compte-a-rebours.html", "/temps/duree-entre-heures.html", "/temps/heures-en-minutes.html", "/temps/minutes-en-secondes.html",
   "/legal/mentions-legales.html", "/legal/confidentialite.html", "/legal/contact.html"

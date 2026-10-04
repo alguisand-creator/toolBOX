@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Convertisseur de recette : crêpes, gaufres, gâteau, portions – ToolBOX</title>
+<meta name="description" content="Adapte les quantités d'une recette à n'importe quel nombre de crêpes, gaufres, muffins ou personnes. Exemple : pour 8 crêpes il faut 3 L de lait, combien pour 5 ?">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/outil.css">
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#eceff2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121a21" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" href="../icons/icon-192.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<style>
+  .note{color:var(--muted);margin:.4rem 0 0;font-size:.95rem}
+  .chips{display:flex;flex-wrap:wrap;gap:.5rem;margin:.9rem 0 0}
+  .chips button{font:500 .9rem var(--body);color:var(--ink);background:var(--bg);border:1px dashed var(--muted);border-radius:99px;padding:.35rem .8rem;cursor:pointer}
+  .chips button:hover{border-style:solid;border-color:var(--ink)}
+  .swap{align-self:flex-end;flex:0 0 auto;font:600 1.2rem var(--body);width:2.9rem;height:2.9rem;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+  .swap:hover{border-color:var(--ink)}
+  .row select{font:500 1rem var(--body);color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:10px;padding:.5rem .4rem;min-width:0;flex:1.2 1 0}
+  .row select:focus{outline:none;border-color:var(--steel)}
+  .row .qtyin{flex:.9 1 0}
+  .ing{display:grid;gap:.6rem;margin:1.2rem 0 .8rem}
+  td small{color:var(--muted)}
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://toolbox.alguisand.workers.dev/cuisine/convertisseur-recette">
+<meta property="og:site_name" content="ToolBOX">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="Convertisseur de recette : crêpes, gaufres, gâteau, portions – ToolBOX">
+<meta property="og:description" content="Adapte les quantités d'une recette à n'importe quel nombre de crêpes, gaufres, muffins ou personnes. Exemple : pour 8 crêpes il faut 3 L de lait, combien pour 5 ?">
+<meta property="og:url" content="https://toolbox.alguisand.workers.dev/cuisine/convertisseur-recette">
+<meta property="og:image" content="https://toolbox.alguisand.workers.dev/icons/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ToolBOX : les petits outils du quotidien">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Convertisseur de recette","url":"https://toolbox.alguisand.workers.dev/cuisine/convertisseur-recette","description":"Adapte les quantités d\u0027une recette à n\u0027importe quel nombre de crêpes, gaufres, muffins ou personnes. Exemple : pour 8 crêpes il faut 3 L de lait, combien pour 5 ?","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","inLanguage":"fr-FR","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://toolbox.alguisand.workers.dev/"},{"@type":"ListItem","position":2,"name":"Convertisseur de recette","item":"https://toolbox.alguisand.workers.dev/cuisine/convertisseur-recette"}]}]</script>
+<!-- /seo -->
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="../index.html">Tool<span>BOX</span></a>
+  </header>
+
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="../index.html">Accueil</a> › <a href="../index.html#outils">Cuisine</a> › Convertisseur de recette
+  </nav>
+
+  <main>
+    <h1>Convertisseur de recette</h1>
+    <p class="lead">Indique pour combien ta recette est prévue, puis combien tu veux en faire : toutes les quantités sont recalculées.</p>
+
+    <section class="tool" aria-label="Convertisseur de recette">
+      <div class="fields">
+        <div class="field"><label for="from">Ma recette est prévue pour</label><input id="from" type="text" inputmode="decimal" autocomplete="off" value="8"></div>
+        <div class="field"><label for="what">Nom (crêpes, gaufres, personnes…)</label><input id="what" type="text" autocomplete="off" maxlength="30" value="crêpes"></div>
+        <div class="field"><label for="to">Je veux en faire</label><input id="to" type="text" inputmode="decimal" autocomplete="off" value="5"></div>
+      </div>
+
+      <div class="sect" style="margin-top:1.4rem">Les ingrédients de ma recette</div>
+      <div class="rows" id="rows"></div>
+      <div class="actions"><button type="button" class="btn ghost" id="add">+ Ajouter un ingrédient</button></div>
+
+      <div class="result" id="result" aria-live="polite"></div>
+      <table class="tbl" id="tbl"></table>
+      <div class="actions"><button type="button" class="btn ghost" id="copy">Copier la liste</button></div>
+    </section>
+
+    <section class="explain">
+      <h2>Comment ça marche ?</h2>
+      <p>C'est une règle de trois appliquée à chaque ingrédient : on multiplie la quantité par <code>nombre souhaité ÷ nombre prévu</code>. Pour ta recette de 8 crêpes adaptée à 5 crêpes, le coefficient est <code>5 ÷ 8 = 0,625</code> : 3 L de lait deviennent 1,875 L (environ 1,9 L), 5 œufs deviennent 3,1 œufs et 90 g de sucre deviennent 56 g.</p>
+      <p>Choisis l'unité de chaque ingrédient (g, kg, ml, cl, L, cuillères…). Les résultats sont convertis automatiquement dans l'unité la plus pratique : 1 250 g s'affichent en 1,25 kg, et 0,5 L en 500 ml.</p>
+
+      <h2>Les œufs et les ingrédients qui ne se divisent pas</h2>
+      <p>Pour les ingrédients comptés à la pièce, comme les œufs, l'outil affiche le résultat exact et un arrondi. Pour 3,1 œufs, mets-en 3. Si le résultat tombe entre deux nombres, par exemple 2,5 œufs, tu peux battre un œuf entier puis n'en utiliser que la moitié.</p>
+      <p>La levure, le sel, les épices et les temps de cuisson ne se multiplient pas toujours de façon proportionnelle : goûte et ajuste. Pour une recette exprimée par nombre de personnes, tu peux aussi utiliser l'outil <a href="portions-recette.html">Portions</a>, où tu colles directement ta liste. Pour convertir une quantité en volume, voir <a href="grammes-en-ml.html">Grammes en ml</a>.</p>
+    </section>
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX – Tes données restent dans ton navigateur.<nav class="legal-links" aria-label="Informations légales"><a href="../legal/mentions-legales.html">Mentions légales</a> · <a href="../legal/confidentialite.html">Confidentialité</a> · <a href="../legal/contact.html">Contact</a> · <a href="#" data-cookie-settings>Cookies</a></nav></footer>
+</div>
+
+<script>
+const num = s => parseFloat(String(s).replace(",", "."));
+const fmt = (n, d = 2) => new Intl.NumberFormat("fr-FR", { maximumFractionDigits: d }).format(n);
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const dur = min => { const m = Math.round(min); const h = Math.floor(m / 60); return h ? `${h} h ${String(m % 60).padStart(2, "0")} min` : `${m} min`; };
+const UNITS = [["", "sans unité (pièces)"], ["g", "g"], ["kg", "kg"], ["ml", "ml"], ["cl", "cl"], ["dl", "dl"], ["L", "L"], ["cs", "c. à soupe"], ["cc", "c. à café"], ["pincee", "pincée"]];
+const unitLabel = u => (UNITS.find(x => x[0] === u) || ["", ""])[1];
+let rows = [{ q: "3", u: "L", n: "lait" }, { q: "5", u: "", n: "œufs" }, { q: "90", u: "g", n: "sucre" }];
+
+// Affichage dans l'unité la plus pratique
+function show(v, u) {
+  const r = (x, d) => fmt(x, d);
+  switch (u) {
+    case "g": return v >= 1000 ? `${r(v / 1000, 2)} kg` : `${r(v, v < 10 ? 1 : 0)} g`;
+    case "kg": return v < 1 ? `${r(v * 1000, 0)} g` : `${r(v, 2)} kg`;
+    case "ml": return v >= 1000 ? `${r(v / 1000, 2)} L` : `${r(v, v < 10 ? 1 : 0)} ml`;
+    case "cl": return v >= 100 ? `${r(v / 100, 2)} L` : `${r(v, 1)} cl`;
+    case "dl": return `${r(v, 1)} dl`;
+    case "L": return v < 1 ? `${r(v * 1000, 0)} ml` : `${r(v, 2)} L`;
+    case "cs": return `${r(v, 1)} c. à soupe`;
+    case "cc": return `${r(v, 1)} c. à café`;
+    case "pincee": return `${r(v, 1)} pincée${v >= 2 ? "s" : ""}`;
+    default: return Number.isInteger(Math.round(v * 100) / 100) ? r(v, 0) : `${r(v, 2)} (soit environ ${r(Math.round(v), 0)})`;
+  }
+}
+const base = (q, u) => u ? `${fmt(q, 2)} ${unitLabel(u)}` : fmt(q, 2);
+
+function renderRows() {
+  $("rows").innerHTML = "";
+  rows.forEach((r, i) => {
+    const row = document.createElement("div"); row.className = "row";
+    const q = Object.assign(document.createElement("input"), { type: "text", value: r.q, placeholder: "Qté" });
+    q.className = "qtyin"; q.inputMode = "decimal"; q.setAttribute("aria-label", "Quantité");
+    q.addEventListener("input", () => { r.q = q.value; renderTable(); });
+    const u = document.createElement("select"); u.setAttribute("aria-label", "Unité");
+    u.innerHTML = UNITS.map(x => `<option value="${x[0]}"${x[0] === r.u ? " selected" : ""}>${esc(x[1])}</option>`).join("");
+    u.addEventListener("change", () => { r.u = u.value; renderTable(); });
+    const n = Object.assign(document.createElement("input"), { type: "text", value: r.n, placeholder: "Ingrédient", maxLength: 40 });
+    n.className = "grow"; n.setAttribute("aria-label", "Nom de l'ingrédient");
+    n.addEventListener("input", () => { r.n = n.value; renderTable(); });
+    const x = Object.assign(document.createElement("button"), { type: "button", textContent: "×" });
+    x.className = "x"; x.setAttribute("aria-label", "Retirer cet ingrédient");
+    x.addEventListener("click", () => { rows.splice(i, 1); renderRows(); renderTable(); });
+    row.append(q, u, n, x); $("rows").append(row);
+  });
+  $("add").hidden = rows.length >= 30;
+}
+
+let copyText = "";
+function renderTable() {
+  const a = num($("from").value), b = num($("to").value), what = $("what").value.trim() || "portions";
+  const bad = isNaN(a) || isNaN(b) || a <= 0 || b <= 0 || a > 100000 || b > 100000;
+  $("result").classList.toggle("err", bad);
+  if (bad) { $("result").innerHTML = `<div class="big">Entre deux nombres supérieurs à 0.</div>`; $("tbl").innerHTML = ""; copyText = ""; return; }
+  const k = b / a;
+  $("result").innerHTML = `<div class="big">× ${fmt(k, 3)}</div><div class="txt"><strong>Pour ${fmt(b, 2)} ${esc(what)} au lieu de ${fmt(a, 2)}</strong>, chaque quantité est multipliée par ${fmt(b, 2)} ÷ ${fmt(a, 2)}.</div>`;
+  const lines = [];
+  const body = rows.map(r => {
+    const q = num(r.q);
+    if (isNaN(q) || q < 0) return "";
+    const out = show(q * k, r.u);
+    lines.push(`${out} ${r.n.trim()}`.trim());
+    return `<tr><td>${esc(r.n.trim() || "—")}</td><td><small>${esc(base(q, r.u))}</small></td><td>${esc(out)}</td></tr>`;
+  }).join("");
+  $("tbl").innerHTML = `<thead><tr><th>Ingrédient</th><th>Recette de base (${esc(fmt(a, 2))})</th><th>Pour ${esc(fmt(b, 2))} ${esc(what)}</th></tr></thead><tbody>${body}</tbody>`;
+  copyText = `Pour ${fmt(b, 2)} ${what} :\n` + lines.join("\n");
+}
+
+["from", "what", "to"].forEach(i => $(i).addEventListener("input", renderTable));
+$("add").addEventListener("click", () => { rows.push({ q: "", u: "g", n: "" }); renderRows(); });
+$("copy").addEventListener("click", async () => {
+  try { await navigator.clipboard.writeText(copyText); $("copy").textContent = "Copié ✓"; setTimeout(() => $("copy").textContent = "Copier la liste", 1500); } catch (_) {}
+});
+renderRows(); renderTable();
+$("y").textContent = new Date().getFullYear();
+</script>
+<script src="../assets/consent.js"></script>
+<script src="../assets/pwa.js"></script>
+</body>
+</html>

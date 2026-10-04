@@ -66,6 +66,7 @@
 
     { "match": "grammes-en-ml.html",       "dest": "cuisine" },
     { "match": "portions-recette.html",    "dest": "cuisine" },
+    { "match": "convertisseur-recette.html", "dest": "cuisine" },
     { "match": "temps-de-cuisson.html",    "dest": "cuisine" },
     { "match": "celsius-fahrenheit.html",  "dest": "cuisine" },
 
