@@ -17,7 +17,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 $siteRoot = Split-Path -Parent $PSScriptRoot
-if (-not $Inbox) { $Inbox = Join-Path (Split-Path -Parent $siteRoot) "ToolBOX-inbox" }
+if (-not $Inbox) { $Inbox = Join-Path $siteRoot "inbox" }
 $rulesFile = Join-Path $PSScriptRoot "rules.json"
 $rules = (Get-Content $rulesFile -Raw -Encoding UTF8 | ConvertFrom-Json).rules
 
@@ -31,7 +31,7 @@ if (-not (Test-Path $Inbox)) {
 $files = Get-ChildItem -Path $Inbox -File -Recurse
 if (-not $files) { Write-Host "Inbox vide : $Inbox"; return }
 
-$backupDir = Join-Path (Split-Path -Parent $siteRoot) ("ToolBOX-backup\" + (Get-Date -Format "yyyyMMdd-HHmmss"))
+$backupDir = Join-Path $siteRoot ("backup\" + (Get-Date -Format "yyyyMMdd-HHmmss"))
 $placed = @(); $unknown = @()
 
 foreach ($f in $files) {

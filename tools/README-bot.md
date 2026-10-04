@@ -1,12 +1,12 @@
 # Bot de rangement ToolBOX
 
 ## Utilisation quotidienne
-1. Dépose tes fichiers dans `..\ToolBOX-inbox` (dossier créé au premier lancement, à côté de `ToolBOX`).
+1. Dépose tes fichiers dans le dossier `inbox` (dans ToolBOX, créé au premier lancement ; ignoré par Git et par le déploiement).
 2. Simulation : `powershell -ExecutionPolicy Bypass -File tools\place-files.ps1`
 3. Réel : ajoute `-Apply` (déplace) et `-Push` (commit + push GitHub).
 
 Les fichiers sans règle restent dans l'inbox : ajoute une ligne dans `rules.json`.
-Les fichiers remplacés sont sauvegardés dans `..\ToolBOX-backup\<date>`.
+Les fichiers remplacés sont sauvegardés dans `backup/<date>`.
 
 ## Mise en place de GitHub (une seule fois)
 1. Installer Git : https://git-scm.com/download/win (puis rouvrir le terminal).

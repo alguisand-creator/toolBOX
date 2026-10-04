@@ -81,6 +81,11 @@ nav.top a:hover{color:var(--ink)}
 [hidden]{display:none!important}
 #empty{padding:2rem 0 4rem;color:var(--muted)}
 
+.promo{display:flex;flex-wrap:wrap;align-items:center;gap:1rem 1.5rem;margin:0 0 2.5rem;padding:1.25rem 1.5rem;border:2px solid var(--ink);border-radius:18px;background:var(--surface)}
+.promo h3{font:800 1.25rem var(--display);margin:0 0 .2rem}
+.promo p{margin:0;color:var(--muted);max-width:52ch}
+.promo>div{flex:1 1 260px}
+.promo a{display:inline-block;padding:.7rem 1.2rem;border-radius:12px;background:var(--accent);color:var(--accent-ink);font-weight:700;text-decoration:none}
 .pillars{display:flex;flex-wrap:wrap;gap:1rem 3rem;padding:2rem 0;border-top:2px solid var(--ink)}
 .pillars div{flex:1 1 220px}
 .pillars h3{font:800 1.1rem var(--display);margin:0 0 .25rem}
@@ -168,6 +173,11 @@ footer{padding:2rem 0 3rem;color:var(--muted);font-size:.9rem}
       <p id="empty" hidden>Aucun outil ne correspond. Efface la recherche pour tout revoir.</p>
     </section>
 
+    <section class="promo" aria-label="Application Élan">
+      <div><h3>Nouveau : Élan, ton suivi d'habitudes</h3><p>Séries, jauges de 0 à 100 %, graphique d'équilibre et rappels. Gratuit, sans compte, et ça s'installe sur ton téléphone.</p></div>
+      <a href="https://alguisand-creator.github.io/Habitudes/">Découvrir Élan</a>
+    </section>
+
     <section class="pillars" id="a-propos">
       <div><h3>Dans ton navigateur</h3><p>Calculs et images sont traités sur ton appareil. Seules les fonctions d'IA envoient ton texte à un service extérieur, et c'est toujours indiqué.</p></div>
       <div><h3>Une page, un outil</h3><p>Chaque outil a sa propre page, claire et rapide à utiliser.</p></div>
@@ -221,7 +231,8 @@ const CATEGORIES = [
     ["Compte à rebours","Jusqu'à une date","temps/compte-a-rebours.html"],
     ["Durée entre deux heures","Temps de travail, pause","temps/duree-entre-heures.html"],
     ["Heures → minutes","Décimales ou h min","temps/heures-en-minutes.html"],
-    ["Minutes → secondes","Et minutes:secondes","temps/minutes-en-secondes.html"]]},
+    ["Minutes → secondes","Et minutes:secondes","temps/minutes-en-secondes.html"],
+    ["Élan : suivi d'habitudes","Application gratuite : séries, jauges, stats","https://alguisand-creator.github.io/Habitudes/"]]},
   { id:"etudes", nom:"Études", desc:"Notes et organisation.", outils:[
     ["Moyenne scolaire","Avec coefficients","etudes/moyenne-scolaire.html"],
     ["Note nécessaire","Pour atteindre ta cible","etudes/note-necessaire.html"],
