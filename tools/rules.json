@@ -12,6 +12,7 @@
     { "match": "google*.html",             "dest": "." },
 
     { "match": "consent.js",               "dest": "assets" },
+    { "match": "stats.js",                 "dest": "assets" },
     { "match": "ia.js",                    "dest": "assets" },
     { "match": "pwa.js",                   "dest": "assets" },
     { "match": "outil.css",                "dest": "assets" },

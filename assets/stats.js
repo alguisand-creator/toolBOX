@@ -3,7 +3,7 @@
    Pour l'activer : colle ci-dessous le jeton (32 caractères) fourni par Cloudflare, dans
    Analytics et journaux > Web Analytics > ton site. Rien n'est envoyé si le navigateur demande « Ne pas me suivre ». */
 (function () {
-  const TOKEN = "";
+  const TOKEN = "f8fe73baed3b4ac2b4dd0b359f1e063f";
 
   if (!/^[0-9a-f]{32}$/.test(TOKEN)) return;
   if (location.hostname === "localhost" || location.hostname === "127.0.0.1" || navigator.doNotTrack === "1") return;
