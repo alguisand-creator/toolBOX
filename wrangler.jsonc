@@ -8,6 +8,7 @@
     "run_worker_first": ["/api/*"]
   },
   "ai": { "binding": "AI" },
+  "kv_namespaces": [{ "binding": "REMINDERS", "id": "7a4506a26fad4747aba46448af0acdef" }],
   "triggers": { "crons": ["* * * * *"] },
   "observability": { "enabled": true }
 }
