@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Objectif de poids : durée pour maigrir ou grossir – ToolBOX</title>
+<meta name="description" content="Calcule en combien de temps tu atteins ton poids cible et le déficit ou surplus de calories à viser chaque jour selon le rythme choisi.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/outil.css">
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#eceff2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121a21" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" href="../icons/icon-192.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<!-- seo -->
+<link rel="canonical" href="https://toolbox.alguisand.workers.dev/nutrition/objectif-poids">
+<meta property="og:site_name" content="ToolBOX">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="Objectif de poids : durée pour maigrir ou grossir – ToolBOX">
+<meta property="og:description" content="Calcule en combien de temps tu atteins ton poids cible et le déficit ou surplus de calories à viser chaque jour selon le rythme choisi.">
+<meta property="og:url" content="https://toolbox.alguisand.workers.dev/nutrition/objectif-poids">
+<meta property="og:image" content="https://toolbox.alguisand.workers.dev/icons/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ToolBOX : les petits outils du quotidien">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Objectif de poids","url":"https://toolbox.alguisand.workers.dev/nutrition/objectif-poids","description":"Calcule en combien de temps tu atteins ton poids cible et le déficit ou surplus de calories à viser chaque jour selon le rythme choisi.","applicationCategory":"HealthApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","inLanguage":"fr-FR","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://toolbox.alguisand.workers.dev/"},{"@type":"ListItem","position":2,"name":"Objectif de poids","item":"https://toolbox.alguisand.workers.dev/nutrition/objectif-poids"}]}]</script>
+<!-- /seo -->
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="../index.html">Tool<span>BOX</span></a>
+  </header>
+
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="../index.html">Accueil</a> › <a href="../index.html#outils">Nutrition</a> › Objectif de poids
+  </nav>
+
+  <main>
+    <h1>Objectif de poids</h1>
+    <p class="lead">Combien de temps pour atteindre ton poids cible, et quel écart de calories viser chaque jour ?</p>
+
+    <section class="tool" aria-label="Calculateur d'objectif de poids">
+      <div class="fields">
+        <div class="field"><label for="cur">Poids actuel (kg)</label>
+          <input id="cur" type="text" inputmode="decimal" autocomplete="off" value="80"></div>
+        <div class="field"><label for="tgt">Poids cible (kg)</label>
+          <input id="tgt" type="text" inputmode="decimal" autocomplete="off" value="72"></div>
+        <div class="field"><label for="pace">Rythme</label>
+          <select id="pace">
+            <option value="0.25">Lent (0,25 kg par semaine)</option>
+            <option value="0.5" selected>Modéré (0,5 kg par semaine)</option>
+            <option value="0.75">Rapide (0,75 kg par semaine)</option>
+          </select></div>
+      </div>
+      <div class="result" id="result" aria-live="polite"></div>
+    </section>
+
+    <section class="explain">
+      <h2>Comment est calculée la durée ?</h2>
+      <p>On estime qu'environ <code>7 700 kcal</code> correspondent à 1 kg de masse corporelle. Pour perdre 0,5 kg par semaine, il faut donc un déficit moyen de <code>0,5 × 7 700 ÷ 7 = 550 kcal</code> par jour par rapport à tes besoins. La durée est la différence de poids divisée par le rythme choisi.</p>
+      <p>Pour connaître tes besoins en calories de départ, utilise <a href="besoins-caloriques.html">Besoins caloriques quotidiens</a>.</p>
+
+      <h2>Un rythme raisonnable</h2>
+      <p>Un bon repère est de ne pas perdre plus de 0,5 à 1 % de son poids par semaine : au-delà, le risque de perdre du muscle et de reprendre du poids augmente. Pour prendre du poids, un rythme lent permet de gagner surtout de la masse maigre.</p>
+      <p>Le résultat est une estimation : le poids ne varie pas de façon parfaitement linéaire, et le corps s'adapte avec le temps. Si ton poids cible est très éloigné du poids actuel ou si tu as un doute sur ta santé, parles-en à un médecin ou à un diététicien.</p>
+    </section>
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX – Tes données restent dans ton navigateur.<nav class="legal-links" aria-label="Informations légales"><a href="../legal/mentions-legales.html">Mentions légales</a> · <a href="../legal/confidentialite.html">Confidentialité</a> · <a href="../legal/contact.html">Contact</a> · <a href="#" data-cookie-settings>Cookies</a></nav></footer>
+</div>
+
+<script>
+const num = s => parseFloat(String(s).replace(",", "."));
+const f1 = n => new Intl.NumberFormat("fr-FR", { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(n);
+const f0 = n => new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 }).format(Math.round(n));
+
+const curEl = document.getElementById("cur"), tgtEl = document.getElementById("tgt"), paceEl = document.getElementById("pace");
+const result = document.getElementById("result");
+
+function compute() {
+  const cur = num(curEl.value), tgt = num(tgtEl.value), pace = num(paceEl.value);
+  const bad = isNaN(cur) || isNaN(tgt) || cur < 30 || cur > 300 || tgt < 30 || tgt > 300;
+  result.classList.toggle("err", bad);
+  if (bad) {
+    result.innerHTML = `<div class="big">Entre un poids actuel et un poids cible entre 30 et 300 kg.</div>`;
+    return;
+  }
+  const diff = tgt - cur;
+  if (Math.abs(diff) < 0.05) {
+    result.innerHTML = `<div class="big">Tu es déjà à ton poids cible.</div>`;
+    return;
+  }
+  const lose = diff < 0;
+  const weeks = Math.ceil(Math.abs(diff) / pace);
+  const daily = pace * 7700 / 7;
+  const date = new Date(); date.setDate(date.getDate() + weeks * 7);
+  const dateTxt = date.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+  const pctWeek = pace / cur * 100;
+  const warn = lose && pctWeek > 1
+    ? `<div class="detail"><span><b>Attention :</b> ce rythme dépasse 1 % de ton poids par semaine, ce qui est élevé. Préfère un rythme plus lent.</span></div>` : "";
+  result.innerHTML =
+    `<div class="big">${weeks} semaine${weeks > 1 ? "s" : ""}</div>
+     <div class="txt"><strong>pour ${lose ? "perdre" : "prendre"} ${f1(Math.abs(diff))} kg, vers le ${dateTxt}</strong></div>
+     <div class="stats">
+       <div class="stat"><b>${f0(daily)} kcal</b><span>${lose ? "déficit" : "surplus"} par jour</span></div>
+       <div class="stat"><b>${f1(pace)} kg</b><span>par semaine</span></div>
+       <div class="stat"><b>${f1(Math.abs(diff))} kg</b><span>à ${lose ? "perdre" : "prendre"}</span></div>
+     </div>${warn}`;
+}
+
+[curEl, tgtEl, paceEl].forEach(e => { e.addEventListener("input", compute); e.addEventListener("change", compute); });
+compute();
+document.getElementById("y").textContent = new Date().getFullYear();
+</script>
+<script src="../assets/consent.js"></script>
+<script src="../assets/pwa.js"></script>
+</body>
+</html>

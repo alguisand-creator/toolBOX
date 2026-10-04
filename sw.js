@@ -23,6 +23,8 @@ const PRECACHE = [
   "/ia/resumer-texte.html", "/ia/reformulateur.html", "/ia/generateur-titre.html", "/ia/generateur-idees.html",
   "/ia/generateur-description.html", "/ia/generateur-cv.html", "/ia/generateur-lettre.html", "/ia/generateur-bio.html",
   "/ia/generateur-prompt.html", "/ia/description-vinted.html",
+  "/nutrition/besoins-caloriques.html", "/nutrition/compteur-calories.html", "/nutrition/macronutriments.html",
+  "/nutrition/besoin-en-eau.html", "/nutrition/objectif-poids.html",
   "/legal/mentions-legales.html", "/legal/confidentialite.html", "/legal/contact.html"
 ];
 

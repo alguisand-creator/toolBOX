@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Combien d'eau boire par jour ? Calcul hydratation – ToolBOX</title>
+<meta name="description" content="Calcule la quantité d'eau à boire chaque jour selon ton poids, ton activité sportive et la chaleur. Résultat en litres et en verres.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/outil.css">
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#eceff2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121a21" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" href="../icons/icon-192.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<!-- seo -->
+<link rel="canonical" href="https://toolbox.alguisand.workers.dev/nutrition/besoin-en-eau">
+<meta property="og:site_name" content="ToolBOX">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="Combien d'eau boire par jour ? Calcul hydratation – ToolBOX">
+<meta property="og:description" content="Calcule la quantité d'eau à boire chaque jour selon ton poids, ton activité sportive et la chaleur. Résultat en litres et en verres.">
+<meta property="og:url" content="https://toolbox.alguisand.workers.dev/nutrition/besoin-en-eau">
+<meta property="og:image" content="https://toolbox.alguisand.workers.dev/icons/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ToolBOX : les petits outils du quotidien">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Besoin en eau quotidien","url":"https://toolbox.alguisand.workers.dev/nutrition/besoin-en-eau","description":"Calcule la quantité d'eau à boire chaque jour selon ton poids, ton activité sportive et la chaleur. Résultat en litres et en verres.","applicationCategory":"HealthApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","inLanguage":"fr-FR","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://toolbox.alguisand.workers.dev/"},{"@type":"ListItem","position":2,"name":"Besoin en eau quotidien","item":"https://toolbox.alguisand.workers.dev/nutrition/besoin-en-eau"}]}]</script>
+<!-- /seo -->
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="../index.html">Tool<span>BOX</span></a>
+  </header>
+
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="../index.html">Accueil</a> › <a href="../index.html#outils">Nutrition</a> › Besoin en eau
+  </nav>
+
+  <main>
+    <h1>Besoin en eau quotidien</h1>
+    <p class="lead">Découvre combien tu devrais boire chaque jour, selon ton poids, ton sport et la météo.</p>
+
+    <section class="tool" aria-label="Calculateur de besoin en eau">
+      <div class="fields">
+        <div class="field"><label for="w">Poids (kg)</label>
+          <input id="w" type="text" inputmode="decimal" autocomplete="off" value="70"></div>
+        <div class="field"><label for="sport">Sport par jour (minutes)</label>
+          <input id="sport" type="text" inputmode="numeric" autocomplete="off" value="30"></div>
+        <div class="field"><label for="heat">Température</label>
+          <select id="heat">
+            <option value="0">Normale</option>
+            <option value="0.4">Chaude (plus de 25 °C)</option>
+            <option value="0.8">Très chaude (plus de 32 °C)</option>
+          </select></div>
+      </div>
+      <div class="result" id="result" aria-live="polite"></div>
+    </section>
+
+    <section class="explain">
+      <h2>Comment est calculé le besoin en eau ?</h2>
+      <p>On part d'un repère de <code>33 ml d'eau par kg</code> de poids pour une journée calme. On y ajoute environ <code>0,6 litre par heure de sport</code> et un supplément de 0,4 à 0,8 litre quand il fait chaud, car la transpiration augmente.</p>
+      <p>Ce total correspond aux <strong>boissons</strong> : eau, mais aussi thé, tisane ou café en quantité raisonnable. Les aliments (fruits, légumes, soupes) apportent en plus environ 20 % de l'eau dont le corps a besoin.</p>
+
+      <h2>Bien s'hydrater au quotidien</h2>
+      <ul>
+        <li>Bois régulièrement dans la journée, sans attendre d'avoir soif.</li>
+        <li>Une urine claire est en général le signe d'une bonne hydratation.</li>
+        <li>Pendant un effort long ou par forte chaleur, bois par petites gorgées toutes les 15 à 20 minutes.</li>
+      </ul>
+      <p>Ces valeurs sont des repères. Certaines maladies (rénales, cardiaques) ou traitements demandent d'adapter la quantité : demande conseil à ton médecin en cas de doute.</p>
+    </section>
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX – Tes données restent dans ton navigateur.<nav class="legal-links" aria-label="Informations légales"><a href="../legal/mentions-legales.html">Mentions légales</a> · <a href="../legal/confidentialite.html">Confidentialité</a> · <a href="../legal/contact.html">Contact</a> · <a href="#" data-cookie-settings>Cookies</a></nav></footer>
+</div>
+
+<script>
+const num = s => parseFloat(String(s).replace(",", "."));
+const f1 = n => new Intl.NumberFormat("fr-FR", { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(n);
+const f0 = n => new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 }).format(Math.round(n));
+
+const wEl = document.getElementById("w"), sportEl = document.getElementById("sport"), heatEl = document.getElementById("heat");
+const result = document.getElementById("result");
+
+function compute() {
+  const kg = num(wEl.value), min = num(sportEl.value), heat = num(heatEl.value);
+  const bad = isNaN(kg) || isNaN(min) || kg < 20 || kg > 300 || min < 0 || min > 600;
+  result.classList.toggle("err", bad);
+  if (bad) {
+    result.innerHTML = `<div class="big">Entre un poids de 20 à 300 kg et un sport de 0 à 600 minutes.</div>`;
+    return;
+  }
+  const base = kg * 0.033, sport = min / 60 * 0.6;
+  const total = base + sport + heat;
+  const glasses = total * 1000 / 250;
+  result.innerHTML =
+    `<div class="big">${f1(total)} litres / jour</div>
+     <div class="txt"><strong>soit environ ${f0(glasses)} verres de 25 cl</strong></div>
+     <div class="stats">
+       <div class="stat"><b>${f1(base)} L</b><span>besoin de base</span></div>
+       <div class="stat"><b>+ ${f1(sport)} L</b><span>pour le sport</span></div>
+       <div class="stat"><b>+ ${f1(heat)} L</b><span>pour la chaleur</span></div>
+     </div>`;
+}
+
+[wEl, sportEl, heatEl].forEach(e => { e.addEventListener("input", compute); e.addEventListener("change", compute); });
+compute();
+document.getElementById("y").textContent = new Date().getFullYear();
+</script>
+<script src="../assets/consent.js"></script>
+<script src="../assets/pwa.js"></script>
+</body>
+</html>

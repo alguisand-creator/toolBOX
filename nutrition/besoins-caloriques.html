@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calcul des besoins caloriques quotidiens – ToolBOX</title>
+<meta name="description" content="Calcule ton métabolisme de base et tes besoins en calories par jour selon ton âge, ton poids, ta taille et ton activité, avec les apports conseillés pour perdre ou prendre du poids.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/outil.css">
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#eceff2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121a21" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" href="../icons/icon-192.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<!-- seo -->
+<link rel="canonical" href="https://toolbox.alguisand.workers.dev/nutrition/besoins-caloriques">
+<meta property="og:site_name" content="ToolBOX">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="Calcul des besoins caloriques quotidiens – ToolBOX">
+<meta property="og:description" content="Calcule ton métabolisme de base et tes besoins en calories par jour selon ton âge, ton poids, ta taille et ton activité, avec les apports conseillés pour perdre ou prendre du poids.">
+<meta property="og:url" content="https://toolbox.alguisand.workers.dev/nutrition/besoins-caloriques">
+<meta property="og:image" content="https://toolbox.alguisand.workers.dev/icons/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ToolBOX : les petits outils du quotidien">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Besoins caloriques quotidiens","url":"https://toolbox.alguisand.workers.dev/nutrition/besoins-caloriques","description":"Calcule ton métabolisme de base et tes besoins en calories par jour selon ton âge, ton poids, ta taille et ton activité, avec les apports conseillés pour perdre ou prendre du poids.","applicationCategory":"HealthApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","inLanguage":"fr-FR","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://toolbox.alguisand.workers.dev/"},{"@type":"ListItem","position":2,"name":"Besoins caloriques quotidiens","item":"https://toolbox.alguisand.workers.dev/nutrition/besoins-caloriques"}]}]</script>
+<!-- /seo -->
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="../index.html">Tool<span>BOX</span></a>
+  </header>
+
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="../index.html">Accueil</a> › <a href="../index.html#outils">Nutrition</a> › Besoins caloriques
+  </nav>
+
+  <main>
+    <h1>Besoins caloriques quotidiens</h1>
+    <p class="lead">Estime combien de calories tu dépenses par jour, et combien manger pour perdre, maintenir ou prendre du poids.</p>
+
+    <section class="tool" aria-label="Calculateur de besoins caloriques">
+      <div class="fields">
+        <div class="field"><label for="sex">Sexe</label>
+          <select id="sex"><option value="m">Homme</option><option value="f">Femme</option></select></div>
+        <div class="field"><label for="age">Âge (ans)</label>
+          <input id="age" type="text" inputmode="numeric" autocomplete="off" value="30"></div>
+        <div class="field"><label for="w">Poids (kg)</label>
+          <input id="w" type="text" inputmode="decimal" autocomplete="off" value="70"></div>
+        <div class="field"><label for="h">Taille (cm)</label>
+          <input id="h" type="text" inputmode="decimal" autocomplete="off" value="175"></div>
+      </div>
+      <div class="fields" style="margin-top:.9rem">
+        <div class="field"><label for="act">Activité physique</label>
+          <select id="act">
+            <option value="1.2">Sédentaire (peu ou pas de sport)</option>
+            <option value="1.375" selected>Légère (1 à 3 séances par semaine)</option>
+            <option value="1.55">Modérée (3 à 5 séances par semaine)</option>
+            <option value="1.725">Intense (6 à 7 séances par semaine)</option>
+            <option value="1.9">Très intense (sport quotidien ou métier physique)</option>
+          </select></div>
+      </div>
+      <div class="result" id="result" aria-live="polite"></div>
+    </section>
+
+    <section class="explain">
+      <h2>Comment est calculé ce résultat ?</h2>
+      <p>On calcule d'abord ton <strong>métabolisme de base</strong> (MB) : l'énergie dépensée au repos complet. L'outil utilise la formule de Mifflin-St Jeor, considérée comme l'une des plus fiables : <code>MB = 10 × poids + 6,25 × taille − 5 × âge + 5</code> pour un homme, avec <code>− 161</code> au lieu de <code>+ 5</code> pour une femme.</p>
+      <p>Ce métabolisme de base est ensuite multiplié par un coefficient d'activité (de 1,2 à 1,9) pour obtenir ta <strong>dépense énergétique totale</strong>, c'est-à-dire les calories à manger pour maintenir ton poids.</p>
+
+      <h2>Perdre ou prendre du poids</h2>
+      <p>Pour perdre du poids, on retire environ 10 à 20 % de calories à ta dépense totale. Pour en prendre, on en ajoute environ 10 %. Un rythme modéré est plus facile à tenir et préserve mieux la masse musculaire qu'un régime très strict.</p>
+      <p>Il vaut mieux ne pas descendre sous ton métabolisme de base, ni sous 1 200 kcal par jour pour une femme et 1 500 kcal pour un homme, sans suivi médical.</p>
+
+      <h2>Les limites de l'estimation</h2>
+      <p>Il s'agit d'une moyenne : deux personnes aux mêmes mesures peuvent dépenser 10 % de plus ou de moins. Suis ton poids sur 2 à 3 semaines et ajuste. Cet outil ne remplace pas l'avis d'un médecin ou d'un diététicien, en particulier en cas de grossesse, de maladie ou de trouble du comportement alimentaire.</p>
+    </section>
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX – Tes données restent dans ton navigateur.<nav class="legal-links" aria-label="Informations légales"><a href="../legal/mentions-legales.html">Mentions légales</a> · <a href="../legal/confidentialite.html">Confidentialité</a> · <a href="../legal/contact.html">Contact</a> · <a href="#" data-cookie-settings>Cookies</a></nav></footer>
+</div>
+
+<script>
+const num = s => parseFloat(String(s).replace(",", "."));
+const f0 = n => new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 }).format(Math.round(n));
+
+const ids = ["sex", "age", "w", "h", "act"];
+const el = Object.fromEntries(ids.map(i => [i, document.getElementById(i)]));
+const result = document.getElementById("result");
+
+function compute() {
+  const age = num(el.age.value), kg = num(el.w.value), cm = num(el.h.value), k = num(el.act.value);
+  const bad = [age, kg, cm].some(isNaN) || age < 15 || age > 100 || kg < 30 || kg > 300 || cm < 120 || cm > 230;
+  result.classList.toggle("err", bad);
+  if (bad) {
+    result.innerHTML = `<div class="big">Entre un âge de 15 à 100 ans, un poids de 30 à 300 kg et une taille de 120 à 230 cm.</div>`;
+    return;
+  }
+  const bmr = 10 * kg + 6.25 * cm - 5 * age + (el.sex.value === "m" ? 5 : -161);
+  const tdee = bmr * k;
+  const floor = el.sex.value === "m" ? 1500 : 1200;
+  const cut = pct => Math.max(tdee * (1 - pct), Math.max(bmr, floor));
+  const rows = [
+    ["Perte de poids modérée (−10 %)", cut(0.10)],
+    ["Perte de poids soutenue (−20 %)", cut(0.20)],
+    ["Prise de poids (+10 %)", tdee * 1.10]
+  ];
+  result.innerHTML =
+    `<div class="big">${f0(tdee)} kcal / jour</div>
+     <div class="txt"><strong>pour maintenir ton poids</strong></div>
+     <div class="stats">
+       <div class="stat"><b>${f0(bmr)}</b><span>kcal : métabolisme de base</span></div>
+       ${rows.map(r => `<div class="stat"><b>${f0(r[1])}</b><span>kcal : ${r[0]}</span></div>`).join("")}
+     </div>`;
+}
+
+ids.forEach(i => { el[i].addEventListener("input", compute); el[i].addEventListener("change", compute); });
+compute();
+document.getElementById("y").textContent = new Date().getFullYear();
+</script>
+<script src="../assets/consent.js"></script>
+<script src="../assets/pwa.js"></script>
+</body>
+</html>

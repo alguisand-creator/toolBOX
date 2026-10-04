@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compteur de calories : suivi des repas du jour – ToolBOX</title>
+<meta name="description" content="Ajoute tes aliments et leurs quantités pour compter les calories de ta journée, avec les protéines, glucides et lipides, et compare à ton objectif. Gratuit, sans inscription.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/outil.css">
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#eceff2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121a21" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" href="../icons/icon-192.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<style>
+  .meter{height:14px;border-radius:99px;background:var(--line);overflow:hidden;margin:1rem 0 .3rem}
+  .meter span{display:block;height:100%;background:#4caf6a;transition:width .2s}
+  .meter.over span{background:#e0553f}
+  .food-name{flex:3 1 0}
+  .row .qty{flex:1 1 0}
+  .row .kc{flex:0 0 5.5rem;text-align:right;font-weight:600;color:var(--steel)}
+  .empty{color:var(--muted);margin:0 0 .8rem}
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://toolbox.alguisand.workers.dev/nutrition/compteur-calories">
+<meta property="og:site_name" content="ToolBOX">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="Compteur de calories : suivi des repas du jour – ToolBOX">
+<meta property="og:description" content="Ajoute tes aliments et leurs quantités pour compter les calories de ta journée, avec les protéines, glucides et lipides, et compare à ton objectif. Gratuit, sans inscription.">
+<meta property="og:url" content="https://toolbox.alguisand.workers.dev/nutrition/compteur-calories">
+<meta property="og:image" content="https://toolbox.alguisand.workers.dev/icons/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ToolBOX : les petits outils du quotidien">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Compteur de calories","url":"https://toolbox.alguisand.workers.dev/nutrition/compteur-calories","description":"Ajoute tes aliments et leurs quantités pour compter les calories de ta journée, avec les protéines, glucides et lipides, et compare à ton objectif. Gratuit, sans inscription.","applicationCategory":"HealthApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","inLanguage":"fr-FR","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://toolbox.alguisand.workers.dev/"},{"@type":"ListItem","position":2,"name":"Compteur de calories","item":"https://toolbox.alguisand.workers.dev/nutrition/compteur-calories"}]}]</script>
+<!-- /seo -->
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="../index.html">Tool<span>BOX</span></a>
+  </header>
+
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="../index.html">Accueil</a> › <a href="../index.html#outils">Nutrition</a> › Compteur de calories
+  </nav>
+
+  <main>
+    <h1>Compteur de calories</h1>
+    <p class="lead">Ajoute ce que tu manges pendant la journée et suis ton total de calories et de macros.</p>
+
+    <section class="tool" aria-label="Compteur de calories">
+      <div class="sect">Ajouter un aliment</div>
+      <div class="fields">
+        <div class="field" style="flex:2 1 200px"><label for="food">Aliment</label>
+          <select id="food"></select></div>
+        <div class="field"><label for="qty">Quantité (g ou ml)</label>
+          <input id="qty" type="text" inputmode="decimal" autocomplete="off" value="100"></div>
+      </div>
+      <div class="fields" id="custom" style="margin-top:.9rem" hidden>
+        <div class="field" style="flex:2 1 200px"><label for="cname">Nom</label>
+          <input id="cname" type="text" autocomplete="off" placeholder="Mon aliment"></div>
+        <div class="field"><label for="ckcal">kcal pour 100 g</label>
+          <input id="ckcal" type="text" inputmode="decimal" autocomplete="off" value="150"></div>
+      </div>
+      <div class="actions"><button type="button" class="btn" id="add">Ajouter</button></div>
+
+      <div class="sect">Ma journée</div>
+      <p class="empty" id="empty">Aucun aliment pour l'instant.</p>
+      <div class="rows" id="rows"></div>
+
+      <div class="fields" style="margin-top:1rem">
+        <div class="field"><label for="goal">Objectif (kcal par jour)</label>
+          <input id="goal" type="text" inputmode="numeric" autocomplete="off" value="2000"></div>
+      </div>
+      <div class="result" id="result" aria-live="polite"></div>
+      <div class="actions"><button type="button" class="btn ghost" id="clear">Tout effacer</button></div>
+    </section>
+
+    <section class="explain">
+      <h2>Comment utiliser le compteur ?</h2>
+      <p>Choisis un aliment dans la liste, indique la quantité mangée en grammes (ou en millilitres pour les boissons), puis clique sur « Ajouter ». Si ton aliment n'est pas dans la liste, choisis « Autre aliment » et saisis les calories pour 100 g inscrites sur l'emballage.</p>
+      <p>Les valeurs de la liste sont des moyennes pour 100 g d'aliment tel qu'il est consommé (pâtes et riz déjà cuits, par exemple). Elles peuvent varier selon la marque et la cuisson.</p>
+
+      <h2>Quel objectif de calories choisir ?</h2>
+      <p>Calcule tes besoins avec l'outil <a href="besoins-caloriques.html">Besoins caloriques quotidiens</a>, puis recopie le résultat dans le champ « Objectif ». Pour répartir ces calories en protéines, glucides et lipides, utilise <a href="macronutriments.html">Calcul des macronutriments</a>.</p>
+
+      <h2>Bon à savoir</h2>
+      <p>Ce compteur ne sauvegarde rien : la liste disparaît si tu fermes la page. Compter les calories est un outil de repère et peut ne pas convenir à tout le monde. Si cela te cause du stress ou si tu as un doute sur ton rapport à l'alimentation, parles-en à un professionnel de santé.</p>
+    </section>
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX – Tes données restent dans ton navigateur.<nav class="legal-links" aria-label="Informations légales"><a href="../legal/mentions-legales.html">Mentions légales</a> · <a href="../legal/confidentialite.html">Confidentialité</a> · <a href="../legal/contact.html">Contact</a> · <a href="#" data-cookie-settings>Cookies</a></nav></footer>
+</div>
+
+<script>
+const num = s => parseFloat(String(s).replace(",", "."));
+const f0 = n => new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 }).format(Math.round(n));
+const esc = s => s.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+// [nom, kcal, protéines, glucides, lipides] pour 100 g (ou 100 ml), valeurs moyennes
+const FOODS = [
+  ["Pain blanc (baguette)", 270, 9, 55, 1.5], ["Pain complet", 250, 9, 45, 3],
+  ["Riz cuit", 130, 2.7, 28, 0.3], ["Pâtes cuites", 140, 5, 28, 1], ["Pommes de terre cuites", 85, 2, 18, 0.1],
+  ["Flocons d'avoine", 370, 13, 60, 7], ["Poulet cuit (blanc)", 165, 31, 0, 3.6], ["Bœuf haché 5 %, cuit", 190, 28, 0, 8],
+  ["Jambon blanc", 110, 20, 1, 3], ["Saumon cuit", 200, 22, 0, 12], ["Thon en conserve (nature)", 115, 26, 0, 1],
+  ["Œuf (entier)", 145, 12.5, 1, 10], ["Lait demi-écrémé", 46, 3.3, 4.8, 1.6], ["Yaourt nature", 55, 4, 6, 1.5],
+  ["Fromage blanc 0 %", 45, 8, 4, 0.2], ["Emmental", 380, 28, 1, 29], ["Beurre", 745, 0.7, 0.6, 82],
+  ["Huile d'olive", 900, 0, 0, 100], ["Pomme", 52, 0.3, 12, 0.2], ["Banane", 90, 1, 20, 0.3],
+  ["Tomate", 18, 0.9, 3, 0.2], ["Carotte crue", 40, 0.9, 8, 0.2], ["Brocoli cuit", 35, 2.4, 4, 0.4],
+  ["Lentilles cuites", 115, 9, 17, 0.4], ["Amandes", 600, 21, 7, 53], ["Chocolat noir", 560, 7, 40, 40],
+  ["Soda (100 ml)", 42, 0, 10.6, 0], ["Jus d'orange (100 ml)", 45, 0.7, 10, 0.2], ["Eau / café nature", 0, 0, 0, 0]
+];
+
+const food = document.getElementById("food"), qty = document.getElementById("qty"), custom = document.getElementById("custom");
+const cname = document.getElementById("cname"), ckcal = document.getElementById("ckcal");
+const rows = document.getElementById("rows"), empty = document.getElementById("empty");
+const goal = document.getElementById("goal"), result = document.getElementById("result");
+let items = [];
+
+food.innerHTML = FOODS.map((f, i) => `<option value="${i}">${esc(f[0])} – ${f[1]} kcal/100 g</option>`).join("") +
+  `<option value="custom">Autre aliment…</option>`;
+food.addEventListener("change", () => { custom.hidden = food.value !== "custom"; });
+
+document.getElementById("add").addEventListener("click", () => {
+  const g = num(qty.value);
+  if (isNaN(g) || g <= 0 || g > 5000) { qty.focus(); return; }
+  let name, k, p = 0, c = 0, l = 0;
+  if (food.value === "custom") {
+    k = num(ckcal.value);
+    if (isNaN(k) || k < 0 || k > 900) { ckcal.focus(); return; }
+    name = cname.value.trim() || "Autre aliment";
+  } else {
+    [name, k, p, c, l] = FOODS[+food.value];
+  }
+  items.push({ name, g, kcal: k * g / 100, p: p * g / 100, c: c * g / 100, l: l * g / 100 });
+  render();
+});
+document.getElementById("clear").addEventListener("click", () => { items = []; render(); });
+rows.addEventListener("click", e => {
+  const b = e.target.closest("[data-del]"); if (!b) return;
+  items.splice(+b.dataset.del, 1); render();
+});
+goal.addEventListener("input", render);
+
+function render() {
+  empty.hidden = items.length > 0;
+  rows.innerHTML = items.map((it, i) =>
+    `<div class="row"><span class="food-name">${esc(it.name)}</span><span class="qty">${f0(it.g)} g</span><span class="kc">${f0(it.kcal)} kcal</span><button type="button" class="x" data-del="${i}" aria-label="Retirer ${esc(it.name)}">×</button></div>`).join("");
+  const tot = items.reduce((a, it) => ({ kcal: a.kcal + it.kcal, p: a.p + it.p, c: a.c + it.c, l: a.l + it.l }), { kcal: 0, p: 0, c: 0, l: 0 });
+  const obj = num(goal.value);
+  const hasGoal = !isNaN(obj) && obj > 0;
+  const left = obj - tot.kcal;
+  const pct = hasGoal ? Math.min(100, tot.kcal / obj * 100) : 0;
+  result.classList.remove("err");
+  result.innerHTML =
+    `<div class="big">${f0(tot.kcal)} kcal</div>
+     <div class="txt"><strong>${hasGoal ? (left >= 0 ? `Il te reste ${f0(left)} kcal sur ${f0(obj)}` : `Tu dépasses ton objectif de ${f0(-left)} kcal`) : "Indique un objectif pour suivre ton reste"}</strong></div>
+     ${hasGoal ? `<div class="meter${left < 0 ? " over" : ""}" aria-hidden="true"><span style="width:${pct}%"></span></div>` : ""}
+     <div class="stats">
+       <div class="stat"><b>${f0(tot.p)} g</b><span>protéines</span></div>
+       <div class="stat"><b>${f0(tot.c)} g</b><span>glucides</span></div>
+       <div class="stat"><b>${f0(tot.l)} g</b><span>lipides</span></div>
+     </div>`;
+}
+render();
+document.getElementById("y").textContent = new Date().getFullYear();
+</script>
+<script src="../assets/consent.js"></script>
+<script src="../assets/pwa.js"></script>
+</body>
+</html>

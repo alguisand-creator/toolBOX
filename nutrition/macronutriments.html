@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calcul des macros : protéines, glucides, lipides – ToolBOX</title>
+<meta name="description" content="Répartis tes calories en protéines, glucides et lipides en grammes selon ton poids et ton objectif (perte, maintien ou prise de masse). Gratuit et instantané.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/outil.css">
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#eceff2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121a21" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" href="../icons/icon-192.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<style>
+  .split{display:flex;height:14px;border-radius:99px;overflow:hidden;margin:1.1rem 0 .3rem}
+  .split span{display:block;height:100%}
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://toolbox.alguisand.workers.dev/nutrition/macronutriments">
+<meta property="og:site_name" content="ToolBOX">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="Calcul des macros : protéines, glucides, lipides – ToolBOX">
+<meta property="og:description" content="Répartis tes calories en protéines, glucides et lipides en grammes selon ton poids et ton objectif (perte, maintien ou prise de masse). Gratuit et instantané.">
+<meta property="og:url" content="https://toolbox.alguisand.workers.dev/nutrition/macronutriments">
+<meta property="og:image" content="https://toolbox.alguisand.workers.dev/icons/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ToolBOX : les petits outils du quotidien">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Calcul des macronutriments","url":"https://toolbox.alguisand.workers.dev/nutrition/macronutriments","description":"Répartis tes calories en protéines, glucides et lipides en grammes selon ton poids et ton objectif (perte, maintien ou prise de masse). Gratuit et instantané.","applicationCategory":"HealthApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","inLanguage":"fr-FR","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://toolbox.alguisand.workers.dev/"},{"@type":"ListItem","position":2,"name":"Calcul des macronutriments","item":"https://toolbox.alguisand.workers.dev/nutrition/macronutriments"}]}]</script>
+<!-- /seo -->
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="../index.html">Tool<span>BOX</span></a>
+  </header>
+
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="../index.html">Accueil</a> › <a href="../index.html#outils">Nutrition</a> › Macronutriments
+  </nav>
+
+  <main>
+    <h1>Calcul des macronutriments</h1>
+    <p class="lead">Transforme tes calories du jour en grammes de protéines, de glucides et de lipides.</p>
+
+    <section class="tool" aria-label="Calculateur de macros">
+      <div class="fields">
+        <div class="field"><label for="kcal">Calories par jour (kcal)</label>
+          <input id="kcal" type="text" inputmode="numeric" autocomplete="off" value="2300"></div>
+        <div class="field"><label for="w">Poids (kg)</label>
+          <input id="w" type="text" inputmode="decimal" autocomplete="off" value="70"></div>
+        <div class="field"><label for="goal">Objectif</label>
+          <select id="goal">
+            <option value="2.0">Perte de poids</option>
+            <option value="1.6" selected>Maintien</option>
+            <option value="1.8">Prise de masse</option>
+          </select></div>
+      </div>
+      <div class="result" id="result" aria-live="polite"></div>
+    </section>
+
+    <section class="explain">
+      <h2>Comment sont calculées les macros ?</h2>
+      <ul>
+        <li><strong>Protéines</strong> : 1,6 à 2 g par kg de poids, selon l'objectif (plus élevé pendant une perte de poids pour protéger les muscles). Elles apportent 4 kcal par gramme.</li>
+        <li><strong>Lipides</strong> : 25 % des calories, ce qui reste dans la fourchette conseillée (20 à 35 %). Ils apportent 9 kcal par gramme.</li>
+        <li><strong>Glucides</strong> : le reste des calories. Ils apportent 4 kcal par gramme.</li>
+      </ul>
+      <p>Si tu ne connais pas tes besoins en calories, commence par l'outil <a href="besoins-caloriques.html">Besoins caloriques quotidiens</a>.</p>
+
+      <h2>À savoir</h2>
+      <p>Ces valeurs sont des repères moyens, pas une prescription. Les besoins varient selon l'activité, l'âge et l'état de santé. En cas de maladie rénale, de diabète, de grossesse ou de tout autre suivi médical, demande l'avis d'un médecin ou d'un diététicien avant d'adapter ton alimentation.</p>
+    </section>
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX – Tes données restent dans ton navigateur.<nav class="legal-links" aria-label="Informations légales"><a href="../legal/mentions-legales.html">Mentions légales</a> · <a href="../legal/confidentialite.html">Confidentialité</a> · <a href="../legal/contact.html">Contact</a> · <a href="#" data-cookie-settings>Cookies</a></nav></footer>
+</div>
+
+<script>
+const num = s => parseFloat(String(s).replace(",", "."));
+const f0 = n => new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 }).format(Math.round(n));
+
+const kcalEl = document.getElementById("kcal"), wEl = document.getElementById("w"), goalEl = document.getElementById("goal");
+const result = document.getElementById("result");
+
+function compute() {
+  const kcal = num(kcalEl.value), kg = num(wEl.value), perKg = num(goalEl.value);
+  const bad = isNaN(kcal) || isNaN(kg) || kcal < 800 || kcal > 8000 || kg < 30 || kg > 300;
+  result.classList.toggle("err", bad);
+  if (bad) {
+    result.innerHTML = `<div class="big">Entre des calories entre 800 et 8 000 kcal et un poids entre 30 et 300 kg.</div>`;
+    return;
+  }
+  const prot = perKg * kg, protKcal = prot * 4;
+  const fatKcal = kcal * 0.25, fat = fatKcal / 9;
+  const carbKcal = kcal - protKcal - fatKcal;
+  if (carbKcal < 0) {
+    result.classList.add("err");
+    result.innerHTML = `<div class="big">Ces calories sont trop basses pour couvrir les protéines recommandées. Augmente-les ou change d'objectif.</div>`;
+    return;
+  }
+  const carb = carbKcal / 4;
+  const pct = x => Math.round(x / kcal * 100);
+  const parts = [["Protéines", prot, protKcal, "#4a7fb0"], ["Glucides", carb, carbKcal, "#ffc21a"], ["Lipides", fat, fatKcal, "#e0885a"]];
+  result.innerHTML =
+    `<div class="big">${f0(prot)} g · ${f0(carb)} g · ${f0(fat)} g</div>
+     <div class="txt"><strong>protéines · glucides · lipides, par jour</strong></div>
+     <div class="split" aria-hidden="true">${parts.map(p => `<span style="width:${p[2] / kcal * 100}%;background:${p[3]}"></span>`).join("")}</div>
+     <div class="stats">${parts.map(p => `<div class="stat"><b>${f0(p[1])} g</b><span>${p[0]} · ${pct(p[2])} % · ${f0(p[2])} kcal</span></div>`).join("")}</div>`;
+}
+
+[kcalEl, wEl, goalEl].forEach(e => { e.addEventListener("input", compute); e.addEventListener("change", compute); });
+compute();
+document.getElementById("y").textContent = new Date().getFullYear();
+</script>
+<script src="../assets/consent.js"></script>
+<script src="../assets/pwa.js"></script>
+</body>
+</html>
