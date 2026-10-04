@@ -9,6 +9,7 @@
     { "match": "worker.js",                "dest": "." },
     { "match": "wrangler.jsonc",           "dest": "." },
     { "match": ".assetsignore",            "dest": "." },
+    { "match": "google*.html",             "dest": "." },
 
     { "match": "consent.js",               "dest": "assets" },
     { "match": "ia.js",                    "dest": "assets" },
