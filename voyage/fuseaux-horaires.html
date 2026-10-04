@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Convertisseur de fuseaux horaires (heure dans le monde) – ToolBOX</title>
+<meta name="description" content="Convertis une heure d'une ville à une autre dans le monde, avec le décalage horaire et le changement d'heure d'été pris en compte automatiquement.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/outil.css">
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#eceff2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121a21" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" href="../icons/icon-192.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<style>
+  .note{color:var(--muted);margin:.4rem 0 0;font-size:.95rem}
+  .chips{display:flex;flex-wrap:wrap;gap:.5rem;margin:.9rem 0 0}
+  .chips button{font:500 .9rem var(--body);color:var(--ink);background:var(--bg);border:1px dashed var(--muted);border-radius:99px;padding:.35rem .8rem;cursor:pointer}
+  .chips button:hover{border-style:solid;border-color:var(--ink)}
+  .swap{align-self:flex-end;flex:0 0 auto;font:600 1.2rem var(--body);width:2.9rem;height:2.9rem;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+  .swap:hover{border-color:var(--ink)}
+
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://toolbox.alguisand.workers.dev/voyage/fuseaux-horaires">
+<meta property="og:site_name" content="ToolBOX">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="Convertisseur de fuseaux horaires (heure dans le monde) – ToolBOX">
+<meta property="og:description" content="Convertis une heure d'une ville à une autre dans le monde, avec le décalage horaire et le changement d'heure d'été pris en compte automatiquement.">
+<meta property="og:url" content="https://toolbox.alguisand.workers.dev/voyage/fuseaux-horaires">
+<meta property="og:image" content="https://toolbox.alguisand.workers.dev/icons/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ToolBOX : les petits outils du quotidien">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Convertisseur de fuseaux horaires","url":"https://toolbox.alguisand.workers.dev/voyage/fuseaux-horaires","description":"Convertis une heure d\u0027une ville à une autre dans le monde, avec le décalage horaire et le changement d\u0027heure d\u0027été pris en compte automatiquement.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","inLanguage":"fr-FR","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://toolbox.alguisand.workers.dev/"},{"@type":"ListItem","position":2,"name":"Convertisseur de fuseaux horaires","item":"https://toolbox.alguisand.workers.dev/voyage/fuseaux-horaires"}]}]</script>
+<!-- /seo -->
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="../index.html">Tool<span>BOX</span></a>
+  </header>
+
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="../index.html">Accueil</a> › <a href="../index.html#outils">Voyage</a> › Fuseaux horaires
+  </nav>
+
+  <main>
+    <h1>Fuseaux horaires</h1>
+    <p class="lead">Quelle heure est-il là-bas ? Choisis deux villes et une heure : le décalage horaire est calculé, heure d'été comprise.</p>
+
+    <section class="tool" aria-label="Fuseaux horaires">
+      <div class="fields">
+        <div class="field"><label for="from">Ville de départ</label><select id="from"></select></div>
+        <button type="button" class="swap" id="swap" aria-label="Inverser les villes">⇄</button>
+        <div class="field"><label for="to">Ville d'arrivée</label><select id="to"></select></div>
+      </div>
+      <div class="fields" style="margin-top:.9rem">
+        <div class="field"><label for="date">Date</label><input id="date" type="date"></div>
+        <div class="field"><label for="time">Heure</label><input id="time" type="time"></div>
+      </div>
+      <div class="actions"><button type="button" class="btn ghost" id="now">Maintenant</button></div>
+      <div class="result" id="result" aria-live="polite"></div>
+    </section>
+
+    <section class="explain">
+      <h2>Comment fonctionnent les fuseaux horaires ?</h2>
+      <p>La Terre est découpée en fuseaux horaires, chacun décalé par rapport à l'heure universelle (UTC). Paris est à UTC+1 en hiver et UTC+2 en été, New York à UTC−5 en hiver et UTC−4 en été. Le décalage entre deux villes peut donc changer selon la date.</p>
+      <p>L'outil utilise la base officielle des fuseaux horaires de ton navigateur : il tient compte du passage à l'heure d'été et d'hiver de chaque pays à la date choisie. Si la date de départ est proche d'un changement d'heure, vérifie le résultat une fois sur place : certains pays changent d'heure à des dates différentes.</p>
+
+      <h2>Quelques conseils pour un appel ou une réunion</h2>
+      <ul>
+        <li>Choisis un créneau qui reste raisonnable pour tout le monde (entre 8 h et 20 h pour chacun).</li>
+        <li>Indique toujours le fuseau horaire dans tes invitations.</li>
+        <li>Pour un voyage, pense à décaler progressivement ton sommeil quelques jours avant le départ.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX – Tes données restent dans ton navigateur.<nav class="legal-links" aria-label="Informations légales"><a href="../legal/mentions-legales.html">Mentions légales</a> · <a href="../legal/confidentialite.html">Confidentialité</a> · <a href="../legal/contact.html">Contact</a> · <a href="#" data-cookie-settings>Cookies</a></nav></footer>
+</div>
+
+<script>
+const num = s => parseFloat(String(s).replace(",", "."));
+const fmt = (n, d = 2) => new Intl.NumberFormat("fr-FR", { maximumFractionDigits: d }).format(n);
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const dur = min => { const m = Math.round(min); const h = Math.floor(m / 60); return h ? `${h} h ${String(m % 60).padStart(2, "0")} min` : `${m} min`; };
+// [nom affiché, fuseau IANA]
+const ZONES = [["Abidjan", "Africa/Abidjan"], ["Alger", "Africa/Algiers"], ["Athènes", "Europe/Athens"], ["Auckland", "Pacific/Auckland"],
+  ["Bangkok", "Asia/Bangkok"], ["Berlin", "Europe/Berlin"], ["Bogota", "America/Bogota"], ["Buenos Aires", "America/Argentina/Buenos_Aires"],
+  ["Casablanca", "Africa/Casablanca"], ["Chicago", "America/Chicago"], ["Dakar", "Africa/Dakar"], ["Delhi", "Asia/Kolkata"],
+  ["Denver", "America/Denver"], ["Dubaï", "Asia/Dubai"], ["Fort-de-France", "America/Martinique"], ["Honolulu", "Pacific/Honolulu"],
+  ["Istanbul", "Europe/Istanbul"], ["Johannesburg", "Africa/Johannesburg"], ["Le Caire", "Africa/Cairo"], ["Lisbonne", "Europe/Lisbon"],
+  ["Londres", "Europe/London"], ["Los Angeles", "America/Los_Angeles"], ["Madrid", "Europe/Madrid"], ["Mexico", "America/Mexico_City"],
+  ["Montréal", "America/Toronto"], ["Moscou", "Europe/Moscow"], ["New York", "America/New_York"], ["Nouméa", "Pacific/Noumea"],
+  ["Papeete", "Pacific/Tahiti"], ["Paris", "Europe/Paris"], ["Pékin", "Asia/Shanghai"], ["Reykjavik", "Atlantic/Reykjavik"],
+  ["Saint-Denis (La Réunion)", "Indian/Reunion"], ["São Paulo", "America/Sao_Paulo"], ["Séoul", "Asia/Seoul"], ["Singapour", "Asia/Singapore"],
+  ["Sydney", "Australia/Sydney"], ["Tokyo", "Asia/Tokyo"], ["Tunis", "Africa/Tunis"]];
+const opts = ZONES.map((z, i) => `<option value="${i}">${esc(z[0])}</option>`).join("");
+$("from").innerHTML = opts; $("to").innerHTML = opts;
+$("from").value = ZONES.findIndex(z => z[0] === "Paris"); $("to").value = ZONES.findIndex(z => z[0] === "New York");
+
+// Décalage (en minutes) d'un fuseau par rapport à UTC, à un instant donné
+function offsetAt(utcMs, tz) {
+  const p = Object.fromEntries(new Intl.DateTimeFormat("en-US", { timeZone: tz, hourCycle: "h23", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" })
+    .formatToParts(new Date(utcMs)).map(x => [x.type, x.value]));
+  const asUtc = Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour, +p.minute, +p.second);
+  return (asUtc - Math.floor(utcMs / 1000) * 1000) / 60000;
+}
+// Heure affichée dans un fuseau -> instant UTC (deux passes pour absorber le changement d'heure)
+function zonedToUtc(y, mo, d, h, mi, tz) {
+  const guess = Date.UTC(y, mo - 1, d, h, mi);
+  const t = guess - offsetAt(guess, tz) * 60000;
+  return guess - offsetAt(t, tz) * 60000;
+}
+const label = off => { const s = off < 0 ? "−" : "+", a = Math.abs(off); return `UTC${s}${Math.floor(a / 60)}${a % 60 ? ":" + String(a % 60).padStart(2, "0") : ""}`; };
+const dayKey = (ms, tz) => new Intl.DateTimeFormat("sv-SE", { timeZone: tz }).format(new Date(ms));
+
+function setNow() {
+  const tz = ZONES[+$("from").value][1];
+  const p = Object.fromEntries(new Intl.DateTimeFormat("en-CA", { timeZone: tz, hourCycle: "h23", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" })
+    .formatToParts(new Date()).map(x => [x.type, x.value]));
+  $("date").value = `${p.year}-${p.month}-${p.day}`; $("time").value = `${p.hour}:${p.minute}`;
+  render();
+}
+function render() {
+  const a = ZONES[+$("from").value], b = ZONES[+$("to").value];
+  const dm = $("date").value.match(/^(\d{4})-(\d\d)-(\d\d)$/), tm = $("time").value.match(/^(\d\d):(\d\d)$/);
+  if (!dm || !tm) { $("result").classList.add("err"); $("result").innerHTML = `<div class="big">Choisis une date et une heure.</div>`; return; }
+  $("result").classList.remove("err");
+  const utc = zonedToUtc(+dm[1], +dm[2], +dm[3], +tm[1], +tm[2], a[1]);
+  const offA = offsetAt(utc, a[1]), offB = offsetAt(utc, b[1]), diff = offB - offA;
+  const when = new Intl.DateTimeFormat("fr-FR", { timeZone: b[1], weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).format(new Date(utc));
+  const hm = new Intl.DateTimeFormat("fr-FR", { timeZone: b[1], hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).format(new Date(utc)).replace(":", " h ");
+  const dd = (Date.parse(dayKey(utc, b[1])) - Date.parse(dayKey(utc, a[1]))) / 864e5;
+  const dayNote = dd === 0 ? "même jour" : dd > 0 ? "jour suivant" : "jour précédent";
+  const sign = diff >= 0 ? "+" : "−", ad = Math.abs(diff);
+  $("result").innerHTML =
+    `<div class="big">${hm}</div>
+     <div class="txt"><strong>${esc(b[0])}</strong> : ${esc(when)} (${dayNote})</div>
+     <div class="stats">
+       <div class="stat"><b>${sign}${Math.floor(ad / 60)} h${ad % 60 ? " " + String(ad % 60).padStart(2, "0") : ""}</b><span>décalage avec ${esc(a[0])}</span></div>
+       <div class="stat"><b>${label(offA)}</b><span>${esc(a[0])} à cette date</span></div>
+       <div class="stat"><b>${label(offB)}</b><span>${esc(b[0])} à cette date</span></div>
+     </div>`;
+}
+["date", "time", "to"].forEach(i => $(i).addEventListener("input", render));
+$("from").addEventListener("change", render);
+$("swap").addEventListener("click", () => { const t = $("from").value; $("from").value = $("to").value; $("to").value = t; render(); });
+$("now").addEventListener("click", setNow);
+setNow();
+$("y").textContent = new Date().getFullYear();
+</script>
+<script src="../assets/consent.js"></script>
+<script src="../assets/pwa.js"></script>
+</body>
+</html>

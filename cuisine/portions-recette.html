@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Adapter une recette au nombre de personnes – ToolBOX</title>
+<meta name="description" content="Colle les ingrédients d'une recette et obtiens les quantités pour le nombre de personnes de ton choix. Gère les décimales et les fractions comme 1/2.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/outil.css">
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#eceff2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121a21" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" href="../icons/icon-192.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<style>
+  .note{color:var(--muted);margin:.4rem 0 0;font-size:.95rem}
+  .chips{display:flex;flex-wrap:wrap;gap:.5rem;margin:.9rem 0 0}
+  .chips button{font:500 .9rem var(--body);color:var(--ink);background:var(--bg);border:1px dashed var(--muted);border-radius:99px;padding:.35rem .8rem;cursor:pointer}
+  .chips button:hover{border-style:solid;border-color:var(--ink)}
+  .swap{align-self:flex-end;flex:0 0 auto;font:600 1.2rem var(--body);width:2.9rem;height:2.9rem;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+  .swap:hover{border-color:var(--ink)}
+  #list{min-height:9rem}
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://toolbox.alguisand.workers.dev/cuisine/portions-recette">
+<meta property="og:site_name" content="ToolBOX">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="Adapter une recette au nombre de personnes – ToolBOX">
+<meta property="og:description" content="Colle les ingrédients d'une recette et obtiens les quantités pour le nombre de personnes de ton choix. Gère les décimales et les fractions comme 1/2.">
+<meta property="og:url" content="https://toolbox.alguisand.workers.dev/cuisine/portions-recette">
+<meta property="og:image" content="https://toolbox.alguisand.workers.dev/icons/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ToolBOX : les petits outils du quotidien">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Calcul des portions d\u0027une recette","url":"https://toolbox.alguisand.workers.dev/cuisine/portions-recette","description":"Colle les ingrédients d\u0027une recette et obtiens les quantités pour le nombre de personnes de ton choix. Gère les décimales et les fractions comme 1/2.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","inLanguage":"fr-FR","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://toolbox.alguisand.workers.dev/"},{"@type":"ListItem","position":2,"name":"Calcul des portions d\u0027une recette","item":"https://toolbox.alguisand.workers.dev/cuisine/portions-recette"}]}]</script>
+<!-- /seo -->
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="../index.html">Tool<span>BOX</span></a>
+  </header>
+
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="../index.html">Accueil</a> › <a href="../index.html#outils">Cuisine</a> › Portions
+  </nav>
+
+  <main>
+    <h1>Adapter une recette</h1>
+    <p class="lead">Une recette pour 4 et tu es 6 ? Colle les ingrédients, le calcul se fait tout seul.</p>
+
+    <section class="tool" aria-label="Adapter une recette">
+      <div class="fields">
+        <div class="field"><label for="from">Recette prévue pour (personnes)</label><input id="from" type="text" inputmode="numeric" autocomplete="off" value="4"></div>
+        <div class="field"><label for="to">Je cuisine pour (personnes)</label><input id="to" type="text" inputmode="numeric" autocomplete="off" value="6"></div>
+      </div>
+      <div class="fields" style="margin-top:.9rem">
+        <div class="field"><label for="list">Ingrédients (un par ligne)</label>
+          <textarea id="list" spellcheck="false">200 g de farine
+3 œufs
+1/2 litre de lait
+1 1/2 cuillère à soupe de sucre
+1 pincée de sel
+beurre pour la poêle</textarea></div>
+      </div>
+      <div class="outs"><div class="outbox"><div class="lbl">Quantités adaptées</div><pre id="out"></pre>
+        <div class="meta"><span id="factor"></span><button type="button" class="btn ghost" id="copy">Copier</button></div></div></div>
+    </section>
+
+    <section class="explain">
+      <h2>Comment ça marche ?</h2>
+      <p>Chaque quantité est multipliée par <code>personnes souhaitées ÷ personnes prévues</code>. Pour une recette de 4 personnes adaptée à 6, tout est multiplié par 1,5 : 200 g de farine deviennent 300 g.</p>
+      <p>L'outil reconnaît les nombres entiers (<code>3</code>), les décimales (<code>0,5</code> ou <code>0.5</code>), les fractions (<code>1/2</code>) et les nombres mixtes (<code>1 1/2</code>). Les lignes sans quantité, comme « beurre pour la poêle », restent inchangées.</p>
+
+      <h2>Ce qui ne se multiplie pas toujours</h2>
+      <p>Les épices, le sel, la levure et les temps de cuisson ne varient pas toujours de façon proportionnelle. Goûte et ajuste : pars sur un peu moins que le résultat pour les épices, et surveille la cuisson si le plat est plus grand ou plus épais. Le nom des ingrédients n'est pas accordé (« 3 œuf » au lieu de « 3 œufs ») : relis ta liste avant de la copier.</p>
+    </section>
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX – Tes données restent dans ton navigateur.<nav class="legal-links" aria-label="Informations légales"><a href="../legal/mentions-legales.html">Mentions légales</a> · <a href="../legal/confidentialite.html">Confidentialité</a> · <a href="../legal/contact.html">Contact</a> · <a href="#" data-cookie-settings>Cookies</a></nav></footer>
+</div>
+
+<script>
+const num = s => parseFloat(String(s).replace(",", "."));
+const fmt = (n, d = 2) => new Intl.NumberFormat("fr-FR", { maximumFractionDigits: d }).format(n);
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const dur = min => { const m = Math.round(min); const h = Math.floor(m / 60); return h ? `${h} h ${String(m % 60).padStart(2, "0")} min` : `${m} min`; };
+const QTY = [
+  [/^(\d+)\s+(\d+)\/(\d+)\b\s*(.*)$/, m => [+m[1] + m[2] / m[3], m[4]]],
+  [/^(\d+)\/(\d+)\b\s*(.*)$/, m => [m[1] / m[2], m[3]]],
+  [/^([½¼¾⅓⅔])\s*(.*)$/, m => [{ "½": .5, "¼": .25, "¾": .75, "⅓": 1 / 3, "⅔": 2 / 3 }[m[1]], m[2]]],
+  [/^(\d+(?:[.,]\d+)?)\s*(.*)$/, m => [num(m[1]), m[2]]]
+];
+function scaleLine(line, k) {
+  const s = line.trim();
+  for (const [re, f] of QTY) { const m = s.match(re); if (m) { const [q, rest] = f(m); return `${fmt(q * k, 2)} ${rest}`.trim(); } }
+  return line;
+}
+function render() {
+  const a = num($("from").value), b = num($("to").value);
+  const bad = isNaN(a) || isNaN(b) || a <= 0 || b <= 0 || a > 1000 || b > 1000;
+  if (bad) { $("out").textContent = "Entre un nombre de personnes valide."; $("factor").textContent = ""; return; }
+  const k = b / a;
+  $("out").textContent = $("list").value.split("\n").map(l => scaleLine(l, k)).join("\n");
+  $("factor").textContent = `Quantités × ${fmt(k, 3)}`;
+}
+["from", "to", "list"].forEach(i => $(i).addEventListener("input", render));
+$("copy").addEventListener("click", async () => {
+  try { await navigator.clipboard.writeText($("out").textContent); $("copy").textContent = "Copié ✓"; setTimeout(() => $("copy").textContent = "Copier", 1500); } catch (_) {}
+});
+render();
+$("y").textContent = new Date().getFullYear();
+</script>
+<script src="../assets/consent.js"></script>
+<script src="../assets/pwa.js"></script>
+</body>
+</html>

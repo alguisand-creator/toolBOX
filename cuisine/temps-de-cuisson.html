@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Temps de cuisson : viandes, œufs, pâtes, riz, légumes – ToolBOX</title>
+<meta name="description" content="Calcule le temps de cuisson d'un poulet, d'un rôti, d'œufs, de pâtes, de riz ou de légumes, avec la température du four et la température à cœur.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/outil.css">
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#eceff2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121a21" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" href="../icons/icon-192.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<style>
+  .note{color:var(--muted);margin:.4rem 0 0;font-size:.95rem}
+  .chips{display:flex;flex-wrap:wrap;gap:.5rem;margin:.9rem 0 0}
+  .chips button{font:500 .9rem var(--body);color:var(--ink);background:var(--bg);border:1px dashed var(--muted);border-radius:99px;padding:.35rem .8rem;cursor:pointer}
+  .chips button:hover{border-style:solid;border-color:var(--ink)}
+  .swap{align-self:flex-end;flex:0 0 auto;font:600 1.2rem var(--body);width:2.9rem;height:2.9rem;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+  .swap:hover{border-color:var(--ink)}
+
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://toolbox.alguisand.workers.dev/cuisine/temps-de-cuisson">
+<meta property="og:site_name" content="ToolBOX">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="Temps de cuisson : viandes, œufs, pâtes, riz, légumes – ToolBOX">
+<meta property="og:description" content="Calcule le temps de cuisson d'un poulet, d'un rôti, d'œufs, de pâtes, de riz ou de légumes, avec la température du four et la température à cœur.">
+<meta property="og:url" content="https://toolbox.alguisand.workers.dev/cuisine/temps-de-cuisson">
+<meta property="og:image" content="https://toolbox.alguisand.workers.dev/icons/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ToolBOX : les petits outils du quotidien">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Temps de cuisson","url":"https://toolbox.alguisand.workers.dev/cuisine/temps-de-cuisson","description":"Calcule le temps de cuisson d\u0027un poulet, d\u0027un rôti, d\u0027œufs, de pâtes, de riz ou de légumes, avec la température du four et la température à cœur.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","inLanguage":"fr-FR","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://toolbox.alguisand.workers.dev/"},{"@type":"ListItem","position":2,"name":"Temps de cuisson","item":"https://toolbox.alguisand.workers.dev/cuisine/temps-de-cuisson"}]}]</script>
+<!-- /seo -->
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="../index.html">Tool<span>BOX</span></a>
+  </header>
+
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="../index.html">Accueil</a> › <a href="../index.html#outils">Cuisine</a> › Temps de cuisson
+  </nav>
+
+  <main>
+    <h1>Temps de cuisson</h1>
+    <p class="lead">Choisis ton plat (et son poids pour les rôtis) pour connaître la durée et la température de cuisson.</p>
+
+    <section class="tool" aria-label="Temps de cuisson">
+      <div class="fields">
+        <div class="field" style="flex:2 1 240px"><label for="dish">Plat</label><select id="dish"></select></div>
+        <div class="field" id="wbox"><label for="w">Poids (kg)</label><input id="w" type="text" inputmode="decimal" autocomplete="off" value="1.5"></div>
+      </div>
+      <div class="result" id="result" aria-live="polite"></div>
+    </section>
+
+    <section class="explain">
+      <h2>Comment est calculé le temps ?</h2>
+      <p>Pour les viandes au four, le temps dépend du poids : on multiplie le poids par une durée par kilo, parfois en ajoutant quelques minutes. Exemple : un poulet de 1,5 kg à 200 °C cuit en environ <code>1,5 × 45 + 20 = 88 minutes</code>. Pour les œufs, les pâtes, le riz et les légumes, la durée est fixe et part du moment où l'eau bout.</p>
+
+      <h2>La température à cœur, plus fiable que le chrono</h2>
+      <p>Les durées sont des repères : un four ou une plaque peut chauffer plus ou moins fort. Le plus sûr est de piquer la viande avec un thermomètre de cuisine. Le poulet et la dinde doivent atteindre <strong>74 °C</strong> à cœur, le porc <strong>70 °C</strong>. Laisse reposer les rôtis une dizaine de minutes avant de les découper, le jus se répartit mieux.</p>
+      <p>Pour convertir la température de ton four, utilise l'outil <a href="celsius-fahrenheit.html">°C ⇄ °F et thermostat</a>.</p>
+    </section>
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX – Tes données restent dans ton navigateur.<nav class="legal-links" aria-label="Informations légales"><a href="../legal/mentions-legales.html">Mentions légales</a> · <a href="../legal/confidentialite.html">Confidentialité</a> · <a href="../legal/contact.html">Contact</a> · <a href="#" data-cookie-settings>Cookies</a></nav></footer>
+</div>
+
+<script>
+const num = s => parseFloat(String(s).replace(",", "."));
+const fmt = (n, d = 2) => new Intl.NumberFormat("fr-FR", { maximumFractionDigits: d }).format(n);
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const dur = min => { const m = Math.round(min); const h = Math.floor(m / 60); return h ? `${h} h ${String(m % 60).padStart(2, "0")} min` : `${m} min`; };
+// perKg : minutes par kilo ; add : minutes en plus ; fix : durée fixe en minutes
+const DISHES = [
+  ["Rôtis au four (selon le poids)", [
+    { n: "Poulet entier", temp: "200 °C", perKg: 45, add: 20, core: "74 °C", tip: "Arrose-le en cours de cuisson." },
+    { n: "Dinde entière", temp: "180 °C", perKg: 45, add: 0, core: "74 °C", tip: "Couvre de papier aluminium si elle dore trop vite." },
+    { n: "Rôti de porc", temp: "180 °C", perKg: 60, add: 0, core: "70 °C", tip: "Laisse reposer 10 minutes avant de trancher." },
+    { n: "Rôti de bœuf saignant", temp: "210 °C", perKg: 30, add: 0, core: "50 à 52 °C", tip: "Sors-le du frigo 1 heure avant." },
+    { n: "Rôti de bœuf à point", temp: "210 °C", perKg: 40, add: 0, core: "55 à 60 °C", tip: "Sors-le du frigo 1 heure avant." },
+    { n: "Rôti de bœuf bien cuit", temp: "190 °C", perKg: 50, add: 0, core: "70 °C et plus", tip: "Baisse un peu le four pour qu'il ne sèche pas." }
+  ]],
+  ["Au four (durée fixe)", [
+    { n: "Pavé de saumon", temp: "180 °C", fix: 15, tip: "Retire-le dès que la chair se détache en paillettes." },
+    { n: "Cuisses de poulet", temp: "200 °C", fix: 40, core: "74 °C", tip: "Retourne-les à mi-cuisson." },
+    { n: "Pommes de terre en quartiers", temp: "200 °C", fix: 40, tip: "Retourne-les à mi-cuisson." },
+    { n: "Gratin dauphinois", temp: "180 °C", fix: 60, tip: "Couvre-le s'il colore trop vite." }
+  ]],
+  ["Dans l'eau ou à la vapeur", [
+    { n: "Œuf à la coque", fix: 3, tip: "Compte à partir de l'ébullition, puis plonge dans l'eau froide." },
+    { n: "Œuf mollet", fix: 6, tip: "Plonge-le ensuite dans l'eau froide pour l'écaler facilement." },
+    { n: "Œuf dur", fix: 10, tip: "Plonge-le ensuite dans l'eau froide." },
+    { n: "Pâtes sèches", fix: 10, tip: "Vérifie le temps indiqué sur le paquet, 1 minute avant la fin." },
+    { n: "Riz blanc", fix: 15, tip: "Volume d'eau : environ 2 fois celui du riz, à couvert." },
+    { n: "Quinoa", fix: 15, tip: "Rince-le avant la cuisson." },
+    { n: "Lentilles vertes", fix: 25, tip: "Pas besoin de trempage." },
+    { n: "Pommes de terre entières", fix: 25, tip: "Pique-les avec la pointe d'un couteau pour vérifier." },
+    { n: "Carottes en rondelles", fix: 15, tip: "À la vapeur, ajoute 5 minutes." },
+    { n: "Haricots verts", fix: 10, tip: "Plonge-les dans l'eau froide pour garder leur couleur." },
+    { n: "Brocoli (vapeur)", fix: 8, tip: "Il doit rester légèrement croquant." }
+  ]]
+];
+const flat = [];
+$("dish").innerHTML = DISHES.map(([g, items]) => `<optgroup label="${esc(g)}">${items.map(it => { flat.push(it); return `<option value="${flat.length - 1}">${esc(it.n)}</option>`; }).join("")}</optgroup>`).join("");
+function render() {
+  const it = flat[+$("dish").value];
+  const byWeight = it.perKg !== undefined;
+  $("wbox").hidden = !byWeight;
+  let min;
+  if (byWeight) {
+    const kg = num($("w").value);
+    const bad = isNaN(kg) || kg < 0.2 || kg > 20;
+    $("result").classList.toggle("err", bad);
+    if (bad) { $("result").innerHTML = `<div class="big">Entre un poids entre 0,2 et 20 kg.</div>`; return; }
+    min = kg * it.perKg + it.add;
+  } else { $("result").classList.remove("err"); min = it.fix; }
+  const stats = [];
+  if (it.temp) stats.push(`<div class="stat"><b>${it.temp}</b><span>température du four</span></div>`);
+  if (it.core) stats.push(`<div class="stat"><b>${it.core}</b><span>température à cœur</span></div>`);
+  $("result").innerHTML =
+    `<div class="big">${byWeight ? "environ " : ""}${dur(min)}</div>
+     <div class="txt"><strong>${esc(it.n)}</strong>${byWeight ? ` (${fmt(num($("w").value))} kg)` : ""}. ${esc(it.tip)}</div>
+     ${stats.length ? `<div class="stats">${stats.join("")}</div>` : ""}`;
+}
+$("dish").addEventListener("change", render);
+$("w").addEventListener("input", render);
+render();
+$("y").textContent = new Date().getFullYear();
+</script>
+<script src="../assets/consent.js"></script>
+<script src="../assets/pwa.js"></script>
+</body>
+</html>

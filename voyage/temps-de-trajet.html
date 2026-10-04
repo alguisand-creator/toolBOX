@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calcul du temps de trajet et de l'heure d'arrivée – ToolBOX</title>
+<meta name="description" content="Calcule la durée d'un trajet et l'heure d'arrivée à partir de la distance, de la vitesse moyenne, de l'heure de départ et des pauses. Voiture, vélo, train, à pied.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/outil.css">
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#eceff2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121a21" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" href="../icons/icon-192.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<style>
+  .note{color:var(--muted);margin:.4rem 0 0;font-size:.95rem}
+  .chips{display:flex;flex-wrap:wrap;gap:.5rem;margin:.9rem 0 0}
+  .chips button{font:500 .9rem var(--body);color:var(--ink);background:var(--bg);border:1px dashed var(--muted);border-radius:99px;padding:.35rem .8rem;cursor:pointer}
+  .chips button:hover{border-style:solid;border-color:var(--ink)}
+  .swap{align-self:flex-end;flex:0 0 auto;font:600 1.2rem var(--body);width:2.9rem;height:2.9rem;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+  .swap:hover{border-color:var(--ink)}
+
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://toolbox.alguisand.workers.dev/voyage/temps-de-trajet">
+<meta property="og:site_name" content="ToolBOX">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="Calcul du temps de trajet et de l'heure d'arrivée – ToolBOX">
+<meta property="og:description" content="Calcule la durée d'un trajet et l'heure d'arrivée à partir de la distance, de la vitesse moyenne, de l'heure de départ et des pauses. Voiture, vélo, train, à pied.">
+<meta property="og:url" content="https://toolbox.alguisand.workers.dev/voyage/temps-de-trajet">
+<meta property="og:image" content="https://toolbox.alguisand.workers.dev/icons/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ToolBOX : les petits outils du quotidien">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Calcul du temps de trajet","url":"https://toolbox.alguisand.workers.dev/voyage/temps-de-trajet","description":"Calcule la durée d\u0027un trajet et l\u0027heure d\u0027arrivée à partir de la distance, de la vitesse moyenne, de l\u0027heure de départ et des pauses. Voiture, vélo, train, à pied.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","inLanguage":"fr-FR","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://toolbox.alguisand.workers.dev/"},{"@type":"ListItem","position":2,"name":"Calcul du temps de trajet","item":"https://toolbox.alguisand.workers.dev/voyage/temps-de-trajet"}]}]</script>
+<!-- /seo -->
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="../index.html">Tool<span>BOX</span></a>
+  </header>
+
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="../index.html">Accueil</a> › <a href="../index.html#outils">Voyage</a> › Temps de trajet
+  </nav>
+
+  <main>
+    <h1>Temps de trajet</h1>
+    <p class="lead">Entre la distance, ta vitesse moyenne et ton heure de départ : tu sais combien de temps dure le trajet et à quelle heure tu arrives.</p>
+
+    <section class="tool" aria-label="Temps de trajet">
+      <div class="fields">
+        <div class="field"><label for="km">Distance (km)</label><input id="km" type="text" inputmode="decimal" autocomplete="off" value="450"></div>
+        <div class="field"><label for="kmh">Vitesse moyenne (km/h)</label><input id="kmh" type="text" inputmode="decimal" autocomplete="off" value="100"></div>
+      </div>
+      <div class="chips" id="chips" role="group" aria-label="Vitesses types"></div>
+      <div class="fields" style="margin-top:1rem">
+        <div class="field"><label for="dep">Heure de départ</label><input id="dep" type="time" value="08:00"></div>
+        <div class="field"><label for="pause">Pauses au total (minutes)</label><input id="pause" type="text" inputmode="numeric" autocomplete="off" value="30"></div>
+      </div>
+      <div class="result" id="result" aria-live="polite"></div>
+    </section>
+
+    <section class="explain">
+      <h2>La formule</h2>
+      <p>La durée de conduite se calcule en divisant la distance par la vitesse : <code>temps = distance ÷ vitesse</code>. Exemple : 450 km à 100 km/h donnent 4 h 30. On y ajoute le temps de pauses pour obtenir la durée totale, puis on l'ajoute à l'heure de départ pour trouver l'heure d'arrivée.</p>
+
+      <h2>Quelle vitesse moyenne choisir ?</h2>
+      <p>La vitesse moyenne est plus basse que la vitesse affichée au compteur, car elle tient compte des ralentissements, des péages et de la circulation. Quelques repères :</p>
+      <ul>
+        <li>à pied : 5 km/h ; à vélo : 15 à 20 km/h ;</li>
+        <li>voiture en ville : 30 à 40 km/h ; sur route : 70 à 80 km/h ; sur autoroute : 100 à 110 km/h ;</li>
+        <li>train à grande vitesse : 200 à 250 km/h (en moyenne, arrêts compris).</li>
+      </ul>
+      <p>Pour trouver la distance entre deux grandes villes, utilise <a href="distance-entre-villes.html">Distance entre deux villes</a> (compte environ 25 % de plus par la route).</p>
+    </section>
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX – Tes données restent dans ton navigateur.<nav class="legal-links" aria-label="Informations légales"><a href="../legal/mentions-legales.html">Mentions légales</a> · <a href="../legal/confidentialite.html">Confidentialité</a> · <a href="../legal/contact.html">Contact</a> · <a href="#" data-cookie-settings>Cookies</a></nav></footer>
+</div>
+
+<script>
+const num = s => parseFloat(String(s).replace(",", "."));
+const fmt = (n, d = 2) => new Intl.NumberFormat("fr-FR", { maximumFractionDigits: d }).format(n);
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const dur = min => { const m = Math.round(min); const h = Math.floor(m / 60); return h ? `${h} h ${String(m % 60).padStart(2, "0")} min` : `${m} min`; };
+const SPEEDS = [["À pied", 5], ["Vélo", 18], ["Voiture en ville", 35], ["Route", 75], ["Autoroute", 105], ["TGV", 220]];
+$("chips").innerHTML = SPEEDS.map(([n, v]) => `<button type="button" data-v="${v}">${n} ${v}</button>`).join("");
+$("chips").addEventListener("click", e => { const b = e.target.closest("button"); if (b) { $("kmh").value = b.dataset.v; render(); } });
+function render() {
+  const km = num($("km").value), v = num($("kmh").value), pause = num($("pause").value) || 0;
+  const bad = isNaN(km) || isNaN(v) || km <= 0 || v <= 0 || km > 50000 || v > 2000 || pause < 0 || pause > 5000 || !/^\d\d:\d\d$/.test($("dep").value);
+  $("result").classList.toggle("err", bad);
+  if (bad) { $("result").innerHTML = `<div class="big">Entre une distance, une vitesse et une heure de départ valides.</div>`; return; }
+  const drive = km / v * 60, total = drive + pause;
+  const start = +$("dep").value.slice(0, 2) * 60 + +$("dep").value.slice(3);
+  const end = start + Math.round(total), days = Math.floor(end / 1440), m = end % 1440;
+  const arrival = `${String(Math.floor(m / 60)).padStart(2, "0")} h ${String(m % 60).padStart(2, "0")}`;
+  $("result").innerHTML =
+    `<div class="big">${dur(total)}</div>
+     <div class="txt"><strong>Arrivée à ${arrival}</strong>${days ? ` (${days === 1 ? "le lendemain" : `${days} jours plus tard`})` : ""}</div>
+     <div class="stats">
+       <div class="stat"><b>${dur(drive)}</b><span>de trajet</span></div>
+       <div class="stat"><b>${fmt(pause, 0)} min</b><span>de pauses</span></div>
+     </div>`;
+}
+["km", "kmh", "dep", "pause"].forEach(i => $(i).addEventListener("input", render));
+render();
+$("y").textContent = new Date().getFullYear();
+</script>
+<script src="../assets/consent.js"></script>
+<script src="../assets/pwa.js"></script>
+</body>
+</html>

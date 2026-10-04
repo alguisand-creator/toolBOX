@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Distance entre deux villes (km et miles) – ToolBOX</title>
+<meta name="description" content="Calcule la distance à vol d'oiseau entre deux grandes villes du monde en km et en miles, avec une estimation par la route et en avion.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/outil.css">
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#eceff2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121a21" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" href="../icons/icon-192.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<style>
+  .note{color:var(--muted);margin:.4rem 0 0;font-size:.95rem}
+  .chips{display:flex;flex-wrap:wrap;gap:.5rem;margin:.9rem 0 0}
+  .chips button{font:500 .9rem var(--body);color:var(--ink);background:var(--bg);border:1px dashed var(--muted);border-radius:99px;padding:.35rem .8rem;cursor:pointer}
+  .chips button:hover{border-style:solid;border-color:var(--ink)}
+  .swap{align-self:flex-end;flex:0 0 auto;font:600 1.2rem var(--body);width:2.9rem;height:2.9rem;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+  .swap:hover{border-color:var(--ink)}
+
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://toolbox.alguisand.workers.dev/voyage/distance-entre-villes">
+<meta property="og:site_name" content="ToolBOX">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="Distance entre deux villes (km et miles) – ToolBOX">
+<meta property="og:description" content="Calcule la distance à vol d'oiseau entre deux grandes villes du monde en km et en miles, avec une estimation par la route et en avion.">
+<meta property="og:url" content="https://toolbox.alguisand.workers.dev/voyage/distance-entre-villes">
+<meta property="og:image" content="https://toolbox.alguisand.workers.dev/icons/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ToolBOX : les petits outils du quotidien">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Distance entre deux villes","url":"https://toolbox.alguisand.workers.dev/voyage/distance-entre-villes","description":"Calcule la distance à vol d\u0027oiseau entre deux grandes villes du monde en km et en miles, avec une estimation par la route et en avion.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","inLanguage":"fr-FR","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://toolbox.alguisand.workers.dev/"},{"@type":"ListItem","position":2,"name":"Distance entre deux villes","item":"https://toolbox.alguisand.workers.dev/voyage/distance-entre-villes"}]}]</script>
+<!-- /seo -->
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="../index.html">Tool<span>BOX</span></a>
+  </header>
+
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="../index.html">Accueil</a> › <a href="../index.html#outils">Voyage</a> › Distance entre villes
+  </nav>
+
+  <main>
+    <h1>Distance entre deux villes</h1>
+    <p class="lead">Choisis une ville de départ et une ville d'arrivée pour connaître la distance qui les sépare.</p>
+
+    <section class="tool" aria-label="Distance entre deux villes">
+      <div class="fields">
+        <div class="field"><label for="a">Ville de départ</label><select id="a"></select></div>
+        <button type="button" class="swap" id="swap" aria-label="Inverser les villes">⇄</button>
+        <div class="field"><label for="b">Ville d'arrivée</label><select id="b"></select></div>
+      </div>
+      <div class="result" id="result" aria-live="polite"></div>
+    </section>
+
+    <section class="explain">
+      <h2>Comment est calculée la distance ?</h2>
+      <p>L'outil utilise les coordonnées GPS (latitude et longitude) des villes et la formule de haversine, qui donne la distance <strong>à vol d'oiseau</strong> sur la surface de la Terre. C'est la distance la plus courte entre deux points, en ligne droite sur le globe.</p>
+
+      <h2>Distance par la route ou en avion</h2>
+      <p>Par la route, la distance réelle est en général <strong>20 à 30 % plus longue</strong> que le vol d'oiseau, à cause des virages, des détours et des obstacles. L'outil affiche une estimation avec un coefficient de 1,25 : elle est indicative, un GPS reste plus précis. Pour l'avion, le temps de vol estimé suppose une vitesse de croisière d'environ 850 km/h plus 30 minutes pour le décollage et l'atterrissage.</p>
+      <p>Tu peux ensuite estimer la durée de ton déplacement avec l'outil <a href="temps-de-trajet.html">Temps de trajet</a>.</p>
+    </section>
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX – Tes données restent dans ton navigateur.<nav class="legal-links" aria-label="Informations légales"><a href="../legal/mentions-legales.html">Mentions légales</a> · <a href="../legal/confidentialite.html">Confidentialité</a> · <a href="../legal/contact.html">Contact</a> · <a href="#" data-cookie-settings>Cookies</a></nav></footer>
+</div>
+
+<script>
+const num = s => parseFloat(String(s).replace(",", "."));
+const fmt = (n, d = 2) => new Intl.NumberFormat("fr-FR", { maximumFractionDigits: d }).format(n);
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const dur = min => { const m = Math.round(min); const h = Math.floor(m / 60); return h ? `${h} h ${String(m % 60).padStart(2, "0")} min` : `${m} min`; };
+// [nom, latitude, longitude]
+const CITIES = [["Abidjan", 5.36, -4.0083], ["Alger", 36.7538, 3.0588], ["Amsterdam", 52.3676, 4.9041], ["Athènes", 37.9838, 23.7275],
+  ["Bangkok", 13.7563, 100.5018], ["Barcelone", 41.3874, 2.1686], ["Berlin", 52.52, 13.405], ["Bordeaux", 44.8378, -0.5792],
+  ["Bruxelles", 50.8503, 4.3517], ["Budapest", 47.4979, 19.0402], ["Casablanca", 33.5731, -7.5898], ["Copenhague", 55.6761, 12.5683],
+  ["Dakar", 14.7167, -17.4677], ["Delhi", 28.6139, 77.209], ["Dublin", 53.3498, -6.2603], ["Dubaï", 25.2048, 55.2708],
+  ["Genève", 46.2044, 6.1432], ["Istanbul", 41.0082, 28.9784], ["Le Caire", 30.0444, 31.2357], ["Lille", 50.6292, 3.0573],
+  ["Lisbonne", 38.7223, -9.1393], ["Londres", 51.5074, -0.1278], ["Los Angeles", 34.0522, -118.2437], ["Lyon", 45.764, 4.8357],
+  ["Madrid", 40.4168, -3.7038], ["Marrakech", 31.6295, -7.9811], ["Marseille", 43.2965, 5.3698], ["Mexico", 19.4326, -99.1332],
+  ["Miami", 25.7617, -80.1918], ["Milan", 45.4642, 9.19], ["Montpellier", 43.6108, 3.8767], ["Montréal", 45.5017, -73.5673],
+  ["Nantes", 47.2184, -1.5536], ["New York", 40.7128, -74.006], ["Nice", 43.7102, 7.262], ["Oslo", 59.9139, 10.7522],
+  ["Paris", 48.8566, 2.3522], ["Pékin", 39.9042, 116.4074], ["Prague", 50.0755, 14.4378], ["Rennes", 48.1173, -1.6778],
+  ["Rome", 41.9028, 12.4964], ["Saint-Denis (La Réunion)", -20.8789, 55.4481], ["São Paulo", -23.5505, -46.6333], ["Singapour", 1.3521, 103.8198],
+  ["Stockholm", 59.3293, 18.0686], ["Strasbourg", 48.5734, 7.7521], ["Sydney", -33.8688, 151.2093], ["Tokyo", 35.6762, 139.6503],
+  ["Toulouse", 43.6047, 1.4442], ["Tunis", 36.8065, 10.1815], ["Varsovie", 52.2297, 21.0122], ["Vienne", 48.2082, 16.3738], ["Zurich", 47.3769, 8.5417]];
+const opts = CITIES.map((c, i) => `<option value="${i}">${esc(c[0])}</option>`).join("");
+$("a").innerHTML = opts; $("b").innerHTML = opts;
+$("a").value = CITIES.findIndex(c => c[0] === "Paris"); $("b").value = CITIES.findIndex(c => c[0] === "Marseille");
+const rad = d => d * Math.PI / 180;
+function haversine(p, q) {
+  const dLat = rad(q[1] - p[1]), dLon = rad(q[2] - p[2]);
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(rad(p[1])) * Math.cos(rad(q[1])) * Math.sin(dLon / 2) ** 2;
+  return 2 * 6371 * Math.asin(Math.sqrt(h));
+}
+function render() {
+  const p = CITIES[+$("a").value], q = CITIES[+$("b").value];
+  const km = haversine(p, q);
+  if (km < 1) { $("result").innerHTML = `<div class="big">Choisis deux villes différentes.</div>`; return; }
+  $("result").innerHTML =
+    `<div class="big">${fmt(km, 0)} km</div>
+     <div class="txt"><strong>${esc(p[0])} → ${esc(q[0])}</strong>, à vol d'oiseau (${fmt(km * 0.621371, 0)} miles)</div>
+     <div class="stats">
+       <div class="stat"><b>${fmt(km * 1.25, 0)} km</b><span>par la route (estimation)</span></div>
+       <div class="stat"><b>${dur(km / 850 * 60 + 30)}</b><span>en avion (estimation)</span></div>
+     </div>`;
+}
+$("a").addEventListener("change", render); $("b").addEventListener("change", render);
+$("swap").addEventListener("click", () => { const t = $("a").value; $("a").value = $("b").value; $("b").value = t; render(); });
+render();
+$("y").textContent = new Date().getFullYear();
+</script>
+<script src="../assets/consent.js"></script>
+<script src="../assets/pwa.js"></script>
+</body>
+</html>

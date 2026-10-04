@@ -151,6 +151,9 @@ footer{padding:2rem 0 3rem;color:var(--muted);font-size:.9rem}
         <button type="button" data-q="mot de passe" aria-pressed="false">Mot de passe</button>
         <button type="button" data-q="notaire" aria-pressed="false">Frais de notaire</button>
         <button type="button" data-q="naissance" aria-pressed="false">Âge</button>
+        <button type="button" data-q="cuisine" aria-pressed="false">Cuisine</button>
+        <button type="button" data-q="voyage" aria-pressed="false">Voyage</button>
+        <button type="button" data-q="temps" aria-pressed="false">Temps</button>
       </div>
     </section>
 
@@ -193,6 +196,21 @@ const CATEGORIES = [
     ["Besoin en eau","Litres par jour","nutrition/besoin-en-eau.html"],
     ["Objectif de poids","Durée et déficit conseillé","nutrition/objectif-poids.html"],
     ["Rappels","Notifications eau et repas","nutrition/rappels.html"]]},
+  { id:"cuisine", nom:"Cuisine", desc:"Conversions et repères en cuisine.", outils:[
+    ["Grammes ⇄ ml","Selon l'ingrédient","cuisine/grammes-en-ml.html"],
+    ["Portions","Adapter une recette","cuisine/portions-recette.html"],
+    ["Temps de cuisson","Four, eau et vapeur","cuisine/temps-de-cuisson.html"],
+    ["°C ⇄ °F","Et thermostat du four","cuisine/celsius-fahrenheit.html"]]},
+  { id:"voyage", nom:"Voyage", desc:"Préparer ses déplacements.", outils:[
+    ["Convertisseur de devises","Euro, dollar, dirham…","argent/devises.html"],
+    ["Distance entre villes","À vol d'oiseau","voyage/distance-entre-villes.html"],
+    ["Temps de trajet","Durée et heure d'arrivée","voyage/temps-de-trajet.html"],
+    ["Fuseaux horaires","Heure dans le monde","voyage/fuseaux-horaires.html"]]},
+  { id:"temps", nom:"Temps", desc:"Durées, heures et échéances.", outils:[
+    ["Compte à rebours","Jusqu'à une date","temps/compte-a-rebours.html"],
+    ["Durée entre deux heures","Temps de travail, pause","temps/duree-entre-heures.html"],
+    ["Heures → minutes","Décimales ou h min","temps/heures-en-minutes.html"],
+    ["Minutes → secondes","Et minutes:secondes","temps/minutes-en-secondes.html"]]},
   { id:"etudes", nom:"Études", desc:"Notes et organisation.", outils:[
     ["Moyenne scolaire","Avec coefficients","etudes/moyenne-scolaire.html"],
     ["Note nécessaire","Pour atteindre ta cible","etudes/note-necessaire.html"],

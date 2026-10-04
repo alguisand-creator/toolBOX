@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compte à rebours jusqu'à une date – ToolBOX</title>
+<meta name="description" content="Compte à rebours en direct jusqu'à une date et une heure : jours, heures, minutes et secondes restantes. Nouvel An, Noël, vacances, anniversaire, examen.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/outil.css">
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#eceff2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121a21" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" href="../icons/icon-192.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<style>
+  .note{color:var(--muted);margin:.4rem 0 0;font-size:.95rem}
+  .chips{display:flex;flex-wrap:wrap;gap:.5rem;margin:.9rem 0 0}
+  .chips button{font:500 .9rem var(--body);color:var(--ink);background:var(--bg);border:1px dashed var(--muted);border-radius:99px;padding:.35rem .8rem;cursor:pointer}
+  .chips button:hover{border-style:solid;border-color:var(--ink)}
+  .swap{align-self:flex-end;flex:0 0 auto;font:600 1.2rem var(--body);width:2.9rem;height:2.9rem;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+  .swap:hover{border-color:var(--ink)}
+
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://toolbox.alguisand.workers.dev/temps/compte-a-rebours">
+<meta property="og:site_name" content="ToolBOX">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="Compte à rebours jusqu'à une date – ToolBOX">
+<meta property="og:description" content="Compte à rebours en direct jusqu'à une date et une heure : jours, heures, minutes et secondes restantes. Nouvel An, Noël, vacances, anniversaire, examen.">
+<meta property="og:url" content="https://toolbox.alguisand.workers.dev/temps/compte-a-rebours">
+<meta property="og:image" content="https://toolbox.alguisand.workers.dev/icons/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ToolBOX : les petits outils du quotidien">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Compte à rebours","url":"https://toolbox.alguisand.workers.dev/temps/compte-a-rebours","description":"Compte à rebours en direct jusqu\u0027à une date et une heure : jours, heures, minutes et secondes restantes. Nouvel An, Noël, vacances, anniversaire, examen.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","inLanguage":"fr-FR","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://toolbox.alguisand.workers.dev/"},{"@type":"ListItem","position":2,"name":"Compte à rebours","item":"https://toolbox.alguisand.workers.dev/temps/compte-a-rebours"}]}]</script>
+<!-- /seo -->
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="../index.html">Tool<span>BOX</span></a>
+  </header>
+
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="../index.html">Accueil</a> › <a href="../index.html#outils">Temps</a> › Compte à rebours
+  </nav>
+
+  <main>
+    <h1>Compte à rebours</h1>
+    <p class="lead">Choisis une date et une heure, et regarde le temps qui reste, seconde par seconde.</p>
+
+    <section class="tool" aria-label="Compte à rebours">
+      <div class="fields">
+        <div class="field" style="flex:2 1 200px"><label for="label">Événement (facultatif)</label><input id="label" type="text" autocomplete="off" maxlength="60" placeholder="Mon anniversaire"></div>
+        <div class="field" style="flex:2 1 220px"><label for="target">Date et heure</label><input id="target" type="datetime-local"></div>
+      </div>
+      <div class="chips" id="chips" role="group" aria-label="Dates courantes"></div>
+      <div class="result" id="result" aria-live="off"></div>
+    </section>
+
+    <section class="explain">
+      <h2>Comment utiliser le compte à rebours ?</h2>
+      <p>Saisis la date et l'heure de ton événement (ou clique sur un raccourci comme « Nouvel An »). Le décompte se met à jour chaque seconde, sans que tu aies besoin de recharger la page. Il utilise l'heure de ton appareil et ton fuseau horaire.</p>
+      <p>Quand l'échéance est passée, l'outil indique depuis combien de temps. Pour connaître le nombre de jours ouvrés entre deux dates, utilise <a href="../calcul/jours-entre-dates.html">Jours entre deux dates</a>.</p>
+
+      <h2>Idées d'utilisation</h2>
+      <ul>
+        <li>Les vacances, un voyage ou un concert ;</li>
+        <li>Un examen, une date limite de projet ou de dossier ;</li>
+        <li>Un anniversaire, un mariage ou la naissance d'un enfant.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX – Tes données restent dans ton navigateur.<nav class="legal-links" aria-label="Informations légales"><a href="../legal/mentions-legales.html">Mentions légales</a> · <a href="../legal/confidentialite.html">Confidentialité</a> · <a href="../legal/contact.html">Contact</a> · <a href="#" data-cookie-settings>Cookies</a></nav></footer>
+</div>
+
+<script>
+const num = s => parseFloat(String(s).replace(",", "."));
+const fmt = (n, d = 2) => new Intl.NumberFormat("fr-FR", { maximumFractionDigits: d }).format(n);
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const dur = min => { const m = Math.round(min); const h = Math.floor(m / 60); return h ? `${h} h ${String(m % 60).padStart(2, "0")} min` : `${m} min`; };
+const pad = n => String(n).padStart(2, "0");
+const toLocalInput = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+const nextOccurrence = (month, day) => { const n = new Date(), d = new Date(n.getFullYear(), month, day, 0, 0); return d > n ? d : new Date(n.getFullYear() + 1, month, day, 0, 0); };
+const PRESETS = [["Nouvel An", () => nextOccurrence(0, 1)], ["Noël", () => nextOccurrence(11, 25)], ["Vacances d'été (1er juillet)", () => nextOccurrence(6, 1)], ["Dans 1 heure", () => new Date(Date.now() + 3600e3)]];
+$("chips").innerHTML = PRESETS.map((p, i) => `<button type="button" data-i="${i}">${esc(p[0])}</button>`).join("");
+$("chips").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  const p = PRESETS[+b.dataset.i];
+  $("target").value = toLocalInput(p[1]()); if (!p[0].startsWith("Dans")) $("label").value = p[0].replace(/ \(.*\)/, "");
+  render();
+});
+$("target").value = toLocalInput(nextOccurrence(0, 1)); $("label").value = "Nouvel An";
+function render() {
+  const t = new Date($("target").value);
+  if (isNaN(t)) { $("result").classList.add("err"); $("result").innerHTML = `<div class="big">Choisis une date et une heure.</div>`; return; }
+  $("result").classList.remove("err");
+  const diff = t - Date.now(), abs = Math.abs(diff);
+  const s = Math.floor(abs / 1000), d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60), sec = s % 60;
+  const name = $("label").value.trim();
+  const when = new Intl.DateTimeFormat("fr-FR", { dateStyle: "full", timeStyle: "short" }).format(t);
+  $("result").innerHTML =
+    `<div class="big">${diff >= 0 ? `${d} jour${d > 1 ? "s" : ""} ${pad(h)}:${pad(m)}:${pad(sec)}` : "Échéance passée"}</div>
+     <div class="txt"><strong>${diff >= 0 ? "Il reste ce temps" : `Terminé depuis ${d} jour${d > 1 ? "s" : ""} ${pad(h)}:${pad(m)}:${pad(sec)}`}${name ? ` avant : ${esc(name)}` : ""}</strong><br>${esc(when)}</div>
+     <div class="stats">
+       <div class="stat"><b>${d}</b><span>jours</span></div><div class="stat"><b>${h}</b><span>heures</span></div>
+       <div class="stat"><b>${m}</b><span>minutes</span></div><div class="stat"><b>${sec}</b><span>secondes</span></div>
+     </div>`;
+}
+["target", "label"].forEach(i => $(i).addEventListener("input", render));
+render();
+setInterval(render, 1000);
+$("y").textContent = new Date().getFullYear();
+</script>
+<script src="../assets/consent.js"></script>
+<script src="../assets/pwa.js"></script>
+</body>
+</html>

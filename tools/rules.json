@@ -64,6 +64,20 @@
     { "match": "objectif-poids.html",      "dest": "nutrition" },
     { "match": "rappels.html",             "dest": "nutrition" },
 
+    { "match": "grammes-en-ml.html",       "dest": "cuisine" },
+    { "match": "portions-recette.html",    "dest": "cuisine" },
+    { "match": "temps-de-cuisson.html",    "dest": "cuisine" },
+    { "match": "celsius-fahrenheit.html",  "dest": "cuisine" },
+
+    { "match": "distance-entre-villes.html", "dest": "voyage" },
+    { "match": "temps-de-trajet.html",     "dest": "voyage" },
+    { "match": "fuseaux-horaires.html",    "dest": "voyage" },
+
+    { "match": "compte-a-rebours.html",    "dest": "temps" },
+    { "match": "duree-entre-heures.html",  "dest": "temps" },
+    { "match": "heures-en-minutes.html",   "dest": "temps" },
+    { "match": "minutes-en-secondes.html", "dest": "temps" },
+
     { "match": "compteur-de-mots.html",    "dest": "texte" }
   ]
 }

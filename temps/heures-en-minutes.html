@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Convertir des heures en minutes (et minutes en heures) – ToolBOX</title>
+<meta name="description" content="Convertis des heures en minutes (et des minutes en heures) en heures décimales ou en heures et minutes. Exemple : 2,5 h = 150 minutes = 2 h 30.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/outil.css">
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#eceff2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121a21" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" href="../icons/icon-192.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<style>
+  .note{color:var(--muted);margin:.4rem 0 0;font-size:.95rem}
+  .chips{display:flex;flex-wrap:wrap;gap:.5rem;margin:.9rem 0 0}
+  .chips button{font:500 .9rem var(--body);color:var(--ink);background:var(--bg);border:1px dashed var(--muted);border-radius:99px;padding:.35rem .8rem;cursor:pointer}
+  .chips button:hover{border-style:solid;border-color:var(--ink)}
+  .swap{align-self:flex-end;flex:0 0 auto;font:600 1.2rem var(--body);width:2.9rem;height:2.9rem;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+  .swap:hover{border-color:var(--ink)}
+
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://toolbox.alguisand.workers.dev/temps/heures-en-minutes">
+<meta property="og:site_name" content="ToolBOX">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="Convertir des heures en minutes (et minutes en heures) – ToolBOX">
+<meta property="og:description" content="Convertis des heures en minutes (et des minutes en heures) en heures décimales ou en heures et minutes. Exemple : 2,5 h = 150 minutes = 2 h 30.">
+<meta property="og:url" content="https://toolbox.alguisand.workers.dev/temps/heures-en-minutes">
+<meta property="og:image" content="https://toolbox.alguisand.workers.dev/icons/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ToolBOX : les petits outils du quotidien">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Convertir heures en minutes","url":"https://toolbox.alguisand.workers.dev/temps/heures-en-minutes","description":"Convertis des heures en minutes (et des minutes en heures) en heures décimales ou en heures et minutes. Exemple : 2,5 h = 150 minutes = 2 h 30.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","inLanguage":"fr-FR","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://toolbox.alguisand.workers.dev/"},{"@type":"ListItem","position":2,"name":"Convertir heures en minutes","item":"https://toolbox.alguisand.workers.dev/temps/heures-en-minutes"}]}]</script>
+<!-- /seo -->
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="../index.html">Tool<span>BOX</span></a>
+  </header>
+
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="../index.html">Accueil</a> › <a href="../index.html#outils">Temps</a> › Heures en minutes
+  </nav>
+
+  <main>
+    <h1>Convertir des heures en minutes</h1>
+    <p class="lead">Tape des heures (décimales comme 2,5) ou des minutes : l'autre case se met à jour.</p>
+
+    <section class="tool" aria-label="Convertir des heures en minutes">
+      <div class="fields">
+        <div class="field"><label for="h">Heures</label><input id="h" type="text" inputmode="decimal" autocomplete="off" value="2,5"></div>
+        <div class="field"><label for="m">Minutes</label><input id="m" type="text" inputmode="decimal" autocomplete="off"></div>
+      </div>
+      <div class="result" id="result" aria-live="polite"></div>
+    </section>
+
+    <section class="explain">
+      <h2>La formule</h2>
+      <ul>
+        <li>Heures en minutes : <code>minutes = heures × 60</code> ;</li>
+        <li>Minutes en heures : <code>heures = minutes ÷ 60</code>.</li>
+      </ul>
+      <p>Attention aux heures décimales : <code>2,5 h</code> signifie 2 heures et demie (2 h 30), pas 2 h 50. La partie décimale se multiplie par 60 : 0,25 h = 15 minutes.</p>
+
+      <h2>Équivalences courantes</h2>
+      <table class="tbl">
+        <thead><tr><th>Heures</th><th>Minutes</th></tr></thead>
+        <tbody>
+          <tr><td>0,25 h (1 quart d'heure)</td><td>15 min</td></tr>
+          <tr><td>0,5 h (1 demi-heure)</td><td>30 min</td></tr>
+          <tr><td>0,75 h</td><td>45 min</td></tr>
+          <tr><td>1 h</td><td>60 min</td></tr>
+          <tr><td>1,5 h</td><td>90 min</td></tr>
+          <tr><td>8 h</td><td>480 min</td></tr>
+          <tr><td>24 h</td><td>1 440 min</td></tr>
+        </tbody>
+      </table>
+      <p>Pour la durée entre deux heures de la journée, utilise <a href="duree-entre-heures.html">Durée entre deux heures</a>. Pour aller plus loin, <a href="minutes-en-secondes.html">Minutes en secondes</a>.</p>
+    </section>
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX – Tes données restent dans ton navigateur.<nav class="legal-links" aria-label="Informations légales"><a href="../legal/mentions-legales.html">Mentions légales</a> · <a href="../legal/confidentialite.html">Confidentialité</a> · <a href="../legal/contact.html">Contact</a> · <a href="#" data-cookie-settings>Cookies</a></nav></footer>
+</div>
+
+<script>
+const num = s => parseFloat(String(s).replace(",", "."));
+const fmt = (n, d = 2) => new Intl.NumberFormat("fr-FR", { maximumFractionDigits: d }).format(n);
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const dur = min => { const m = Math.round(min); const h = Math.floor(m / 60); return h ? `${h} h ${String(m % 60).padStart(2, "0")} min` : `${m} min`; };
+let src = "h";
+function render() {
+  const v = num($(src).value);
+  const bad = isNaN(v) || v < 0 || v > 1e7;
+  $("result").classList.toggle("err", bad);
+  if (bad) { $("result").innerHTML = `<div class="big">Entre un nombre positif.</div>`; return; }
+  const min = src === "h" ? v * 60 : v, h = min / 60;
+  if (src === "h") $("m").value = fmt(min, 2).replace(/\s/g, ""); else $("h").value = fmt(h, 4).replace(/\s/g, "");
+  const r = Math.round(min);
+  $("result").innerHTML =
+    `<div class="big">${fmt(h, 4)} h = ${fmt(min, 2)} min</div>
+     <div class="txt"><strong>${Math.floor(r / 60)} h ${String(r % 60).padStart(2, "0")} min</strong> · ${fmt(min * 60, 0)} secondes</div>`;
+}
+$("h").addEventListener("input", () => { src = "h"; render(); });
+$("m").addEventListener("input", () => { src = "m"; render(); });
+render();
+$("y").textContent = new Date().getFullYear();
+</script>
+<script src="../assets/consent.js"></script>
+<script src="../assets/pwa.js"></script>
+</body>
+</html>

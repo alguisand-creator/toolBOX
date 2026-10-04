@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Convertir des grammes en ml (et ml en grammes) – ToolBOX</title>
+<meta name="description" content="Convertis des grammes en millilitres (et l'inverse) selon l'ingrédient : farine, sucre, lait, huile, beurre, miel… avec les équivalents en cuillères.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/outil.css">
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#eceff2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121a21" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" href="../icons/icon-192.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<style>
+  .note{color:var(--muted);margin:.4rem 0 0;font-size:.95rem}
+  .chips{display:flex;flex-wrap:wrap;gap:.5rem;margin:.9rem 0 0}
+  .chips button{font:500 .9rem var(--body);color:var(--ink);background:var(--bg);border:1px dashed var(--muted);border-radius:99px;padding:.35rem .8rem;cursor:pointer}
+  .chips button:hover{border-style:solid;border-color:var(--ink)}
+  .swap{align-self:flex-end;flex:0 0 auto;font:600 1.2rem var(--body);width:2.9rem;height:2.9rem;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+  .swap:hover{border-color:var(--ink)}
+
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://toolbox.alguisand.workers.dev/cuisine/grammes-en-ml">
+<meta property="og:site_name" content="ToolBOX">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="Convertir des grammes en ml (et ml en grammes) – ToolBOX">
+<meta property="og:description" content="Convertis des grammes en millilitres (et l'inverse) selon l'ingrédient : farine, sucre, lait, huile, beurre, miel… avec les équivalents en cuillères.">
+<meta property="og:url" content="https://toolbox.alguisand.workers.dev/cuisine/grammes-en-ml">
+<meta property="og:image" content="https://toolbox.alguisand.workers.dev/icons/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ToolBOX : les petits outils du quotidien">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Convertir grammes en ml","url":"https://toolbox.alguisand.workers.dev/cuisine/grammes-en-ml","description":"Convertis des grammes en millilitres (et l\u0027inverse) selon l\u0027ingrédient : farine, sucre, lait, huile, beurre, miel… avec les équivalents en cuillères.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","inLanguage":"fr-FR","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://toolbox.alguisand.workers.dev/"},{"@type":"ListItem","position":2,"name":"Convertir grammes en ml","item":"https://toolbox.alguisand.workers.dev/cuisine/grammes-en-ml"}]}]</script>
+<!-- /seo -->
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="../index.html">Tool<span>BOX</span></a>
+  </header>
+
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="../index.html">Accueil</a> › <a href="../index.html#outils">Cuisine</a> › Grammes et ml
+  </nav>
+
+  <main>
+    <h1>Convertir des grammes en ml</h1>
+    <p class="lead">Les grammes et les millilitres ne sont pas équivalents sauf pour l'eau. Choisis ton ingrédient pour une conversion juste.</p>
+
+    <section class="tool" aria-label="Convertir des grammes en ml">
+      <div class="fields">
+        <div class="field" style="flex:2 1 220px"><label for="food">Ingrédient</label><select id="food"></select></div>
+      </div>
+      <div class="fields" style="margin-top:.9rem">
+        <div class="field"><label for="g">Grammes (g)</label><input id="g" type="text" inputmode="decimal" autocomplete="off" value="250"></div>
+        <div class="field"><label for="ml">Millilitres (ml)</label><input id="ml" type="text" inputmode="decimal" autocomplete="off"></div>
+      </div>
+      <div class="result" id="result" aria-live="polite"></div>
+    </section>
+
+    <section class="explain">
+      <h2>Pourquoi 100 g ne font pas toujours 100 ml ?</h2>
+      <p>Un millilitre mesure un volume, un gramme mesure une masse. Pour passer de l'un à l'autre, il faut la <strong>densité</strong> de l'ingrédient : <code>ml = grammes ÷ densité</code>. L'eau pèse 1 g par ml, mais la farine est beaucoup plus légère (environ 0,53 g par ml) et le miel plus lourd (environ 1,42 g par ml).</p>
+      <p>Exemple : 250 g de farine occupent environ <code>250 ÷ 0,53 = 472 ml</code>, soit un peu moins d'un demi-litre.</p>
+
+      <h2>Équivalences utiles</h2>
+      <ul>
+        <li>1 cuillère à soupe = 15 ml, 1 cuillère à café = 5 ml ;</li>
+        <li>1 tasse = environ 250 ml, 1 verre = environ 200 ml ;</li>
+        <li>L'eau, le lait et la crème liquide : 1 g ≈ 1 ml.</li>
+      </ul>
+      <p>Les densités sont des moyennes : le tassement de la farine ou du sucre peut faire varier le résultat de 10 à 15 %. Pour les pâtisseries précises, pèse toujours tes ingrédients.</p>
+    </section>
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX – Tes données restent dans ton navigateur.<nav class="legal-links" aria-label="Informations légales"><a href="../legal/mentions-legales.html">Mentions légales</a> · <a href="../legal/confidentialite.html">Confidentialité</a> · <a href="../legal/contact.html">Contact</a> · <a href="#" data-cookie-settings>Cookies</a></nav></footer>
+</div>
+
+<script>
+const num = s => parseFloat(String(s).replace(",", "."));
+const fmt = (n, d = 2) => new Intl.NumberFormat("fr-FR", { maximumFractionDigits: d }).format(n);
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const dur = min => { const m = Math.round(min); const h = Math.floor(m / 60); return h ? `${h} h ${String(m % 60).padStart(2, "0")} min` : `${m} min`; };
+const FOODS = [["Eau", 1], ["Lait", 1.03], ["Crème liquide", 1.0], ["Huile (olive, tournesol)", 0.92], ["Beurre", 0.95], ["Miel", 1.42],
+  ["Sirop d'érable", 1.33], ["Vinaigre", 1.01], ["Farine de blé", 0.53], ["Maïzena", 0.54], ["Sucre en poudre", 0.84], ["Sucre glace", 0.5],
+  ["Cassonade", 0.83], ["Sel fin", 1.2], ["Cacao en poudre", 0.4], ["Flocons d'avoine", 0.38], ["Riz cru", 0.8], ["Lentilles crues", 0.8]];
+$("food").innerHTML = FOODS.map((f, i) => `<option value="${i}">${esc(f[0])}</option>`).join("");
+let src = "g";
+function render() {
+  const d = FOODS[+$("food").value][1];
+  const v = num($(src).value);
+  const bad = isNaN(v) || v < 0 || v > 1e6;
+  $("result").classList.toggle("err", bad);
+  if (bad) { $("result").innerHTML = `<div class="big">Entre un nombre positif.</div>`; return; }
+  const g = src === "g" ? v : v * d, ml = src === "ml" ? v : v / d;
+  if (src === "g") $("ml").value = fmt(ml, 1).replace(/\s/g, ""); else $("g").value = fmt(g, 1).replace(/\s/g, "");
+  $("result").innerHTML =
+    `<div class="big">${fmt(g, 1)} g = ${fmt(ml, 1)} ml</div>
+     <div class="txt"><strong>${esc(FOODS[+$("food").value][0])}</strong> (densité ${fmt(d)} g/ml)</div>
+     <div class="stats">
+       <div class="stat"><b>${fmt(ml / 15, 1)}</b><span>cuillères à soupe</span></div>
+       <div class="stat"><b>${fmt(ml / 5, 1)}</b><span>cuillères à café</span></div>
+       <div class="stat"><b>${fmt(ml / 250, 2)}</b><span>tasses de 250 ml</span></div>
+     </div>`;
+}
+$("g").addEventListener("input", () => { src = "g"; render(); });
+$("ml").addEventListener("input", () => { src = "ml"; render(); });
+$("food").addEventListener("change", render);
+render();
+$("y").textContent = new Date().getFullYear();
+</script>
+<script src="../assets/consent.js"></script>
+<script src="../assets/pwa.js"></script>
+</body>
+</html>
