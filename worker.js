@@ -54,9 +54,18 @@ const TOOLS = {
 //   tzs                 liste des fuseaux horaires utilisés (le déclencheur ne lit que ceux-là)
 // Secret VAPID_JWK : clé privée (JWK) qui prouve aux services push que c'est bien ToolBOX qui écrit.
 const PUSH_HOSTS = [/(^|\.)fcm\.googleapis\.com$/, /(^|\.)push\.services\.mozilla\.com$/, /(^|\.)notify\.windows\.com$/, /(^|\.)push\.apple\.com$/];
-const MAX_ITEMS = 48;       // rappels par appareil
+const MAX_ITEMS = 48;       // rappels quotidiens par appareil (page Rappels)
+const MAX_AGENDA = 20;      // rappels datés par appareil (agenda) : au-delà, trop d'écritures KV pour une seule requête
 const MAX_TZS = 50;         // fuseaux horaires différents acceptés
 const TIME_RE = /^([01]\d|2[0-3]):[0-5]\d$/;
+const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+const validDate = s => {
+  if (typeof s !== "string" || !DATE_RE.test(s)) return false;
+  const d = new Date(s + "T00:00:00Z");
+  return !isNaN(d) && d.toISOString().slice(0, 10) === s;
+};
+// Seuls des chemins internes au site sont acceptés (pas d'adresse externe dans une notification)
+const validUrl = u => typeof u === "string" && u.length <= 120 && /^\/(?!\/)[\w\-./?=&%#]*$/.test(u);
 const te = new TextEncoder();
 
 const b64u = {
@@ -142,18 +151,29 @@ function validSub(s) {
   return typeof s.keys.p256dh === "string" && typeof s.keys.auth === "string" && s.keys.p256dh.length < 200 && s.keys.auth.length < 60;
 }
 
-function cleanItems(items) {
-  if (!Array.isArray(items) || items.length > MAX_ITEMS) return null;
+// source "rappels" : rappels quotidiens (heure + jours de la semaine). source "agenda" : rappels datés (date + heure).
+function cleanItems(items, max, source, today) {
+  if (!Array.isArray(items) || items.length > max) return null;
   const out = [];
   for (const it of items) {
     if (!it || !TIME_RE.test(it.time) || typeof it.title !== "string" || !it.title.trim()) return null;
-    const days = Array.isArray(it.days) ? [...new Set(it.days.filter(d => Number.isInteger(d) && d >= 0 && d <= 6))] : null;
-    out.push({
+    const item = {
       time: it.time,
       title: it.title.trim().slice(0, 60),
-      body: typeof it.body === "string" ? it.body.trim().slice(0, 120) : "",
-      days: days && days.length && days.length < 7 ? days : null
-    });
+      body: typeof it.body === "string" ? it.body.trim().slice(0, 120) : ""
+    };
+    if (source === "agenda") {
+      if (!validDate(it.date)) return null;
+      if (it.date < today) continue;                       // rappel déjà passé : ignoré
+      item.date = it.date;
+      item.days = null;
+      if (validUrl(it.url)) item.url = it.url;
+      if (typeof it.tag === "string") item.tag = it.tag.slice(0, 60);
+    } else {
+      const days = Array.isArray(it.days) ? [...new Set(it.days.filter(d => Number.isInteger(d) && d >= 0 && d <= 6))] : null;
+      item.days = days && days.length && days.length < 7 ? days : null;
+    }
+    out.push(item);
   }
   return out;
 }
@@ -168,6 +188,7 @@ async function reindex(env, id, oldRec, newRec) {
     if (ids.length) await env.REMINDERS.put(k, JSON.stringify(ids)); else await env.REMINDERS.delete(k);
   }
   for (const k of after) {
+    if (before.has(k)) continue;   // créneau inchangé : rien à écrire (économise des opérations KV)
     const ids = (await env.REMINDERS.get(k, "json")) || [];
     if (!ids.includes(id)) { ids.push(id); await env.REMINDERS.put(k, JSON.stringify(ids)); }
   }
@@ -179,21 +200,37 @@ async function dropSub(env, id, rec) {
 }
 
 function localNow(tz, date) {
-  const p = Object.fromEntries(new Intl.DateTimeFormat("en-GB", { timeZone: tz, hourCycle: "h23", hour: "2-digit", minute: "2-digit", weekday: "short" })
+  const p = Object.fromEntries(new Intl.DateTimeFormat("en-GB", { timeZone: tz, hourCycle: "h23", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", weekday: "short" })
     .formatToParts(date).map(x => [x.type, x.value]));
-  return { hhmm: `${p.hour}:${p.minute}`, day: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(p.weekday) };
+  return {
+    hhmm: `${p.hour}:${p.minute}`,
+    day: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(p.weekday),
+    date: `${p.year}-${p.month}-${p.day}`
+  };
 }
 
-async function fire(env, id, hhmm, day) {
+async function fire(env, id, now) {
   const rec = await env.REMINDERS.get("s:" + id, "json");
   if (!rec) return;
   for (const it of rec.items) {
-    if (it.time !== hhmm || (it.days && !it.days.includes(day))) continue;
+    if (it.time !== now.hhmm) continue;
+    // Rappel daté (agenda) : seulement le jour prévu. Rappel quotidien : selon les jours choisis.
+    if (it.date ? it.date !== now.date : (it.days && !it.days.includes(now.day))) continue;
     try {
-      const status = await sendPush(env, rec.sub, { title: it.title, body: it.body, tag: "rappel-" + hhmm, url: "/nutrition/rappels.html" });
+      const status = await sendPush(env, rec.sub, {
+        title: it.title, body: it.body, tag: it.tag || "rappel-" + now.hhmm,
+        url: validUrl(it.url) ? it.url : "/nutrition/rappels.html"
+      });
       if (status === 404 || status === 410) { await dropSub(env, id, rec); return; }
       if (status >= 400) console.error("Push refusé", status);
     } catch (e) { console.error("Échec de l'envoi", e && e.message); }
+  }
+  // Ménage : on retire les rappels datés déjà passés (et leurs créneaux dans l'index)
+  const keep = rec.items.filter(i => !i.date || i.date >= now.date);
+  if (keep.length < rec.items.length) {
+    const next = { ...rec, items: keep };
+    await env.REMINDERS.put("s:" + id, JSON.stringify(next));
+    await reindex(env, id, rec, next);
   }
 }
 
@@ -201,9 +238,9 @@ async function runDue(env, date) {
   if (!env.REMINDERS || !env.VAPID_JWK) return;
   const tzs = (await env.REMINDERS.get("tzs", "json")) || [];
   for (const tz of tzs) {
-    const { hhmm, day } = localNow(tz, date);
-    const ids = await env.REMINDERS.get(`t:${tz}:${hhmm}`, "json");
-    if (ids && ids.length) await Promise.allSettled(ids.map(id => fire(env, id, hhmm, day)));
+    const now = localNow(tz, date);
+    const ids = await env.REMINDERS.get(`t:${tz}:${now.hhmm}`, "json");
+    if (ids && ids.length) await Promise.allSettled(ids.map(id => fire(env, id, now)));
   }
 }
 
@@ -226,8 +263,11 @@ async function handlePush(request, env, url) {
   try { body = JSON.parse(raw); } catch (_) { return json({ error: "Requête invalide" }, 400); }
 
   if (action === "save") {
-    const items = cleanItems(body.items);
-    if (!validSub(body.sub) || !items || !validTz(body.tz)) return json({ error: "Requête invalide" }, 400);
+    // Chaque page (Rappels, Agenda) ne remplace que ses propres rappels : l'autre source est conservée.
+    const source = body && body.source === "agenda" ? "agenda" : "rappels";
+    if (!body || !validSub(body.sub) || !validTz(body.tz)) return json({ error: "Requête invalide" }, 400);
+    const mine = cleanItems(body.items, source === "agenda" ? MAX_AGENDA : MAX_ITEMS, source, localNow(body.tz, new Date()).date);
+    if (!mine) return json({ error: "Requête invalide" }, 400);
     const tzs = (await env.REMINDERS.get("tzs", "json")) || [];
     if (!tzs.includes(body.tz)) {
       if (tzs.length >= MAX_TZS) return json({ error: "Fuseau horaire non pris en charge" }, 400);
@@ -236,6 +276,8 @@ async function handlePush(request, env, url) {
     }
     const id = await subId(body.sub.endpoint);
     const old = await env.REMINDERS.get("s:" + id, "json");
+    const others = old ? old.items.filter(i => (i.src || "rappels") !== source) : [];   // anciens rappels sans « src » = page Rappels
+    const items = others.concat(mine.map(i => ({ ...i, src: source })));
     const rec = { sub: { endpoint: body.sub.endpoint, keys: { p256dh: body.sub.keys.p256dh, auth: body.sub.keys.auth } }, tz: body.tz, items };
     await env.REMINDERS.put("s:" + id, JSON.stringify(rec));
     await reindex(env, id, old, rec);
@@ -254,7 +296,12 @@ async function handlePush(request, env, url) {
     if (typeof body.endpoint !== "string") return json({ error: "Requête invalide" }, 400);
     const rec = await env.REMINDERS.get("s:" + await subId(body.endpoint), "json");
     if (!rec) return json({ error: "Enregistre d'abord tes rappels." }, 404);
-    const status = await sendPush(env, rec.sub, { title: "ToolBOX", body: "Les notifications fonctionnent. 💧", tag: "test", url: "/nutrition/rappels.html" });
+    const agenda = body.source === "agenda";
+    const status = await sendPush(env, rec.sub, {
+      title: "ToolBOX", tag: "test",
+      body: agenda ? "Les notifications de l'agenda fonctionnent. 📅" : "Les notifications fonctionnent. 💧",
+      url: agenda ? "/etudes/planning.html" : "/nutrition/rappels.html"
+    });
     return status < 300 ? json({ ok: true }) : json({ error: "Envoi refusé par le service de notifications" }, 502);
   }
 

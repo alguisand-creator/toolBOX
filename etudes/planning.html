@@ -54,6 +54,15 @@
   .up{margin-top:1.5rem;padding-top:1.2rem;border-top:1px solid var(--line)}
   .up h3{font:800 1.15rem var(--display);margin:0 0 .6rem}
   .up .ev{cursor:pointer}
+
+  .notif{display:flex;align-items:center;gap:.7rem 1rem;flex-wrap:wrap;padding:.7rem .9rem;margin:0 0 1rem;background:var(--bg);border:1px solid var(--line);border-left:6px solid var(--accent);border-radius:12px}
+  .notif .txt{flex:1 1 230px;min-width:0}
+  .notif .txt b{display:block}
+  .notif .txt span{color:var(--muted);font-size:.9rem}
+  .notif .btns{display:flex;gap:.5rem;flex-wrap:wrap}
+  .notif .btn{padding:.4rem .85rem;font-size:.9rem}
+  .notif-msg{color:var(--steel);font-weight:600;margin:-.4rem 0 1rem}
+  .notif-msg:empty{display:none}
 </style>
 <link rel="manifest" href="../manifest.json">
 <meta name="theme-color" content="#eceff2" media="(prefers-color-scheme: light)">
@@ -99,6 +108,8 @@
           <button type="button" class="btn ghost" id="next" aria-label="Mois suivant">›</button>
         </div>
       </div>
+      <div class="notif" id="notif" aria-live="polite"></div>
+      <p class="notif-msg" id="notifMsg" role="status" aria-live="polite"></p>
       <div class="grid" id="grid" role="group" aria-label="Jours du mois"></div>
 
       <div class="panel">
@@ -116,6 +127,8 @@
             <div class="field"><label for="evStart">Début</label><input id="evStart" type="time"></div>
             <div class="field"><label for="evEnd">Fin</label><input id="evEnd" type="time"></div>
           </div>
+          <div class="field"><label for="evRemind">🔔 Me prévenir</label>
+            <select id="evRemind"></select></div>
           <div class="field"><span style="font-size:.9rem;color:var(--muted);font-weight:500" id="colLbl">Couleur</span>
             <div class="colors" id="colors" role="radiogroup" aria-labelledby="colLbl"></div></div>
           <div class="actions" style="margin-top:.2rem">
@@ -135,7 +148,15 @@
     <section class="explain">
       <h2>Comment utiliser l'agenda ?</h2>
       <p>Clique sur un jour du calendrier pour voir ses événements, puis remplis le formulaire pour en ajouter. Tu peux modifier ou supprimer chaque événement, et lui donner une couleur par matière ou par type de tâche (cours, révision, examen…).</p>
-      <p>Tes événements sont enregistrés dans ce navigateur, sur cet appareil uniquement : ils ne sont envoyés nulle part. Si tu vides les données du navigateur ou que tu changes d'appareil, ils ne te suivront pas.</p>
+      <h2>Les rappels par notification</h2>
+      <p>Pour chaque événement, choisis « Me prévenir » : à l'heure du début, 10 ou 30 minutes avant, 1 heure avant ou la veille. Pour un événement sans heure, le rappel arrive à 8 h le jour même, ou à 18 h la veille. Clique ensuite sur « Activer les notifications » et accepte la demande de ton navigateur.</p>
+      <ul>
+        <li><strong>Rappels envoyés même site fermé</strong> : ils sont envoyés par nos serveurs. Seuls les rappels des 30 prochains jours sont programmés, dans la limite de 20 (les plus proches). Rouvre l'agenda de temps en temps pour programmer les suivants.</li>
+        <li><strong>Si le serveur n'est pas disponible</strong> ou si ton navigateur ne gère pas les notifications push, les rappels des prochaines heures s'affichent tant que cette page reste ouverte.</li>
+        <li><strong>iPhone et iPad</strong> : installe d'abord ToolBOX sur l'écran d'accueil (bouton Partager, puis « Sur l'écran d'accueil »), ouvre l'app depuis son icône, puis active les notifications. iOS 16.4 minimum.</li>
+      </ul>
+      <h2>Et ma vie privée ?</h2>
+      <p>Tes événements sont enregistrés dans ce navigateur, sur cet appareil uniquement. Seuls les rappels que tu actives sont envoyés à nos serveurs (titre de l'événement, date et heure du rappel), avec une adresse d'envoi anonyme fournie par ton navigateur, pour pouvoir te notifier site fermé. Un rappel est supprimé après son envoi, et tout est effacé si tu désactives les notifications. Détails dans la <a href="../legal/confidentialite.html">politique de confidentialité</a>. Si tu vides les données du navigateur ou que tu changes d'appareil, tes événements ne te suivront pas.</p>
     </section>
   </main>
 
@@ -156,7 +177,7 @@ const hours = e => e.start ? (e.end ? `${e.start} – ${e.end}` : e.start) : "To
 
 let events = [];
 try { events = JSON.parse(localStorage.getItem(KEY)) || []; if (!Array.isArray(events)) events = []; } catch (_) { events = []; }
-const save = () => { try { localStorage.setItem(KEY, JSON.stringify(events)); } catch (_) {} };
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(events)); } catch (_) {} scheduleSync(); };
 const byTime = (a, b) => (a.date + (a.start || "")).localeCompare(b.date + (b.start || ""));
 
 const now = new Date();
@@ -170,7 +191,7 @@ function eventNode(e, withDate){
   el.style.setProperty("--c", e.color);
   const t = document.createElement("div"); t.className = "t";
   const b = document.createElement("b"); b.textContent = e.title;
-  const s = document.createElement("span"); s.textContent = (withDate ? longDate(e.date) + " · " : "") + hours(e);
+  const s = document.createElement("span"); s.textContent = (withDate ? longDate(e.date) + " · " : "") + hours(e) + (remLabel(e) ? " · 🔔 " + remLabel(e) : "");
   t.append(b, s); el.append(t);
   return el;
 }
@@ -252,6 +273,7 @@ function resetForm(){
   editing = null;
   $("form").reset();
   $("evDate").value = selected;
+  fillRemind("");
   setColor(COLORS[0][0]);
   $("formTitle").textContent = "Ajouter un événement";
   $("save").textContent = "Ajouter";
@@ -269,6 +291,7 @@ function startEdit(id){
   editing = id;
   $("evTitle").value = e.title; $("evDate").value = e.date;
   $("evStart").value = e.start || ""; $("evEnd").value = e.end || "";
+  fillRemind(e.remind || "");
   setColor(e.color);
   $("formTitle").textContent = "Modifier l'événement";
   $("save").textContent = "Enregistrer";
@@ -296,15 +319,17 @@ $("form").addEventListener("submit", ev => {
   if (!date) return fail("Choisis une date.");
   if (end && !start) return fail("Indique une heure de début avant l'heure de fin.");
   if (start && end && end <= start) return fail("L'heure de fin doit être après l'heure de début.");
+  const remind = $("evRemind").value;
   if (editing) {
-    Object.assign(events.find(x => x.id === editing), { title, date, start, end, color });
+    Object.assign(events.find(x => x.id === editing), { title, date, start, end, color, remind });
   } else {
-    events.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), title, date, start, end, color });
+    events.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), title, date, start, end, color, remind });
   }
   save();
   const target = date;
   resetForm();
   goTo(target);
+  $("notifMsg").textContent = remindFeedback({ date, start, remind });
 });
 
 $("cancel").addEventListener("click", () => { resetForm(); });
@@ -323,8 +348,199 @@ $("today").addEventListener("click", () => { selected = ymd(new Date()); goTo(se
 $("colors").innerHTML = COLORS.map(([c, n], i) =>
   `<label title="${n}"><input type="radio" name="color" value="${c}" aria-label="${n}"${i === 0 ? " checked" : ""}><span style="--c:${c}"></span></label>`).join("");
 
+// ───────── Rappels par notification ─────────
+const PREF = "toolbox-planning-notif";
+const REM_TIMED = [["", "Aucun rappel"], ["0", "À l'heure du début"], ["10", "10 minutes avant"], ["30", "30 minutes avant"], ["60", "1 heure avant"], ["1440", "1 jour avant"]];
+const REM_ALLDAY = [["", "Aucun rappel"], ["d0", "Le jour même à 8 h"], ["d1", "La veille à 18 h"]];
+const MAX_REMINDERS = 20, HORIZON_DAYS = 30;   // MAX_REMINDERS doit correspondre à MAX_AGENDA dans worker.js
+
+const hasNotif = "Notification" in window;
+const supported = "serviceWorker" in navigator && "PushManager" in window && hasNotif;
+const ios = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+const standalone = matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+const permission = () => hasNotif ? Notification.permission : "denied";
+
+let notifOn = false;
+try { notifOn = localStorage.getItem(PREF) === "1"; } catch (_) {}
+const setPref = on => { notifOn = on; try { on ? localStorage.setItem(PREF, "1") : localStorage.removeItem(PREF); } catch (_) {} };
+let mode = "off", scheduled = 0, pending = 0, serverDown = false, syncTimer = null, localTimers = [];
+
+const remOptions = start => start ? REM_TIMED : REM_ALLDAY;
+function remLabel(e) { const o = remOptions(e.start).find(x => x[0] === e.remind); return o && o[0] !== "" ? o[1] : ""; }
+
+// Date et heure (locales) d'envoi du rappel d'un événement, ou null
+function fireDate(e) {
+  if (!e.remind) return null;
+  const [y, m, d] = e.date.split("-").map(Number);
+  if (e.start) {
+    if (!/^\d+$/.test(e.remind)) return null;
+    const [hh, mm] = e.start.split(":").map(Number);
+    return new Date(y, m - 1, d, hh, mm - Number(e.remind));
+  }
+  if (e.remind === "d0") return new Date(y, m - 1, d, 8, 0);
+  if (e.remind === "d1") return new Date(y, m - 1, d - 1, 18, 0);
+  return null;
+}
+
+function reminderBody(e) {
+  if (!e.start) return e.remind === "d1" ? "Demain, toute la journée" : "Aujourd'hui, toute la journée";
+  const off = Number(e.remind);
+  if (off === 0) return `Maintenant · ${e.start}`;
+  if (off === 1440) return `Demain à ${e.start}`;
+  return `${off === 60 ? "Dans 1 h" : "Dans " + off + " min"} · ${e.start}`;
+}
+
+// Tous les rappels à venir (30 jours), du plus proche au plus lointain
+function allReminders() {
+  const nowMs = Date.now(), limit = nowMs + HORIZON_DAYS * 86400000;
+  return events.map(e => ({ e, at: fireDate(e) }))
+    .filter(x => x.at && x.at.getTime() > nowMs && x.at.getTime() < limit)
+    .sort((a, b) => a.at - b.at);
+}
+const toItem = ({ e, at }) => ({
+  date: ymd(at), time: `${pad(at.getHours())}:${pad(at.getMinutes())}`,
+  title: e.title.slice(0, 60), body: reminderBody(e), url: "/etudes/planning.html", tag: "evt-" + e.id
+});
+
+function fillRemind(selected) {
+  const opts = remOptions($("evStart").value);
+  $("evRemind").innerHTML = opts.map(([v, l]) => `<option value="${v}">${l}</option>`).join("");
+  $("evRemind").value = opts.some(o => o[0] === selected) ? selected : "";
+}
+
+function remindFeedback(e) {
+  const at = fireDate(e);
+  if (!at) return "";
+  if (at.getTime() <= Date.now()) return "Ce rappel est déjà passé : il ne sera pas envoyé.";
+  const when = `${longDate(ymd(at))} à ${at.getHours()} h ${pad(at.getMinutes())}`;
+  if (at.getTime() >= Date.now() + HORIZON_DAYS * 86400000) return `Rappel enregistré pour ${when}. Il sera programmé quand il sera à moins de ${HORIZON_DAYS} jours : rouvre l'agenda d'ici là.`;
+  return notifOn && permission() === "granted" ? `Rappel programmé : ${when}.` : `Rappel enregistré pour ${when}. Active les notifications pour le recevoir.`;
+}
+
+const b64uToBytes = s => Uint8Array.from(atob(s.replace(/-/g, "+").replace(/_/g, "/").padEnd(Math.ceil(s.length / 4) * 4, "=")), c => c.charCodeAt(0));
+async function api(path, body) {
+  const r = await fetch("/api/push/" + path, body ? { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) } : undefined);
+  let data = {}; try { data = await r.json(); } catch (_) {}
+  if (!r.ok) { const err = new Error(data.error || "Erreur " + r.status); err.status = r.status; throw err; }
+  return data;
+}
+async function currentSub() {
+  if (!supported) return null;
+  const reg = await navigator.serviceWorker.ready;
+  return reg.pushManager.getSubscription();
+}
+const tz = () => Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+// Secours : notification affichée par la page elle-même (seulement tant qu'elle reste ouverte)
+async function showLocal(it) {
+  const opts = { body: it.body || "", tag: it.tag, icon: "/icons/blank-96.png", badge: "/icons/badge-96.png", data: { url: it.url || "/etudes/planning.html" } };
+  try { const reg = await navigator.serviceWorker.ready; return await reg.showNotification(it.title, opts); }
+  catch (_) { new Notification(it.title, { body: opts.body, tag: opts.tag }); }
+}
+function clearLocal() { localTimers.forEach(clearTimeout); localTimers = []; }
+function scheduleLocal(items) {
+  const now = Date.now();
+  items.forEach(it => {
+    const delay = new Date(`${it.date}T${it.time}:00`).getTime() - now;
+    if (delay > 0 && delay < 12 * 3600000) localTimers.push(setTimeout(() => showLocal(it), delay));
+  });
+}
+
+function scheduleSync() { clearTimeout(syncTimer); syncTimer = setTimeout(syncReminders, 500); }
+
+async function syncReminders() {
+  clearLocal();
+  if (!notifOn || permission() !== "granted") { mode = "off"; renderNotif(); return; }
+  const all = allReminders(), items = all.slice(0, MAX_REMINDERS).map(toItem);
+  scheduled = items.length; pending = all.length - items.length;
+  let pushed = false; serverDown = false;
+  if (supported) {
+    try {
+      const sub = await currentSub();
+      if (sub) {
+        const j = sub.toJSON();
+        await api("save", { source: "agenda", sub: { endpoint: j.endpoint, keys: j.keys }, tz: tz(), items });
+        pushed = true;
+      } else serverDown = true;
+    } catch (_) { serverDown = true; }
+  }
+  mode = pushed ? "push" : "local";
+  if (!pushed) scheduleLocal(items);
+  renderNotif();
+}
+
+async function enableNotif() {
+  if (!hasNotif) return;
+  const perm = Notification.permission === "default" ? await Notification.requestPermission() : Notification.permission;
+  if (perm !== "granted") { renderNotif(); return; }
+  setPref(true);
+  if (supported) {
+    try {
+      const reg = await navigator.serviceWorker.ready;
+      let sub = await reg.pushManager.getSubscription();
+      if (!sub) { const { key } = await api("key"); sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64uToBytes(key) }); }
+    } catch (_) { /* serveur indisponible : on retombe sur les rappels page ouverte */ }
+  }
+  await syncReminders();
+  $("notifMsg").textContent = "Notifications activées.";
+}
+
+async function disableNotif() {
+  setPref(false); clearLocal(); mode = "off";
+  if (supported) {
+    try {
+      const sub = await currentSub();
+      if (sub) { const j = sub.toJSON(); await api("save", { source: "agenda", sub: { endpoint: j.endpoint, keys: j.keys }, tz: tz(), items: [] }); }
+    } catch (_) {}
+  }
+  renderNotif();
+  $("notifMsg").textContent = "Notifications désactivées : tes rappels ont été supprimés du serveur.";
+}
+
+async function testNotif() {
+  try {
+    if (mode === "push") {
+      const sub = await currentSub();
+      await api("test", { endpoint: sub.endpoint, source: "agenda" });
+      $("notifMsg").textContent = "Notification de test envoyée : elle arrive dans quelques secondes.";
+    } else {
+      await showLocal({ title: "ToolBOX", body: "Les notifications de l'agenda fonctionnent. 📅", tag: "test", url: "/etudes/planning.html" });
+      $("notifMsg").textContent = "Notification de test affichée.";
+    }
+  } catch (e) { $("notifMsg").textContent = e.message || "Impossible d'envoyer la notification de test."; }
+}
+
+function renderNotif() {
+  const box = $("notif");
+  const bar = (title, sub, buttons = []) => {
+    box.innerHTML = `<div class="txt"><b>${title}</b><span>${sub}</span></div>`;
+    if (!buttons.length) return;
+    const d = document.createElement("div"); d.className = "btns";
+    buttons.forEach(([label, cls, fn]) => {
+      const b = document.createElement("button"); b.type = "button"; b.className = "btn " + cls; b.textContent = label;
+      b.addEventListener("click", fn); d.append(b);
+    });
+    box.append(d);
+  };
+  if (!hasNotif) return bar("🔔 Notifications indisponibles", ios && !standalone
+    ? "Sur iPhone et iPad, installe d'abord ToolBOX : bouton Partager, puis « Sur l'écran d'accueil ». Ouvre ensuite l'app depuis son icône."
+    : "Ton navigateur ne gère pas les notifications. Essaie avec Chrome, Edge ou Firefox à jour.");
+  if (permission() === "denied") return bar("🔕 Notifications bloquées", "Autorise les notifications pour ToolBOX dans les réglages de ton navigateur, puis recharge la page.");
+  if (!notifOn || permission() !== "granted") return bar("🔔 Rappels avant tes événements", "Reçois une notification avant chaque événement pour lequel tu choisis « Me prévenir ».", [["Activer les notifications", "", enableNotif]]);
+  const where = mode === "push" ? "Tu seras prévenu même site fermé."
+    : "Tu seras prévenu tant que cette page reste ouverte" + (serverDown ? " (le serveur de rappels n'est pas disponible pour l'instant)." : ".");
+  const count = scheduled
+    ? `${scheduled} rappel${scheduled > 1 ? "s" : ""} programmé${scheduled > 1 ? "s" : ""}` + (pending ? `, ${pending} autre${pending > 1 ? "s" : ""} à programmer plus tard` : "") + ". "
+    : "Aucun rappel programmé pour le moment. ";
+  bar("🔔 Notifications activées", count + where, [["Tester", "ghost", testNotif], ["Désactiver", "ghost", disableNotif]]);
+}
+
+$("evStart").addEventListener("input", () => fillRemind($("evRemind").value));
+document.addEventListener("visibilitychange", () => { if (!document.hidden && notifOn && permission() === "granted") scheduleSync(); });
+
 resetForm();
 renderAll();
+if (notifOn && permission() === "granted") syncReminders(); else renderNotif();
 $("y").textContent = new Date().getFullYear();
 </script>
 <script src="../assets/consent.js"></script>
