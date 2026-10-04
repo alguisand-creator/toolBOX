@@ -69,8 +69,9 @@
 
   if (value === null) box.hidden = false;
 
-  // Publicité et mesure d'audience : ces scripts ne font rien tant qu'aucun identifiant n'y est renseigné
-  ["ads", "stats"].forEach(name => {
+  // Scripts communs : publicité et mesure d'audience (inactifs tant qu'aucun identifiant n'y est renseigné),
+  // et extras (étoile « Favori » et bouton « Partager mon résultat » sur les pages d'outils)
+  ["ads", "stats", "extras"].forEach(name => {
     const s = document.createElement("script");
     s.src = base + "assets/" + name + ".js";
     s.defer = true;

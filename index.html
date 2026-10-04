@@ -62,7 +62,13 @@ nav.top a:hover{color:var(--ink)}
 .drawer h2{font:800 1.5rem var(--display);margin:0 0 .25rem;letter-spacing:-.01em}
 .drawer .sub{color:var(--muted);margin:0 0 1rem;font-size:.95rem}
 .drawer ul{list-style:none;margin:0;padding:0}
-.drawer li a{display:flex;justify-content:space-between;align-items:center;padding:.6rem .2rem;border-top:1px solid var(--line);text-decoration:none;font-weight:500}
+.drawer li{display:flex;align-items:center;border-top:1px solid var(--line)}
+.drawer li a{flex:1;min-width:0;display:flex;justify-content:space-between;align-items:center;gap:.5rem;padding:.6rem .2rem;text-decoration:none;font-weight:500}
+.fav{flex:0 0 auto;background:none;border:0;cursor:pointer;font-size:1.25rem;line-height:1;padding:.45rem .55rem;color:var(--muted);border-radius:8px}
+.fav:hover{color:var(--ink);background:var(--bg)}
+.fav[aria-pressed="true"]{color:#e0a800}
+.drawer.favs{grid-column:1/-1;background:linear-gradient(var(--surface),var(--surface)) padding-box;border-color:var(--accent)}
+.drawer.favs ul{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));column-gap:1.5rem}
 .drawer li a:hover{background:var(--bg);padding-left:.6rem}
 .drawer li a small{color:var(--muted);font-weight:400}
 .drawer li a:hover small{color:var(--ink)}
@@ -251,6 +257,27 @@ const norm = s => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,""
 const box = document.getElementById("drawers");
 const LIMIT = 5; // outils visibles avant le bouton « Voir les autres »
 
+// Favoris : la liste des outils épinglés est gardée sur l'appareil (stockage local)
+const FKEY = "toolbox-favoris-v1";
+const keyOf = href => href.replace(/\.html$/, "");
+let favs = [];
+try { const s = JSON.parse(localStorage.getItem(FKEY) || "[]"); if (Array.isArray(s)) favs = s.filter(k => typeof k === "string").slice(0, 60); } catch (_) {}
+const saveFavs = () => { try { localStorage.setItem(FKEY, JSON.stringify(favs)); } catch (_) {} };
+const byKey = {};
+CATEGORIES.forEach(c => c.outils.forEach(o => { if (o[3] !== false) byKey[keyOf(o[2])] = o; }));
+const star = (o, on) => `<button type="button" class="fav" data-fav="${keyOf(o[2])}" aria-pressed="${on}" aria-label="${on ? "Retirer " + o[0] + " des favoris" : "Ajouter " + o[0] + " aux favoris"}" title="${on ? "Retirer des favoris" : "Ajouter aux favoris"}">${on ? "★" : "☆"}</button>`;
+const item = (o, extra) => `
+      <li${extra ? ' class="extra"' : ""} data-name="${norm(o[0]+" "+o[1])}"><a href="${o[2]}"><span>${o[0]}</span><small>${o[1]}</small></a>${o[3] === false ? "" : star(o, favs.includes(keyOf(o[2])))}</li>`;
+
+// Section « Mes favoris », épinglée en haut ; elle disparaît quand il n'y a aucun favori
+function renderFavs() {
+  let d = box.querySelector(".drawer.favs");
+  const list = favs.filter(k => byKey[k]);
+  if (!list.length) { if (d) d.remove(); return; }
+  if (!d) { d = document.createElement("article"); d.className = "drawer favs"; box.prepend(d); }
+  d.innerHTML = `<h2>⭐ Mes favoris</h2><p class="sub">Tes outils épinglés. Clique sur l'étoile ★ pour en retirer un.</p><ul>${list.map(k => item(byKey[k], false)).join("")}</ul>`;
+}
+
 // Construction des tiroirs
 box.innerHTML = CATEGORIES.map(c => {
   const more = c.outils.length - LIMIT;
@@ -258,8 +285,7 @@ box.innerHTML = CATEGORIES.map(c => {
   <article class="drawer${more > 0 ? " collapsed" : ""}" data-cat="${c.id}">
     <h2>${c.nom}</h2>
     <p class="sub">${c.desc}</p>
-    <ul id="list-${c.id}">${c.outils.map((o, i) => `
-      <li${i >= LIMIT ? ' class="extra"' : ""} data-name="${norm(o[0]+" "+o[1])}"><a href="${o[2]}"><span>${o[0]}</span><small>${o[1]}</small></a></li>`).join("")}
+    <ul id="list-${c.id}">${c.outils.map((o, i) => item(o, i >= LIMIT)).join("")}
     </ul>${more > 0 ? `
     <button type="button" class="more" aria-expanded="false" aria-controls="list-${c.id}" data-more="${more}">
       <span>Voir les ${more} autres</span>
@@ -267,6 +293,26 @@ box.innerHTML = CATEGORIES.map(c => {
     </button>` : ""}
   </article>`;
 }).join("");
+
+renderFavs();
+
+box.addEventListener("click", e => {
+  const s = e.target.closest(".fav");
+  if (!s) return;
+  const k = s.dataset.fav;
+  favs = favs.includes(k) ? favs.filter(x => x !== k) : [k].concat(favs);   // le dernier ajouté apparaît en premier
+  saveFavs();
+  const on = favs.includes(k), o = byKey[k];
+  box.querySelectorAll(".fav").forEach(b => {
+    if (b.dataset.fav !== k) return;
+    b.setAttribute("aria-pressed", on);
+    b.textContent = on ? "★" : "☆";
+    b.title = on ? "Retirer des favoris" : "Ajouter aux favoris";
+    b.setAttribute("aria-label", (on ? "Retirer " : "Ajouter ") + o[0] + (on ? " des favoris" : " aux favoris"));
+  });
+  renderFavs();
+  update();
+});
 
 box.addEventListener("click", e => {
   const b = e.target.closest(".more"); if (!b) return;
@@ -302,6 +348,7 @@ function update(){
   const term = out ? "" : norm(v);
   let total = 0;
   box.querySelectorAll(".drawer").forEach(d => {
+    if (d.classList.contains("favs")) { d.hidden = !!term; return; }   // pendant une recherche, on ne montre pas les doublons
     let n = 0;
     d.querySelectorAll("li").forEach(li => {
       const show = !term || li.dataset.name.includes(term) || norm(d.querySelector("h2").textContent).includes(term);
