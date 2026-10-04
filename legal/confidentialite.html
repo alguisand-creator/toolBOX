@@ -58,16 +58,19 @@
       <p><strong>Données techniques.</strong> Comme tout site, ToolBOX est servi par un hébergeur, Cloudflare, qui reçoit automatiquement des informations techniques (adresse IP, navigateur, date et page demandée) pour faire fonctionner et protéger le site. Base légale : intérêt légitime (sécurité et bon fonctionnement). Ces données peuvent être traitées hors de l'Union européenne, notamment aux États-Unis, dans le cadre des garanties prévues par le RGPD.</p>
 
       <h2>4. Cookies, stockage local et publicité</h2>
-      <p>Le site utilise le stockage local de ton navigateur pour deux usages strictement fonctionnels :</p>
+      <p>Le site utilise le stockage local de ton navigateur pour des usages strictement fonctionnels :</p>
       <ul>
         <li><code>toolbox-planning-v1</code> : tes événements d'agenda ;</li>
         <li><code>toolbox-consent</code> : ton choix dans la bannière de cookies ;</li>
         <li><code>toolbox-rappels-v1</code> : tes réglages de rappels ;</li>
         <li><code>toolbox-calories-v1</code> : ta journée dans le compteur de calories (effacée chaque jour) ;</li>
         <li><code>toolbox-eau-v1</code> : ton compteur de verres d'eau du jour et ton objectif ;</li>
-        <li><code>toolbox-favoris-v1</code> : la liste de tes outils favoris.</li>
+        <li><code>toolbox-favoris-v1</code> : la liste de tes outils favoris ;</li>
+        <li><code>toolbox-no-stats</code> : ton refus de la mesure d'audience, si tu l'as demandé ci-dessous.</li>
       </ul>
       <p><strong>Mesure d'audience.</strong> Pour savoir combien de personnes visitent le site et quelles pages sont consultées, ToolBOX utilise Cloudflare Web Analytics. Cet outil ne dépose aucun cookie, n'utilise aucun identifiant personnel et ne te suit pas d'un site à l'autre : il compte les visites et les pages vues, avec des informations générales (pays, type d'appareil et de navigateur, site d'origine). Il ne s'active pas si ton navigateur envoie le signal « Ne pas me suivre ». Base légale : intérêt légitime (connaître la fréquentation du site). Voir la <a href="https://www.cloudflare.com/web-analytics/" rel="noopener">présentation de Cloudflare Web Analytics</a>.</p>
+      <p><label class="chk"><input type="checkbox" id="optout"> Ne pas compter mes visites sur cet appareil</label></p>
+      <p id="optout-msg" role="status" style="color:var(--muted);margin:0 0 .8rem"></p>
       <p><strong>Publicité.</strong> À ce jour, ToolBOX n'affiche aucune publicité et n'utilise aucun cookie publicitaire. Le site pourra à l'avenir afficher de la publicité (par exemple via Google AdSense). Ces services peuvent déposer des cookies ou lire des identifiants pour mesurer et personnaliser les annonces ; ils ne sont chargés qu'avec ton accord, donné via la bannière. Tu peux accepter, refuser, et changer d'avis à tout moment avec le lien « Cookies » en bas de chaque page. Refuser n'empêche pas d'utiliser les outils.</p>
 
       <h2>5. Durées de conservation</h2>
@@ -83,7 +86,19 @@
 
   <footer>© <span id="y"></span> ToolBOX<nav class="legal-links" aria-label="Informations légales"><a href="../legal/mentions-legales.html">Mentions légales</a> · <a href="../legal/confidentialite.html">Confidentialité</a> · <a href="../legal/contact.html">Contact</a> · <a href="#" data-cookie-settings>Cookies</a></nav></footer>
 </div>
-<script>document.getElementById("y").textContent = new Date().getFullYear();</script>
+<script>
+document.getElementById("y").textContent = new Date().getFullYear();
+// Opposition à la mesure d'audience : mémorisée dans le navigateur, lue par assets/stats.js
+(function () {
+  const box = document.getElementById("optout"), msg = document.getElementById("optout-msg"), KEY = "toolbox-no-stats";
+  if (!box) return;
+  try { box.checked = localStorage.getItem(KEY) === "1"; } catch (_) { box.disabled = true; msg.textContent = "Ton navigateur bloque le stockage local : le choix ne peut pas être enregistré."; }
+  box.addEventListener("change", () => {
+    try { box.checked ? localStorage.setItem(KEY, "1") : localStorage.removeItem(KEY); } catch (_) { return; }
+    msg.textContent = box.checked ? "C'est noté : tes visites ne seront plus comptées sur cet appareil." : "Tes visites peuvent de nouveau être comptées (de façon anonyme).";
+  });
+})();
+</script>
 <script src="../assets/consent.js"></script>
 <script src="../assets/pwa.js"></script>
 </body>

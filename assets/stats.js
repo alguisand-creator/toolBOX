@@ -7,6 +7,8 @@
 
   if (!/^[0-9a-f]{32}$/.test(TOKEN)) return;
   if (location.hostname === "localhost" || location.hostname === "127.0.0.1" || navigator.doNotTrack === "1") return;
+  // Opposition du visiteur (case à cocher dans la politique de confidentialité)
+  try { if (localStorage.getItem("toolbox-no-stats") === "1") return; } catch (_) {}
 
   const s = document.createElement("script");
   s.defer = true;
