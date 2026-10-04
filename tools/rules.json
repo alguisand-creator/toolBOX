@@ -18,6 +18,7 @@
 
     { "match": "icon-*.png",               "dest": "icons" },
     { "match": "badge-*.png",              "dest": "icons" },
+    { "match": "blank-*.png",              "dest": "icons" },
     { "match": "apple-touch-icon.png",     "dest": "icons" },
     { "match": "og-image.png",             "dest": "icons" },
 
