@@ -69,9 +69,11 @@
 
   if (value === null) box.hidden = false;
 
-  // Publicité : ads.js ne fait rien tant qu'un identifiant AdSense n'y est pas renseigné
-  const ads = document.createElement("script");
-  ads.src = base + "assets/ads.js";
-  ads.defer = true;
-  document.head.append(ads);
+  // Publicité et mesure d'audience : ces scripts ne font rien tant qu'aucun identifiant n'y est renseigné
+  ["ads", "stats"].forEach(name => {
+    const s = document.createElement("script");
+    s.src = base + "assets/" + name + ".js";
+    s.defer = true;
+    document.head.append(s);
+  });
 })();

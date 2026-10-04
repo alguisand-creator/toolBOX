@@ -29,7 +29,7 @@ const PRECACHE = [
   "/voyage/distance-entre-villes.html", "/voyage/temps-de-trajet.html", "/voyage/fuseaux-horaires.html",
   "/temps/compte-a-rebours.html", "/temps/duree-entre-heures.html", "/temps/heures-en-minutes.html", "/temps/minutes-en-secondes.html",
   "/calcul/convertisseur-unites.html", "/argent/partage-addition.html", "/nutrition/calories-brulees.html", "/nutrition/suivi-eau.html",
-  "/guides/calories-par-jour.html", "/guides/combien-d-eau-boire.html", "/guides/adapter-une-recette.html", "/assets/ads.js",
+  "/guides/calories-par-jour.html", "/guides/combien-d-eau-boire.html", "/guides/adapter-une-recette.html", "/assets/ads.js", "/assets/stats.js",
   "/legal/mentions-legales.html", "/legal/confidentialite.html", "/legal/contact.html"
 ];
 
