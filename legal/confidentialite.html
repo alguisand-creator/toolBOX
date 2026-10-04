@@ -52,6 +52,7 @@
 
       <h2>3. Les données concernées</h2>
       <p><strong>Ton agenda (page Planning).</strong> Les événements que tu ajoutes sont enregistrés dans le stockage local de ton navigateur, sur ton appareil uniquement. Ils ne sont jamais envoyés. Tu peux les supprimer en vidant les données du site dans ton navigateur.</p>
+      <p><strong>Compteur de calories et suivi de l'eau.</strong> Ta journée, ton objectif et tes verres d'eau sont enregistrés dans le stockage local de ton navigateur, sur ton appareil uniquement. Ils ne sont jamais envoyés à nos serveurs. Tu peux les supprimer en vidant les données du site dans ton navigateur.</p>
       <p><strong>Les outils d'IA.</strong> Lorsque tu utilises une fonction d'IA (aujourd'hui, le résumé de texte avec la case « Utiliser l'IA » cochée), le texte que tu as saisi est envoyé au serveur du site, puis à un modèle d'IA hébergé par Cloudflare (service Workers AI) pour produire la réponse. Le site n'enregistre pas ce texte. Cloudflare peut toutefois conserver des données techniques selon sa propre <a href="https://www.cloudflare.com/privacypolicy/" rel="noopener">politique de confidentialité</a>. Ne saisis pas d'informations confidentielles ou sensibles (santé, mots de passe, données de tiers…). Tu peux décocher la case pour que ton texte ne quitte pas ton navigateur. Base légale : ton choix, lorsque tu lances le traitement avec l'IA.</p>
       <p><strong>Rappels et notifications (page Rappels).</strong> Si tu actives les rappels, ton navigateur crée une adresse d'envoi anonyme propre à ton appareil. Elle est enregistrée sur nos serveurs (stockage Cloudflare KV) avec ton fuseau horaire, les heures de tes rappels et leurs textes, uniquement pour t'envoyer les notifications aux heures choisies. Elles transitent par le service de notifications de ton navigateur (Google, Mozilla, Microsoft ou Apple selon l'appareil). Aucun nom, e-mail ou compte n'est demandé. Base légale : ton consentement, en acceptant les notifications. Tu peux tout supprimer à tout moment avec le bouton « Désactiver les rappels », ou en bloquant les notifications dans ton navigateur : les données sont alors effacées dès le prochain envoi refusé.</p>
       <p><strong>Données techniques.</strong> Comme tout site, ToolBOX est servi par un hébergeur, Cloudflare, qui reçoit automatiquement des informations techniques (adresse IP, navigateur, date et page demandée) pour faire fonctionner et protéger le site. Base légale : intérêt légitime (sécurité et bon fonctionnement). Ces données peuvent être traitées hors de l'Union européenne, notamment aux États-Unis, dans le cadre des garanties prévues par le RGPD.</p>
@@ -61,7 +62,9 @@
       <ul>
         <li><code>toolbox-planning-v1</code> : tes événements d'agenda ;</li>
         <li><code>toolbox-consent</code> : ton choix dans la bannière de cookies ;</li>
-        <li><code>toolbox-rappels-v1</code> : tes réglages de rappels.</li>
+        <li><code>toolbox-rappels-v1</code> : tes réglages de rappels ;</li>
+        <li><code>toolbox-calories-v1</code> : ta journée dans le compteur de calories (effacée chaque jour) ;</li>
+        <li><code>toolbox-eau-v1</code> : ton compteur de verres d'eau du jour et ton objectif.</li>
       </ul>
       <p>À ce jour, ToolBOX n'utilise ni cookie publicitaire ni outil de mesure d'audience. Le site pourra à l'avenir afficher de la publicité (par exemple via Google AdSense). Ces services peuvent déposer des cookies ou lire des identifiants pour mesurer et personnaliser les annonces ; ils ne sont chargés qu'avec ton accord, donné via la bannière. Tu peux accepter, refuser, et changer d'avis à tout moment avec le lien « Cookies » en bas de chaque page. Refuser n'empêche pas d'utiliser les outils.</p>
 

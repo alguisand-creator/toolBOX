@@ -58,7 +58,7 @@
           </select></div>
       </div>
       <div class="result" id="result" aria-live="polite"></div>
-      <div class="actions"><a class="btn" href="rappels.html">💧 Recevoir des rappels pour boire</a></div>
+      <div class="actions"><a class="btn" href="suivi-eau.html" id="track">Suivre ma consommation</a><a class="btn ghost" href="rappels.html">💧 Recevoir des rappels</a></div>
     </section>
 
     <section class="explain">
@@ -86,6 +86,17 @@ const f0 = n => new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 }).for
 
 const wEl = document.getElementById("w"), sportEl = document.getElementById("sport"), heatEl = document.getElementById("heat");
 const result = document.getElementById("result");
+let lastTotal = 0;
+
+// « Suivre ma consommation » : on transmet l'objectif calculé à la page de suivi, via le stockage local de l'appareil
+document.getElementById("track").addEventListener("click", () => {
+  if (!lastTotal) return;
+  try {
+    const s = JSON.parse(localStorage.getItem("toolbox-eau-v1") || "{}") || {};
+    s.goal = Math.round(lastTotal * 10) / 10;
+    localStorage.setItem("toolbox-eau-v1", JSON.stringify(s));
+  } catch (_) {}
+});
 
 function compute() {
   const kg = num(wEl.value), min = num(sportEl.value), heat = num(heatEl.value);
@@ -97,6 +108,7 @@ function compute() {
   }
   const base = kg * 0.033, sport = min / 60 * 0.6;
   const total = base + sport + heat;
+  lastTotal = total;
   const glasses = total * 1000 / 250;
   result.innerHTML =
     `<div class="big">${f1(total)} litres / jour</div>

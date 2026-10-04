@@ -182,20 +182,24 @@ const CATEGORIES = [
     ["Jours entre deux dates","Jours ouvrés, ajout de jours","calcul/jours-entre-dates.html"],
     ["Moyenne","Liste de nombres","calcul/moyenne.html"],
     ["Règle de trois","Produit en croix","calcul/regle-de-trois.html"],
-    ["Âge","Depuis ta naissance","calcul/age.html"]]},
+    ["Âge","Depuis ta naissance","calcul/age.html"],
+    ["Convertisseur d'unités","Longueur, poids, volume…","calcul/convertisseur-unites.html"]]},
   { id:"argent", nom:"Argent", desc:"Salaire et budget.", outils:[
     ["Salaire","Brut ⇄ net","argent/salaire.html"],
     ["Salaire horaire","Par heure","argent/salaire-horaire.html"],
     ["Budget","Revenus et dépenses","argent/budget.html"],
     ["Convertisseur de devises","Euro, dollar, dirham…","argent/devises.html"],
-    ["Frais de notaire","Ancien et neuf","argent/frais-de-notaire.html"]]},
+    ["Frais de notaire","Ancien et neuf","argent/frais-de-notaire.html"],
+    ["Partage d'addition","Avec pourboire et arrondi","argent/partage-addition.html"]]},
   { id:"nutrition", nom:"Nutrition", desc:"Calories, macros et hydratation.", outils:[
     ["Besoins caloriques","Calories par jour","nutrition/besoins-caloriques.html"],
     ["Compteur de calories","Suivi des repas du jour","nutrition/compteur-calories.html"],
     ["Macronutriments","Protéines, glucides, lipides","nutrition/macronutriments.html"],
     ["Besoin en eau","Litres par jour","nutrition/besoin-en-eau.html"],
     ["Objectif de poids","Durée et déficit conseillé","nutrition/objectif-poids.html"],
-    ["Rappels","Notifications eau et repas","nutrition/rappels.html"]]},
+    ["Rappels","Notifications eau et repas","nutrition/rappels.html"],
+    ["Calories brûlées","Sport et activités","nutrition/calories-brulees.html"],
+    ["Suivi de l'eau","Compte tes verres du jour","nutrition/suivi-eau.html"]]},
   { id:"cuisine", nom:"Cuisine", desc:"Conversions et repères en cuisine.", outils:[
     ["Grammes ⇄ ml","Selon l'ingrédient","cuisine/grammes-en-ml.html"],
     ["Convertisseur de recette","Pour 8 crêpes… et pour 5 ?","cuisine/convertisseur-recette.html"],
@@ -236,7 +240,11 @@ const CATEGORIES = [
     ["Générateur de lettre","Motivation, démission…","ia/generateur-lettre.html"],
     ["Générateur de bio","Instagram, LinkedIn, X…","ia/generateur-bio.html"],
     ["Générateur de prompt","Prompt structuré pour IA","ia/generateur-prompt.html"],
-    ["Description Vinted","Annonce prête à copier","ia/description-vinted.html"]]}
+    ["Description Vinted","Annonce prête à copier","ia/description-vinted.html"]]},
+  { id:"guides", nom:"Guides", desc:"Comprendre avant de calculer.", outils:[
+    ["Combien de calories par jour ?","Besoins et objectifs","guides/calories-par-jour.html"],
+    ["Combien d'eau boire par jour ?","Repères et astuces","guides/combien-d-eau-boire.html"],
+    ["Adapter une recette","Quantités et conversions","guides/adapter-une-recette.html"]]}
 ];
 
 const norm = s => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");

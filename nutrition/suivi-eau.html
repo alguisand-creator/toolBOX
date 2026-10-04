@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Suivi de l'eau : compteur de verres par jour – ToolBOX</title>
+<meta name="description" content="Compte les verres d'eau que tu bois dans la journée et suis ton objectif en litres. Un bouton, une barre de progression, remise à zéro automatique chaque jour.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/outil.css">
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#eceff2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121a21" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" href="../icons/icon-192.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<style>
+  .note{color:var(--muted);margin:.4rem 0 0;font-size:.95rem}
+  .chips{display:flex;flex-wrap:wrap;gap:.5rem;margin:.9rem 0 0}
+  .chips button{font:500 .9rem var(--body);color:var(--ink);background:var(--bg);border:1px dashed var(--muted);border-radius:99px;padding:.35rem .8rem;cursor:pointer}
+  .chips button:hover{border-style:solid;border-color:var(--ink)}
+  .swap{align-self:flex-end;flex:0 0 auto;font:600 1.2rem var(--body);width:2.9rem;height:2.9rem;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+  .swap:hover{border-color:var(--ink)}
+  .meter{height:16px;border-radius:99px;background:var(--line);overflow:hidden;margin:1rem 0 .3rem}
+  .meter span{display:block;height:100%;background:#3b8fd9;transition:width .25s}
+  .meter.done span{background:#4caf6a}
+  .bigbtn{font-size:1.3rem;padding:.9rem 1.6rem}
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://toolbox.alguisand.workers.dev/nutrition/suivi-eau">
+<meta property="og:site_name" content="ToolBOX">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="Suivi de l'eau : compteur de verres par jour – ToolBOX">
+<meta property="og:description" content="Compte les verres d'eau que tu bois dans la journée et suis ton objectif en litres. Un bouton, une barre de progression, remise à zéro automatique chaque jour.">
+<meta property="og:url" content="https://toolbox.alguisand.workers.dev/nutrition/suivi-eau">
+<meta property="og:image" content="https://toolbox.alguisand.workers.dev/icons/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ToolBOX : les petits outils du quotidien">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Suivi de l\u0027eau","url":"https://toolbox.alguisand.workers.dev/nutrition/suivi-eau","description":"Compte les verres d\u0027eau que tu bois dans la journée et suis ton objectif en litres. Un bouton, une barre de progression, remise à zéro automatique chaque jour.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","inLanguage":"fr-FR","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://toolbox.alguisand.workers.dev/"},{"@type":"ListItem","position":2,"name":"Suivi de l\u0027eau","item":"https://toolbox.alguisand.workers.dev/nutrition/suivi-eau"}]}]</script>
+<!-- /seo -->
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="../index.html">Tool<span>BOX</span></a>
+  </header>
+
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="../index.html">Accueil</a> › <a href="../index.html#outils">Nutrition</a> › Suivi de l'eau
+  </nav>
+
+  <main>
+    <h1>Suivi de l'eau</h1>
+    <p class="lead">Appuie sur le bouton à chaque verre bu et vois où tu en es de ton objectif.</p>
+
+    <section class="tool" aria-label="Suivi de l'eau">
+      <div class="result" id="result" aria-live="polite" style="margin-top:0"></div>
+      <div class="actions">
+        <button type="button" class="btn bigbtn" id="plus">+ 1 verre</button>
+        <button type="button" class="btn ghost" id="minus">− 1</button>
+        <button type="button" class="btn ghost" id="reset">Remettre à zéro</button>
+      </div>
+      <div class="fields" style="margin-top:1.4rem">
+        <div class="field"><label for="goal">Objectif (litres par jour)</label><input id="goal" type="text" inputmode="decimal" autocomplete="off" value="2,5"></div>
+        <div class="field"><label for="size">Taille d'un verre</label>
+          <select id="size"><option value="20">20 cl</option><option value="25" selected>25 cl</option><option value="33">33 cl (canette)</option><option value="50">50 cl (petite bouteille)</option></select></div>
+      </div>
+      <p class="note" style="color:var(--muted)">Pas sûr de ton objectif ? <a href="besoin-en-eau.html">Calcule ton besoin en eau</a>. Pour être prévenu, <a href="rappels.html">active les rappels</a>.</p>
+    </section>
+
+    <section class="explain">
+      <h2>Comment utiliser le suivi ?</h2>
+      <p>À chaque verre d'eau (ou de tisane, de thé léger), appuie sur « + 1 verre ». La barre de progression montre où tu en es de ton objectif en litres. Le compteur repart tout seul de zéro chaque nouveau jour, et ton objectif est conservé.</p>
+      <p>Tes données restent sur ton appareil : elles ne sont jamais envoyées sur un serveur. Si tu vides les données du site dans ton navigateur, le compteur est remis à zéro.</p>
+
+      <h2>Quel objectif viser ?</h2>
+      <p>Les autorités sanitaires européennes estiment l'apport total en eau conseillé à environ 2 litres par jour pour une femme et 2,5 litres pour un homme, dont une partie vient de l'alimentation. Ton besoin augmente avec le sport et la chaleur : l'outil <a href="besoin-en-eau.html">Besoin en eau quotidien</a> t'en donne une estimation personnalisée.</p>
+    </section>
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX – Tes données restent dans ton navigateur.<nav class="legal-links" aria-label="Informations légales"><a href="../legal/mentions-legales.html">Mentions légales</a> · <a href="../legal/confidentialite.html">Confidentialité</a> · <a href="../legal/contact.html">Contact</a> · <a href="#" data-cookie-settings>Cookies</a></nav></footer>
+</div>
+
+<script>
+const num = s => parseFloat(String(s).replace(",", "."));
+const fmt = (n, d = 2) => new Intl.NumberFormat("fr-FR", { maximumFractionDigits: d }).format(n);
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const dur = min => { const m = Math.round(min); const h = Math.floor(m / 60); return h ? `${h} h ${String(m % 60).padStart(2, "0")} min` : `${m} min`; };
+const KEY = "toolbox-eau-v1";
+const today = () => { const d = new Date(); return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`; };
+let st = { day: today(), glasses: 0, goal: 2.5, size: 25 };
+try {
+  const s = JSON.parse(localStorage.getItem(KEY) || "null");
+  if (s) {
+    if (Number.isFinite(s.goal) && s.goal >= 0.5 && s.goal <= 10) st.goal = s.goal;
+    if ([20, 25, 33, 50].includes(s.size)) st.size = s.size;
+    if (s.day === today() && Number.isInteger(s.glasses) && s.glasses >= 0 && s.glasses < 1000) st.glasses = s.glasses;
+  }
+} catch (_) {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (_) {} };
+$("goal").value = String(st.goal).replace(".", ","); $("size").value = String(st.size);
+function render() {
+  if (st.day !== today()) { st.day = today(); st.glasses = 0; }   // nouveau jour : on repart de zéro
+  const litres = st.glasses * st.size / 100, pct = Math.min(100, litres / st.goal * 100), needed = Math.ceil(st.goal * 100 / st.size);
+  const left = Math.max(0, st.goal - litres);
+  $("result").classList.remove("err");
+  $("result").innerHTML =
+    `<div class="big">${fmt(litres, 2)} L <span style="font-size:.5em;color:var(--muted)">sur ${fmt(st.goal, 2)} L</span></div>
+     <div class="meter${pct >= 100 ? " done" : ""}" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(pct)}"><span style="width:${pct}%"></span></div>
+     <div class="txt"><strong>${st.glasses} verre${st.glasses > 1 ? "s" : ""} sur ${needed}</strong> · ${pct >= 100 ? "Objectif atteint, bravo ! 💧" : `il reste ${fmt(left, 2)} L (${Math.ceil(left * 100 / st.size)} verre${Math.ceil(left * 100 / st.size) > 1 ? "s" : ""})`}</div>`;
+  save();
+}
+$("plus").addEventListener("click", () => { st.glasses++; render(); });
+$("minus").addEventListener("click", () => { st.glasses = Math.max(0, st.glasses - 1); render(); });
+$("reset").addEventListener("click", () => { st.glasses = 0; render(); });
+$("goal").addEventListener("input", () => { const g = num($("goal").value); if (g >= 0.5 && g <= 10) { st.goal = g; render(); } });
+$("size").addEventListener("change", () => { st.size = +$("size").value; render(); });
+document.addEventListener("visibilitychange", () => { if (!document.hidden) render(); });
+render();
+$("y").textContent = new Date().getFullYear();
+</script>
+<script src="../assets/consent.js"></script>
+<script src="../assets/pwa.js"></script>
+</body>
+</html>

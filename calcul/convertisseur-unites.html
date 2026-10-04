@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Convertisseur d'unités : longueur, poids, volume, surface, vitesse – ToolBOX</title>
+<meta name="description" content="Convertis des unités de longueur, de poids, de volume, de surface et de vitesse : km en miles, kg en livres, litres en gallons, mètres carrés en acres, km/h en mph.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/outil.css">
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#eceff2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121a21" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" href="../icons/icon-192.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<style>
+  .note{color:var(--muted);margin:.4rem 0 0;font-size:.95rem}
+  .chips{display:flex;flex-wrap:wrap;gap:.5rem;margin:.9rem 0 0}
+  .chips button{font:500 .9rem var(--body);color:var(--ink);background:var(--bg);border:1px dashed var(--muted);border-radius:99px;padding:.35rem .8rem;cursor:pointer}
+  .chips button:hover{border-style:solid;border-color:var(--ink)}
+  .swap{align-self:flex-end;flex:0 0 auto;font:600 1.2rem var(--body);width:2.9rem;height:2.9rem;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+  .swap:hover{border-color:var(--ink)}
+
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://toolbox.alguisand.workers.dev/calcul/convertisseur-unites">
+<meta property="og:site_name" content="ToolBOX">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="Convertisseur d'unités : longueur, poids, volume, surface, vitesse – ToolBOX">
+<meta property="og:description" content="Convertis des unités de longueur, de poids, de volume, de surface et de vitesse : km en miles, kg en livres, litres en gallons, mètres carrés en acres, km/h en mph.">
+<meta property="og:url" content="https://toolbox.alguisand.workers.dev/calcul/convertisseur-unites">
+<meta property="og:image" content="https://toolbox.alguisand.workers.dev/icons/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ToolBOX : les petits outils du quotidien">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Convertisseur d\u0027unités","url":"https://toolbox.alguisand.workers.dev/calcul/convertisseur-unites","description":"Convertis des unités de longueur, de poids, de volume, de surface et de vitesse : km en miles, kg en livres, litres en gallons, mètres carrés en acres, km/h en mph.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","inLanguage":"fr-FR","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://toolbox.alguisand.workers.dev/"},{"@type":"ListItem","position":2,"name":"Convertisseur d\u0027unités","item":"https://toolbox.alguisand.workers.dev/calcul/convertisseur-unites"}]}]</script>
+<!-- /seo -->
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="../index.html">Tool<span>BOX</span></a>
+  </header>
+
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="../index.html">Accueil</a> › <a href="../index.html#outils">Calcul</a> › Convertisseur d'unités
+  </nav>
+
+  <main>
+    <h1>Convertisseur d'unités</h1>
+    <p class="lead">Choisis une catégorie, tape une valeur, et vois-la convertie dans toutes les unités.</p>
+
+    <section class="tool" aria-label="Convertisseur d'unités">
+      <div class="tabs" id="tabs" role="tablist" aria-label="Catégories d'unités"></div>
+      <div class="fields">
+        <div class="field"><label for="v">Valeur</label><input id="v" type="text" inputmode="decimal" autocomplete="off" value="1"></div>
+        <div class="field"><label for="from">De</label><select id="from"></select></div>
+        <button type="button" class="swap" id="swap" aria-label="Inverser les unités">⇄</button>
+        <div class="field"><label for="to">Vers</label><select id="to"></select></div>
+      </div>
+      <div class="result" id="result" aria-live="polite"></div>
+      <table class="tbl" id="tbl"></table>
+    </section>
+
+    <section class="explain">
+      <h2>Comment fonctionne la conversion ?</h2>
+      <p>Chaque unité est reliée à une unité de référence (le mètre, le kilogramme, le litre, le mètre carré ou le mètre par seconde). Pour passer d'une unité à une autre, on convertit d'abord vers la référence, puis vers l'unité voulue : <code>résultat = valeur × facteur de départ ÷ facteur d'arrivée</code>.</p>
+
+      <h2>Quelques conversions à retenir</h2>
+      <ul>
+        <li>1 mile = 1,609 km ; 1 pouce = 2,54 cm ; 1 pied = 30,48 cm ;</li>
+        <li>1 livre (lb) = 453,6 g ; 1 once (oz) = 28,35 g ;</li>
+        <li>1 gallon américain = 3,785 litres, 1 gallon britannique = 4,546 litres ;</li>
+        <li>1 hectare = 10 000 m² ; 1 acre = 4 047 m² ;</li>
+        <li>100 km/h = 62,1 mph = 54 nœuds.</li>
+      </ul>
+      <p>Attention aux unités américaines : la tasse, l'once liquide et le gallon n'ont pas la même valeur aux États-Unis et au Royaume-Uni. L'outil utilise les valeurs américaines pour la tasse, l'once liquide, la pinte et le gallon, et indique le gallon britannique à part.</p>
+      <p>Pour les températures, utilise <a href="../cuisine/celsius-fahrenheit.html">°C ⇄ °F</a>. Pour les cuillères et les tasses de cuisine, <a href="../cuisine/grammes-en-ml.html">Grammes en ml</a> tient compte de la densité de chaque ingrédient.</p>
+    </section>
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX – Tes données restent dans ton navigateur.<nav class="legal-links" aria-label="Informations légales"><a href="../legal/mentions-legales.html">Mentions légales</a> · <a href="../legal/confidentialite.html">Confidentialité</a> · <a href="../legal/contact.html">Contact</a> · <a href="#" data-cookie-settings>Cookies</a></nav></footer>
+</div>
+
+<script>
+const num = s => parseFloat(String(s).replace(",", "."));
+const fmt = (n, d = 2) => new Intl.NumberFormat("fr-FR", { maximumFractionDigits: d }).format(n);
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const dur = min => { const m = Math.round(min); const h = Math.floor(m / 60); return h ? `${h} h ${String(m % 60).padStart(2, "0")} min` : `${m} min`; };
+// [symbole, nom, facteur vers l'unité de référence]
+const CATS = {
+  longueur: { n: "Longueur", from: "km", to: "mi", u: [["mm", "millimètre", 0.001], ["cm", "centimètre", 0.01], ["m", "mètre", 1], ["km", "kilomètre", 1000],
+    ["in", "pouce", 0.0254], ["ft", "pied", 0.3048], ["yd", "yard", 0.9144], ["mi", "mile", 1609.344], ["nmi", "mille marin", 1852]] },
+  poids: { n: "Poids", from: "kg", to: "lb", u: [["mg", "milligramme", 1e-6], ["g", "gramme", 0.001], ["kg", "kilogramme", 1], ["t", "tonne", 1000],
+    ["oz", "once", 0.028349523125], ["lb", "livre", 0.45359237], ["st", "stone", 6.35029318]] },
+  volume: { n: "Volume", from: "L", to: "gal", u: [["ml", "millilitre", 0.001], ["cl", "centilitre", 0.01], ["dl", "décilitre", 0.1], ["L", "litre", 1], ["m³", "mètre cube", 1000],
+    ["c. à c.", "cuillère à café", 0.005], ["c. à s.", "cuillère à soupe", 0.015], ["tasse", "tasse (US)", 0.2365882365], ["fl oz", "once liquide (US)", 0.0295735295625],
+    ["pinte", "pinte (US)", 0.473176473], ["gal", "gallon (US)", 3.785411784], ["gal UK", "gallon (Royaume-Uni)", 4.54609]] },
+  surface: { n: "Surface", from: "ha", to: "acre", u: [["cm²", "centimètre carré", 1e-4], ["m²", "mètre carré", 1], ["ha", "hectare", 10000], ["km²", "kilomètre carré", 1e6],
+    ["in²", "pouce carré", 0.00064516], ["ft²", "pied carré", 0.09290304], ["acre", "acre", 4046.8564224], ["mi²", "mile carré", 2589988.110336]] },
+  vitesse: { n: "Vitesse", from: "km/h", to: "mph", u: [["m/s", "mètre par seconde", 1], ["km/h", "kilomètre par heure", 1 / 3.6], ["mph", "mile par heure", 0.44704],
+    ["nd", "nœud", 1852 / 3600], ["ft/s", "pied par seconde", 0.3048]] }
+};
+const sig = n => new Intl.NumberFormat("fr-FR", { maximumSignificantDigits: 8 }).format(n);
+let cat = "longueur";
+$("tabs").innerHTML = Object.entries(CATS).map(([k, c]) => `<button type="button" role="tab" data-k="${k}" aria-selected="${k === cat}">${c.n}</button>`).join("");
+function fill() {
+  const c = CATS[cat];
+  const opts = c.u.map((u, i) => `<option value="${i}">${esc(u[1])} (${esc(u[0])})</option>`).join("");
+  $("from").innerHTML = opts; $("to").innerHTML = opts;
+  $("from").value = c.u.findIndex(u => u[0] === c.from); $("to").value = c.u.findIndex(u => u[0] === c.to);
+  document.querySelectorAll("#tabs button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.k === cat)));
+  render();
+}
+function render() {
+  const c = CATS[cat], v = num($("v").value);
+  const bad = isNaN(v) || Math.abs(v) > 1e15;
+  $("result").classList.toggle("err", bad);
+  if (bad) { $("result").innerHTML = `<div class="big">Entre un nombre.</div>`; $("tbl").innerHTML = ""; return; }
+  const a = c.u[+$("from").value], b = c.u[+$("to").value];
+  const base = v * a[2];
+  $("result").innerHTML = `<div class="big">${sig(base / b[2])} ${esc(b[0])}</div><div class="txt"><strong>${sig(v)} ${esc(a[0])}</strong> (${esc(a[1])}) en ${esc(b[1])}</div>`;
+  $("tbl").innerHTML = `<thead><tr><th>Unité</th><th>${sig(v)} ${esc(a[0])} =</th></tr></thead><tbody>` +
+    c.u.map(u => `<tr><td>${esc(u[1])}</td><td>${sig(base / u[2])} ${esc(u[0])}</td></tr>`).join("") + "</tbody>";
+}
+$("tabs").addEventListener("click", e => { const b = e.target.closest("button"); if (b) { cat = b.dataset.k; fill(); } });
+["v", "from", "to"].forEach(i => { $(i).addEventListener("input", render); $(i).addEventListener("change", render); });
+$("swap").addEventListener("click", () => { const t = $("from").value; $("from").value = $("to").value; $("to").value = t; render(); });
+fill();
+$("y").textContent = new Date().getFullYear();
+</script>
+<script src="../assets/consent.js"></script>
+<script src="../assets/pwa.js"></script>
+</body>
+</html>

@@ -90,7 +90,7 @@
       <p>Calcule tes besoins avec l'outil <a href="besoins-caloriques.html">Besoins caloriques quotidiens</a>, puis recopie le résultat dans le champ « Objectif ». Pour répartir ces calories en protéines, glucides et lipides, utilise <a href="macronutriments.html">Calcul des macronutriments</a>.</p>
 
       <h2>Bon à savoir</h2>
-      <p>Ce compteur ne sauvegarde rien : la liste disparaît si tu fermes la page. Compter les calories est un outil de repère et peut ne pas convenir à tout le monde. Si cela te cause du stress ou si tu as un doute sur ton rapport à l'alimentation, parles-en à un professionnel de santé.</p>
+      <p>Ta journée est gardée sur ton appareil (jamais envoyée sur un serveur) et repart de zéro le lendemain, avec ton objectif conservé. Le bouton « Tout effacer » la vide quand tu veux. Compter les calories est un outil de repère et peut ne pas convenir à tout le monde. Si cela te cause du stress ou si tu as un doute sur ton rapport à l'alimentation, parles-en à un professionnel de santé.</p>
     </section>
   </main>
 
@@ -120,7 +120,19 @@ const food = document.getElementById("food"), qty = document.getElementById("qty
 const cname = document.getElementById("cname"), ckcal = document.getElementById("ckcal");
 const rows = document.getElementById("rows"), empty = document.getElementById("empty");
 const goal = document.getElementById("goal"), result = document.getElementById("result");
+// La journée est gardée sur l'appareil (stockage local) et repart de zéro le lendemain ; l'objectif est conservé.
+const SKEY = "toolbox-calories-v1";
+const today = () => { const d = new Date(); return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`; };
 let items = [];
+try {
+  const s = JSON.parse(localStorage.getItem(SKEY) || "null");
+  if (s && typeof s.goal === "string") goal.value = s.goal.slice(0, 6);
+  if (s && s.day === today() && Array.isArray(s.items)) {
+    items = s.items.slice(0, 100).filter(it => it && typeof it.name === "string" && ["g", "kcal", "p", "c", "l"].every(k => Number.isFinite(it[k])))
+      .map(it => ({ name: it.name.slice(0, 60), g: it.g, kcal: it.kcal, p: it.p, c: it.c, l: it.l }));
+  }
+} catch (_) {}
+const save = () => { try { localStorage.setItem(SKEY, JSON.stringify({ day: today(), goal: goal.value, items })); } catch (_) {} };
 
 food.innerHTML = FOODS.map((f, i) => `<option value="${i}">${esc(f[0])} – ${f[1]} kcal/100 g</option>`).join("") +
   `<option value="custom">Autre aliment…</option>`;
@@ -148,6 +160,7 @@ rows.addEventListener("click", e => {
 goal.addEventListener("input", render);
 
 function render() {
+  save();
   empty.hidden = items.length > 0;
   rows.innerHTML = items.map((it, i) =>
     `<div class="row"><span class="food-name">${esc(it.name)}</span><span class="qty">${f0(it.g)} g</span><span class="kc">${f0(it.kcal)} kcal</span><button type="button" class="x" data-del="${i}" aria-label="Retirer ${esc(it.name)}">×</button></div>`).join("");

@@ -68,4 +68,10 @@
   });
 
   if (value === null) box.hidden = false;
+
+  // Publicité : ads.js ne fait rien tant qu'un identifiant AdSense n'y est pas renseigné
+  const ads = document.createElement("script");
+  ads.src = base + "assets/ads.js";
+  ads.defer = true;
+  document.head.append(ads);
 })();

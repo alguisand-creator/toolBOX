@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Partage d'addition et calcul du pourboire – ToolBOX</title>
+<meta name="description" content="Partage une addition entre plusieurs personnes avec ou sans pourboire, et arrondis la part de chacun à l'euro supérieur. Restaurant, courses, cadeau commun.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/outil.css">
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#eceff2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121a21" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" href="../icons/icon-192.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<style>
+  .note{color:var(--muted);margin:.4rem 0 0;font-size:.95rem}
+  .chips{display:flex;flex-wrap:wrap;gap:.5rem;margin:.9rem 0 0}
+  .chips button{font:500 .9rem var(--body);color:var(--ink);background:var(--bg);border:1px dashed var(--muted);border-radius:99px;padding:.35rem .8rem;cursor:pointer}
+  .chips button:hover{border-style:solid;border-color:var(--ink)}
+  .swap{align-self:flex-end;flex:0 0 auto;font:600 1.2rem var(--body);width:2.9rem;height:2.9rem;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+  .swap:hover{border-color:var(--ink)}
+
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://toolbox.alguisand.workers.dev/argent/partage-addition">
+<meta property="og:site_name" content="ToolBOX">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="Partage d'addition et calcul du pourboire – ToolBOX">
+<meta property="og:description" content="Partage une addition entre plusieurs personnes avec ou sans pourboire, et arrondis la part de chacun à l'euro supérieur. Restaurant, courses, cadeau commun.">
+<meta property="og:url" content="https://toolbox.alguisand.workers.dev/argent/partage-addition">
+<meta property="og:image" content="https://toolbox.alguisand.workers.dev/icons/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ToolBOX : les petits outils du quotidien">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Partage d\u0027addition","url":"https://toolbox.alguisand.workers.dev/argent/partage-addition","description":"Partage une addition entre plusieurs personnes avec ou sans pourboire, et arrondis la part de chacun à l\u0027euro supérieur. Restaurant, courses, cadeau commun.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","inLanguage":"fr-FR","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://toolbox.alguisand.workers.dev/"},{"@type":"ListItem","position":2,"name":"Partage d\u0027addition","item":"https://toolbox.alguisand.workers.dev/argent/partage-addition"}]}]</script>
+<!-- /seo -->
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="../index.html">Tool<span>BOX</span></a>
+  </header>
+
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="../index.html">Accueil</a> › <a href="../index.html#outils">Argent</a> › Partage d'addition
+  </nav>
+
+  <main>
+    <h1>Partage d'addition</h1>
+    <p class="lead">Entre le montant, le nombre de personnes et un éventuel pourboire : tu sais combien chacun doit payer.</p>
+
+    <section class="tool" aria-label="Partage d'addition">
+      <div class="fields">
+        <div class="field"><label for="total">Montant de l'addition (€)</label><input id="total" type="text" inputmode="decimal" autocomplete="off" value="86,40"></div>
+        <div class="field"><label for="n">Nombre de personnes</label><input id="n" type="text" inputmode="numeric" autocomplete="off" value="4"></div>
+        <div class="field"><label for="tip">Pourboire (%)</label><input id="tip" type="text" inputmode="decimal" autocomplete="off" value="0"></div>
+      </div>
+      <div class="chips" id="chips" role="group" aria-label="Pourboires courants"></div>
+      <label class="chk"><input type="checkbox" id="round"> Arrondir la part de chacun à l'euro supérieur</label>
+      <div class="result" id="result" aria-live="polite"></div>
+    </section>
+
+    <section class="explain">
+      <h2>Comment est calculée la part de chacun ?</h2>
+      <p>L'outil ajoute d'abord le pourboire à l'addition (<code>total + total × pourboire %</code>), puis divise le tout par le nombre de personnes. Pour 86,40 € à 4 personnes sans pourboire, chacun paie 21,60 €.</p>
+      <p>Avec l'option d'arrondi, chacun paie un montant entier : l'écart avec l'addition réelle devient un pourboire supplémentaire, ou sert à compléter si la somme est un peu courte.</p>
+
+      <h2>Faut-il laisser un pourboire ?</h2>
+      <p>En France, le service est déjà compris dans les prix affichés au restaurant : un pourboire est facultatif, un petit geste (de 0 à 10 %) pour remercier un service apprécié. À l'étranger, les usages varient beaucoup : aux États-Unis il est attendu (15 à 20 %), dans de nombreux pays d'Europe il se limite à arrondir la note. Pour un voyage, retrouve aussi le <a href="devises.html">convertisseur de devises</a>.</p>
+    </section>
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX – Tes données restent dans ton navigateur.<nav class="legal-links" aria-label="Informations légales"><a href="../legal/mentions-legales.html">Mentions légales</a> · <a href="../legal/confidentialite.html">Confidentialité</a> · <a href="../legal/contact.html">Contact</a> · <a href="#" data-cookie-settings>Cookies</a></nav></footer>
+</div>
+
+<script>
+const num = s => parseFloat(String(s).replace(",", "."));
+const fmt = (n, d = 2) => new Intl.NumberFormat("fr-FR", { maximumFractionDigits: d }).format(n);
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const dur = min => { const m = Math.round(min); const h = Math.floor(m / 60); return h ? `${h} h ${String(m % 60).padStart(2, "0")} min` : `${m} min`; };
+const eur = n => new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(n);
+$("chips").innerHTML = [0, 5, 10, 15].map(p => `<button type="button" data-p="${p}">${p === 0 ? "Sans pourboire" : `+ ${p} %`}</button>`).join("");
+$("chips").addEventListener("click", e => { const b = e.target.closest("button"); if (b) { $("tip").value = b.dataset.p; render(); } });
+function render() {
+  const total = num($("total").value), n = Math.floor(num($("n").value)), pct = num($("tip").value) || 0;
+  const bad = isNaN(total) || isNaN(n) || total < 0 || total > 1e6 || n < 1 || n > 1000 || pct < 0 || pct > 100;
+  $("result").classList.toggle("err", bad);
+  if (bad) { $("result").innerHTML = `<div class="big">Entre un montant, au moins 1 personne et un pourboire entre 0 et 100 %.</div>`; return; }
+  const tip = total * pct / 100, grand = total + tip;
+  let each = grand / n;
+  if ($("round").checked) each = Math.ceil(each - 1e-9);
+  const collected = each * n, diff = collected - grand;
+  $("result").innerHTML =
+    `<div class="big">${eur(each)} par personne</div>
+     <div class="txt"><strong>${n} personne${n > 1 ? "s" : ""}</strong>${pct ? ` · pourboire de ${fmt(pct, 1)} %` : ""}</div>
+     <div class="stats">
+       <div class="stat"><b>${eur(total)}</b><span>addition</span></div>
+       <div class="stat"><b>${eur(tip)}</b><span>pourboire (${fmt(pct, 1)} %)</span></div>
+       <div class="stat"><b>${eur(grand)}</b><span>total à payer</span></div>
+       ${$("round").checked ? `<div class="stat"><b>${eur(collected)}</b><span>au total avec l'arrondi (${diff >= 0 ? "+" : ""}${eur(diff)})</span></div>` : ""}
+     </div>`;
+}
+["total", "n", "tip", "round"].forEach(i => { $(i).addEventListener("input", render); $(i).addEventListener("change", render); });
+render();
+$("y").textContent = new Date().getFullYear();
+</script>
+<script src="../assets/consent.js"></script>
+<script src="../assets/pwa.js"></script>
+</body>
+</html>

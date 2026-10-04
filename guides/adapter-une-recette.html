@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Adapter une recette et convertir les mesures en cuisine – ToolBOX</title>
+<meta name="description" content="Comment recalculer une recette pour plus ou moins de personnes, passer des grammes aux millilitres, convertir les °C en °F et choisir le bon temps de cuisson.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/outil.css">
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#eceff2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121a21" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" href="../icons/icon-192.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<style>
+  .related{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:.8rem;margin:1rem 0 2.5rem}
+  .related a{display:block;background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--accent);border-radius:10px;padding:.8rem 1rem;text-decoration:none;font-weight:600}
+  .related a small{display:block;color:var(--muted);font-weight:400;margin-top:.15rem}
+  .related a:hover{border-color:var(--ink)}
+  .explain h2:first-child{margin-top:0}
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://toolbox.alguisand.workers.dev/guides/adapter-une-recette">
+<meta property="og:site_name" content="ToolBOX">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="Adapter une recette et convertir les mesures en cuisine – ToolBOX">
+<meta property="og:description" content="Comment recalculer une recette pour plus ou moins de personnes, passer des grammes aux millilitres, convertir les °C en °F et choisir le bon temps de cuisson.">
+<meta property="og:url" content="https://toolbox.alguisand.workers.dev/guides/adapter-une-recette">
+<meta property="og:image" content="https://toolbox.alguisand.workers.dev/icons/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ToolBOX : les petits outils du quotidien">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"Article","headline":"Adapter une recette et convertir les mesures","description":"Comment recalculer une recette pour plus ou moins de personnes, passer des grammes aux millilitres, convertir les °C en °F et choisir le bon temps de cuisson.","url":"https://toolbox.alguisand.workers.dev/guides/adapter-une-recette","inLanguage":"fr-FR","datePublished":"2026-10-04","dateModified":"2026-10-04","author":{"@type":"Organization","name":"ToolBOX"},"publisher":{"@type":"Organization","name":"ToolBOX"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://toolbox.alguisand.workers.dev/"},{"@type":"ListItem","position":2,"name":"Adapter une recette et convertir les mesures","item":"https://toolbox.alguisand.workers.dev/guides/adapter-une-recette"}]}]</script>
+<!-- /seo -->
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="../index.html">Tool<span>BOX</span></a>
+  </header>
+
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="../index.html">Accueil</a> › <a href="../index.html#outils">Guides</a> › Adapter une recette
+  </nav>
+
+  <main>
+    <h1>Adapter une recette et convertir les mesures</h1>
+    <p class="lead">Une recette pour 8 et tu es 5 ? Une recette américaine en tasses et en °F ? Voici la méthode, et les outils pour le faire sans erreur.</p>
+
+    <article class="explain">
+      <h2>Adapter les quantités à ton nombre de convives</h2>
+      <p>La méthode est une règle de trois : tu multiplies chaque quantité par <code>nombre souhaité ÷ nombre prévu</code>. Pour une recette de 8 crêpes que tu veux faire pour 5, le coefficient est 5 ÷ 8 = 0,625 : 3 L de lait deviennent 1,875 L, 5 œufs deviennent 3 œufs environ, 90 g de sucre deviennent 56 g.</p>
+      <p>Le <a href="../cuisine/convertisseur-recette.html">Convertisseur de recette</a> le fait pour tous les ingrédients à la fois, avec les bonnes unités. Si tu préfères coller ta liste telle quelle, utilise <a href="../cuisine/portions-recette.html">Portions</a>.</p>
+
+      <h2>Ce qui ne change pas proportionnellement</h2>
+      <ul>
+        <li><strong>Les épices, le sel et la levure</strong> : pars sur un peu moins que le résultat, puis goûte ;</li>
+        <li><strong>Les œufs</strong> : arrondis, ou bats un œuf et utilises-en la moitié ;</li>
+        <li><strong>Le temps de cuisson</strong> : il dépend de l'épaisseur plus que de la quantité totale. Un plat plus grand mais de même épaisseur cuit à peu près aussi longtemps ;</li>
+        <li><strong>Le moule</strong> : une recette doublée demande un moule plus grand ou deux moules.</li>
+      </ul>
+
+      <h2>Convertir grammes, millilitres et cuillères</h2>
+      <p>Un gramme n'est pas un millilitre, sauf pour l'eau. Pour passer de l'un à l'autre, il faut la densité de l'ingrédient : 250 g de farine font environ 470 ml, mais 250 g de miel seulement 176 ml. L'outil <a href="../cuisine/grammes-en-ml.html">Grammes en ml</a> connaît la densité des ingrédients les plus courants et donne aussi les équivalents en cuillères et en tasses.</p>
+
+      <h2>Les recettes étrangères</h2>
+      <p>Les recettes américaines utilisent les tasses, les onces et les degrés Fahrenheit. 350 °F correspondent à environ 175 °C, soit un thermostat 6 sur un four français. Passe de l'un à l'autre avec <a href="../cuisine/celsius-fahrenheit.html">°C ⇄ °F</a>, qui donne aussi le tableau du thermostat. Pour les autres unités (onces, livres, gallons), le <a href="../calcul/convertisseur-unites.html">Convertisseur d'unités</a> couvre tout.</p>
+
+      <h2>Le bon temps de cuisson</h2>
+      <p>Un poulet, un rôti, des œufs ou des pâtes : <a href="../cuisine/temps-de-cuisson.html">Temps de cuisson</a> donne la durée, la température du four et la température à cœur à viser, qui reste la mesure la plus fiable.</p>
+
+      <h2>Les outils de cuisine</h2>
+      <div class="related">
+        <a href="../cuisine/convertisseur-recette.html">Convertisseur de recette<small>Pour 8 crêpes… et pour 5 ?</small></a>
+        <a href="../cuisine/grammes-en-ml.html">Grammes ⇄ ml<small>Selon l'ingrédient</small></a>
+        <a href="../cuisine/celsius-fahrenheit.html">°C ⇄ °F<small>Et thermostat du four</small></a>
+        <a href="../cuisine/temps-de-cuisson.html">Temps de cuisson<small>Four, eau et vapeur</small></a>
+      </div>
+    </article>
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX – Tes données restent dans ton navigateur.<nav class="legal-links" aria-label="Informations légales"><a href="../legal/mentions-legales.html">Mentions légales</a> · <a href="../legal/confidentialite.html">Confidentialité</a> · <a href="../legal/contact.html">Contact</a> · <a href="#" data-cookie-settings>Cookies</a></nav></footer>
+</div>
+
+<script>document.getElementById("y").textContent = new Date().getFullYear();</script>
+<script src="../assets/consent.js"></script>
+<script src="../assets/pwa.js"></script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calories brûlées par une activité sportive – ToolBOX</title>
+<meta name="description" content="Estime les calories brûlées pendant une activité (marche, course, vélo, natation, musculation, yoga…) selon ton poids et la durée de l'effort. Gratuit.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/outil.css">
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#eceff2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121a21" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" href="../icons/icon-192.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<style>
+  .note{color:var(--muted);margin:.4rem 0 0;font-size:.95rem}
+  .chips{display:flex;flex-wrap:wrap;gap:.5rem;margin:.9rem 0 0}
+  .chips button{font:500 .9rem var(--body);color:var(--ink);background:var(--bg);border:1px dashed var(--muted);border-radius:99px;padding:.35rem .8rem;cursor:pointer}
+  .chips button:hover{border-style:solid;border-color:var(--ink)}
+  .swap{align-self:flex-end;flex:0 0 auto;font:600 1.2rem var(--body);width:2.9rem;height:2.9rem;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+  .swap:hover{border-color:var(--ink)}
+
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://toolbox.alguisand.workers.dev/nutrition/calories-brulees">
+<meta property="og:site_name" content="ToolBOX">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="Calories brûlées par une activité sportive – ToolBOX">
+<meta property="og:description" content="Estime les calories brûlées pendant une activité (marche, course, vélo, natation, musculation, yoga…) selon ton poids et la durée de l'effort. Gratuit.">
+<meta property="og:url" content="https://toolbox.alguisand.workers.dev/nutrition/calories-brulees">
+<meta property="og:image" content="https://toolbox.alguisand.workers.dev/icons/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ToolBOX : les petits outils du quotidien">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Calories brûlées par activité","url":"https://toolbox.alguisand.workers.dev/nutrition/calories-brulees","description":"Estime les calories brûlées pendant une activité (marche, course, vélo, natation, musculation, yoga…) selon ton poids et la durée de l\u0027effort. Gratuit.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","inLanguage":"fr-FR","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://toolbox.alguisand.workers.dev/"},{"@type":"ListItem","position":2,"name":"Calories brûlées par activité","item":"https://toolbox.alguisand.workers.dev/nutrition/calories-brulees"}]}]</script>
+<!-- /seo -->
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="../index.html">Tool<span>BOX</span></a>
+  </header>
+
+  <nav class="crumbs" aria-label="Fil d'Ariane">
+    <a href="../index.html">Accueil</a> › <a href="../index.html#outils">Nutrition</a> › Calories brûlées
+  </nav>
+
+  <main>
+    <h1>Calories brûlées</h1>
+    <p class="lead">Choisis ton activité, ton poids et la durée pour estimer l'énergie dépensée, et compare avec les autres sports.</p>
+
+    <section class="tool" aria-label="Calories brûlées">
+      <div class="fields">
+        <div class="field" style="flex:2 1 240px"><label for="act">Activité</label><select id="act"></select></div>
+        <div class="field"><label for="w">Poids (kg)</label><input id="w" type="text" inputmode="decimal" autocomplete="off" value="70"></div>
+        <div class="field"><label for="min">Durée (minutes)</label><input id="min" type="text" inputmode="numeric" autocomplete="off" value="30"></div>
+      </div>
+      <div class="result" id="result" aria-live="polite"></div>
+      <div class="sect" style="margin-top:1.6rem">Comparaison des activités</div>
+      <table class="tbl" id="tbl"></table>
+    </section>
+
+    <section class="explain">
+      <h2>Comment sont calculées les calories brûlées ?</h2>
+      <p>Chaque activité a une valeur appelée <strong>MET</strong> (équivalent métabolique), qui mesure son intensité par rapport au repos. L'énergie dépensée se calcule ainsi : <code>kcal = MET × poids (kg) × durée (heures)</code>. Exemple : 30 minutes de course à 10 km/h (MET 9,8) pour 70 kg donnent <code>9,8 × 70 × 0,5 = 343 kcal</code>.</p>
+
+      <h2>Une estimation, pas une mesure</h2>
+      <p>Les valeurs viennent de tables de référence utilisées en recherche, mais elles sont moyennes : la dépense réelle varie selon ton âge, ta condition physique, ton rythme et le terrain. Ces calories incluent celles que ton corps dépense de toute façon au repos. Ne mange pas systématiquement « pour compenser » : une séance de sport en dépense souvent moins qu'on ne l'imagine.</p>
+      <p>Pour savoir combien manger dans la journée, utilise <a href="besoins-caloriques.html">Besoins caloriques quotidiens</a>, et suis ton alimentation avec le <a href="compteur-calories.html">Compteur de calories</a>.</p>
+    </section>
+  </main>
+
+  <footer>© <span id="y"></span> ToolBOX – Tes données restent dans ton navigateur.<nav class="legal-links" aria-label="Informations légales"><a href="../legal/mentions-legales.html">Mentions légales</a> · <a href="../legal/confidentialite.html">Confidentialité</a> · <a href="../legal/contact.html">Contact</a> · <a href="#" data-cookie-settings>Cookies</a></nav></footer>
+</div>
+
+<script>
+const num = s => parseFloat(String(s).replace(",", "."));
+const fmt = (n, d = 2) => new Intl.NumberFormat("fr-FR", { maximumFractionDigits: d }).format(n);
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const dur = min => { const m = Math.round(min); const h = Math.floor(m / 60); return h ? `${h} h ${String(m % 60).padStart(2, "0")} min` : `${m} min`; };
+// [nom, MET]
+const ACTS = [["Marche lente (4 km/h)", 2.8], ["Marche (5 km/h)", 3.5], ["Marche rapide (6,5 km/h)", 5], ["Randonnée", 6], ["Course (8 km/h)", 8.3], ["Course (10 km/h)", 9.8],
+  ["Course (12 km/h)", 11.8], ["Vélo tranquille (moins de 16 km/h)", 4], ["Vélo modéré (19 à 22 km/h)", 8], ["Natation tranquille", 5.8], ["Natation soutenue", 9.8],
+  ["Musculation (modérée)", 3.5], ["Musculation (intense)", 6], ["Yoga", 2.5], ["Pilates", 3], ["Danse", 4.8], ["Aérobic / fitness", 7.3], ["Corde à sauter", 11.8],
+  ["Football", 7], ["Basket", 6.5], ["Tennis", 7.3], ["Badminton", 5.5], ["Escalade", 8], ["Boxe (sac de frappe)", 5.5], ["Ski de piste", 5.3], ["Ménage", 3.3], ["Jardinage", 4]];
+$("act").innerHTML = ACTS.map((a, i) => `<option value="${i}">${esc(a[0])}</option>`).join("");
+$("act").value = ACTS.findIndex(a => a[0].startsWith("Course (10"));
+function render() {
+  const kg = num($("w").value), min = num($("min").value);
+  const bad = isNaN(kg) || isNaN(min) || kg < 20 || kg > 300 || min <= 0 || min > 1440;
+  $("result").classList.toggle("err", bad);
+  if (bad) { $("result").innerHTML = `<div class="big">Entre un poids de 20 à 300 kg et une durée de 1 à 1 440 minutes.</div>`; $("tbl").innerHTML = ""; return; }
+  const a = ACTS[+$("act").value], kcal = a[1] * kg * min / 60;
+  $("result").innerHTML =
+    `<div class="big">${fmt(kcal, 0)} kcal</div>
+     <div class="txt"><strong>${esc(a[0])}</strong>, ${fmt(min, 0)} min à ${fmt(kg, 1)} kg</div>
+     <div class="stats">
+       <div class="stat"><b>${fmt(a[1] * kg, 0)}</b><span>kcal par heure</span></div>
+       <div class="stat"><b>${fmt(a[1], 1)}</b><span>MET (intensité)</span></div>
+     </div>`;
+  $("tbl").innerHTML = `<thead><tr><th>Activité</th><th>${fmt(min, 0)} min</th></tr></thead><tbody>` +
+    ACTS.slice().sort((x, y) => y[1] - x[1]).map(x => `<tr><td>${esc(x[0])}</td><td>${fmt(x[1] * kg * min / 60, 0)} kcal</td></tr>`).join("") + "</tbody>";
+}
+["act", "w", "min"].forEach(i => { $(i).addEventListener("input", render); $(i).addEventListener("change", render); });
+render();
+$("y").textContent = new Date().getFullYear();
+</script>
+<script src="../assets/consent.js"></script>
+<script src="../assets/pwa.js"></script>
+</body>
+</html>

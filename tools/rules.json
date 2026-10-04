@@ -79,6 +79,15 @@
     { "match": "heures-en-minutes.html",   "dest": "temps" },
     { "match": "minutes-en-secondes.html", "dest": "temps" },
 
+    { "match": "convertisseur-unites.html", "dest": "calcul" },
+    { "match": "partage-addition.html",    "dest": "argent" },
+    { "match": "calories-brulees.html",    "dest": "nutrition" },
+    { "match": "suivi-eau.html",           "dest": "nutrition" },
+
+    { "match": "calories-par-jour.html",   "dest": "guides" },
+    { "match": "combien-d-eau-boire.html", "dest": "guides" },
+    { "match": "adapter-une-recette.html", "dest": "guides" },
+
     { "match": "compteur-de-mots.html",    "dest": "texte" }
   ]
 }
